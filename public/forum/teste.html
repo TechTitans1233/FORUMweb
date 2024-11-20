@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Publicações</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
+    <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        #map {
+            height: 400px;
+            margin-top: 20px;
+        }
+
+        .publication-wrapper {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .map-box {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Publicações</h1>
+        <button id="toggle-new-post-content">Exibir</button>
+        <div class="new-post-content hidden">
+            <h2>Nova Publicação</h2>
+            <form id="new-post-form">
+                <div>
+                    <label for="titulo">Título:</label>
+                    <input type="text" id="titulo" placeholder="Digite o título">
+                </div>
+                <div>
+                    <label for="conteudo">Conteúdo:</label>
+                    <textarea id="conteudo" placeholder="Digite o conteúdo"></textarea>
+                </div>
+                <div>
+                    <label for="endereco">Endereço:</label>
+                    <input type="text" id="endereco" placeholder="Digite o endereço">
+                </div>
+                <button id="publicar">Publicar</button>
+                <p id="feedback"></p>
+            </form>
+        </div>
+        <div id="map" class="hidden"></div>
+        <h2>Lista de Publicações</h2>
+        <div id="publications"></div>
+    </div>
+    <script src="forum.js"></script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil do Usuário</title>
+    <link rel="stylesheet" href="perfil.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Cabeçalho -->
+        <header>
+            <h1>Perfil do Usuário</h1>
+            <a href="forum/forum.html">Voltar para a página inicial</a>
+        </header>
+
+        <!-- Menu do usuário -->
+        <aside id="user-menu">
+            <ul>
+                <li><a href="#" id="editarPerfilBtn">Editar Perfil</a></li>
+                <li><a href="#">Configurações</a></li>
+                <li><a href="#">Sair</a></li>
+            </ul>
+        </aside>
+
+        <!-- Conteúdo principal -->
+        <main id="main-content">
+            <section class="user-header">
+                <div class="user-photo-container">
+                    <div class="user-photo">
+                        <img id="user-photo" src="" alt="Foto do Usuário">
+                    </div>
+                    <div class="user-name">
+                        <p id="user-name"></p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="user-info">
+                <h3>Informações Pessoais</h3>
+                <p><strong>Nome:</strong> <span id="display-name"></span></p>
+                <p><strong>Email:</strong> <span id="display-email"></span></p>
+
+                <h3>Atividades Recentes</h3>
+                <ul>
+                    <li><strong>Postou:</strong> <span id="last-post"></span> em <span id="last-post-date"></span></li>
+                    <li><strong>Comentou:</strong> <span id="last-comment"></span> em <span id="last-comment-date"></span></li>
+                    <li><strong>Compartilhou:</strong> <span id="last-share"></span> em <span id="last-share-date"></span></li>
+                </ul>
+
+                <h3>Últimos Posts</h3>
+                <p><strong id="post-title-1"></strong>: <span id="post-summary-1"></span></p>
+                <p><strong id="post-title-2"></strong>: <span id="post-summary-2"></span></p>
+
+                <h3>Estatísticas</h3>
+                <ul>
+                    <li><strong>Posts:</strong> <span id="posts-count"></span></li>
+                    <li><strong>Seguidores:</strong> <span id="followers-count"></span></li>
+                    <li><strong>Seguindo:</strong> <span id="following-count"></span></li>
+                </ul>
+            </section>
+        </main>
+
+        <aside id="community">
+            <h2>Amigos</h2>
+            <ul class="user-list" id="user-list"></ul>
+        </aside>
+
+        <footer>
+            <p>© 2024 Minha Rede Social. Todos os direitos reservados.</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="perfil.js"></script>
+    
+</body>
+</html>

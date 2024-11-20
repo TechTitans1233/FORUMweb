@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum - Disaster Warning System</title>
+    <link rel="stylesheet" href="forum.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css">
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <header>
+        <h1><a href="#">Disaster Warning System</a></h1>
+    </header>
+
+    <div id="user-menu">
+        
+            <h2>Usuário</h2>
+            <div class="user-info">
+                <div class="user-photo">
+                    <img src="user-photo-url.jpg" alt="Foto do usuário" />
+                </div>
+                <div class="user-name">
+                    <p>Nome</p>
+                </div>
+            </div>
+        
+            <div class="user-links">
+                <a href="/perfil/perfil.html" class="user-link">Perfil</a>
+                <a href="/sair" class="user-link">Sair</a>
+            </div>
+        
+    </div>
+    
+
+    <main id="main-content">
+        <div id="feed">
+            <div class="feed-header">Feed</div>
+                <div id="publications">
+                    <!-- As publicações aparecerão aqui -->
+                </div>
+            
+        </div>
+        
+
+        <section id="new-post">
+            
+            <!-- Seção com classe hidden para ser controlada pelo botão -->
+            <div class="new-post-content">
+                <div class="left">
+                    <input type="text" id="titulo" placeholder="Título" required>
+                    <textarea id="conteudo" rows="4" placeholder="Conteúdo" required></textarea>
+                    <input type="text" id="endereco" placeholder="Endereço" required>
+                    <button id="publicar">Publicar</button>
+                    <p id="feedback"></p>
+                </div>
+                <div class="right">
+                    <div id="map" style="height: 300px; width: 100%;"></div>
+                    <div id="loading-map" style="display: none;">Carregando mapa...</div>
+                </div>
+            </div>
+
+            <div class="new-post-header">
+                <h2>Nova Publicação</h2>
+                <!-- Botão de alternância com funcionalidade oculta inicialmente -->
+                <button id="toggle-visibility">Ocultar</button>
+            </div>
+        </section>
+        
+    </main>
+
+    <div id="community">
+        
+            <h2>Comunidade</h2>
+        
+                <div class="search-user">
+                    <input type="text" id="search-user-input" placeholder="Procurar usuário..." />
+                </div>
+                
+                <div class="user-list">
+                    <div class="user-item">
+                        <div class="user-photo">
+                            <img src="user-photo-url.jpg" alt="Foto do usuário" />
+                        </div>
+                        <div class="user-name">
+                            <p>Nome</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Outros usuários podem ser listados da mesma forma -->
+        
+    </div>
+    
+    
+
+    <footer>
+        <div id="social-icons">
+            <a href="#"><img src="facebook-icon.png" alt="Facebook"></a>
+            <a href="#"><img src="twitter-icon.png" alt="Twitter"></a>
+            <a href="#"><img src="instagram-icon.png" alt="Instagram"></a>
+        </div>
+        <p>&copy; 2024 Disaster Warning System. Todos os direitos reservados.</p>
+    </footer>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const toggleButton = document.getElementById('toggle-visibility');
+        const newPostContent = document.querySelector('.new-post-content');
+
+        toggleButton.addEventListener('click', () => {
+            if (newPostContent.classList.contains('hidden')) {
+                // Mostra a seção de nova publicação
+                newPostContent.classList.remove('hidden');
+                toggleButton.textContent = 'Ocultar';
+            } else {
+                // Oculta a seção de nova publicação
+                newPostContent.classList.add('hidden');
+                toggleButton.textContent = 'Exibir';
+            }
+        });
+    });
+</script>
+<script src="/forum/forum.js"></script>
+</body>
+</html>

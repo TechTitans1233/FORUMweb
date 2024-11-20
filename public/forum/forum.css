@@ -1,0 +1,683 @@
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #0056b3;
+    --background-color: #f5f5f5;
+    --text-color: #333;
+}
+
+body, h1, h2, h3, p, ul, li, a, input, textarea, button {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+#app {
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+        "header header header"
+        "user-menu main-content community"
+        "footer footer footer";
+    gap: 15px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+header {
+    grid-area: header;
+    background: var(--primary-color);
+    color: white;
+    padding: 150px; /* Aumente o padding para tornar o header mais espesso */
+    text-align: center;
+    border-radius: 8px;
+    position: relative;
+}
+
+header h1 {
+    position: absolute;
+    top: 1;
+    left: 25px;
+    margin: 0;
+    text-align: left;
+}
+
+
+header a {
+    text-decoration: none;
+    color: white;
+}
+
+
+/* Bloco de menu do usuário */
+#user-menu {
+    grid-area: user-menu;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#user-menu ul {
+    list-style: none;
+}
+
+#user-menu ul li a {
+    text-decoration: none;
+    color: var(--primary-color);
+    display: block;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    transition: background-color 0.3s;
+}
+
+#user-menu ul li a:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+#main-content {
+    grid-area: main-content;
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#community {
+    grid-area: community;
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#feed {
+    margin-bottom: 20px;
+}
+
+#feed h2 {
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+#publications {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.new-post-header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.new-post-content {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.new-post-content .left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.new-post-content .right {
+    flex: 1;
+    position: relative;
+}
+
+#map {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    #app {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto 1fr auto auto;
+        grid-template-areas:
+            "header"
+            "user-menu"
+            "main-content"
+            "community"
+            "footer";
+    }
+
+    .new-post-content {
+        flex-direction: column;
+    }
+}
+
+footer {
+    grid-area: footer;
+    text-align: center;
+    padding: 10px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 8px;
+}
+
+#toggle-visibility {
+    margin-left: 10px;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.post {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.post-map, .post-user-info, .post-info {
+    border: 1px solid #ddd;
+    padding: 10px;
+    flex: 1 1 30%;
+    min-width: 250px;
+}
+
+.post-info h3 {
+    margin-top: 0;
+}
+
+/* Estilo do bloco de Nova publicação */
+.new-post-header {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+    border-radius: 5px;
+}
+
+/* Aplica o mesmo estilo ao título do feed */
+.feed-header {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+    border-radius: 5px;
+}
+
+/* Estilos para a busca de usuário */
+#community .search-user {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#search-user-input {
+    width: 80%;
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+    margin-top: 10px;
+}
+
+/* Estilos para a lista de usuários */
+.user-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Estilos para o título "Comunidade" */
+.community-header {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+    border-radius: 5px;
+}
+
+/* Estilos para a busca de usuário */
+#community .search-user {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#search-user-input {
+    width: 80%;
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+    margin-top: 10px;
+}
+
+/* Estilos para a lista de usuários */
+.user-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Estilos para o item de usuário */
+.user-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.user-photo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #ccc;
+}
+
+.user-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-name p {
+    font-size: 1.2em;
+    margin: 0;
+}
+
+/* Estilos para o título "Usuário" */
+.user-header {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+    border-radius: 5px;
+}
+
+/* Estilos para as informações do usuário */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* Estilos para a foto do usuário */
+.user-photo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #ccc;
+}
+
+.user-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Estilos para o nome do usuário */
+.user-name p {
+    font-size: 1.2em;
+    margin: 0;
+}
+
+/* Estilos para os links do usuário */
+.user-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+}
+
+.user-link {
+    text-decoration: none;
+    color: var(--primary-color);
+    font-size: 1em;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f5f5f5;
+    transition: background-color 0.3s;
+}
+
+.user-link:hover {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+/* Estilo para os campos de entrada de texto (input e textarea) */
+.new-post-content input, .new-post-content textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    color: #333;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Efeito ao focar nos campos de entrada */
+.new-post-content input:focus, .new-post-content textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+/* Estilo específico para o campo de texto (textarea) */
+.new-post-content textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+/* Estilo para campos obrigatórios com erro */
+.new-post-content input:invalid, .new-post-content textarea:invalid {
+    border-color: #ee1e07;
+    background-color: #e8e0e14d;
+}
+
+/* Campos obrigatórios com destaque */
+.new-post-content input:required, .new-post-content textarea:required {
+    border-left: 5px solid var(--primary-color);
+}
+
+/* Estilo do botão "Publicar" */
+#publicar {
+    padding: 12px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+/* Efeito de hover no botão "Publicar" */
+#publicar:hover {
+    background-color: var(--secondary-color);
+    transform: scale(1.05);
+}
+
+/* Efeito de foco no botão "Publicar" */
+#publicar:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Estilo para o botão de feedback (se houver) */
+#feedback {
+    color: #f1eceb;
+    font-size: 1em;
+    margin-top: 10px;
+    font-weight: bold;
+}
+.form-container {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.form-container h2 {
+    margin-bottom: 15px;
+}
+
+.form-container p {
+    margin: 10px 0;
+}
+
+.form-container form input {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-container form button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+}
+
+.form-container form button:hover {
+    background-color: #0056b3;
+}
+
+
+
+
+/* Estilos gerais */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.publication-wrapper {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    max-width: 800px;
+    min-width: 5px;
+    overflow: visible;
+    padding: 10%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espaço entre blocos */
+}
+
+/* Conteúdo principal */
+.publication-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Bloco de usuário */
+.user-section {
+    display: flex;
+    flex-direction: column; /* Para dispositivos menores */
+    gap: 20px;
+}
+
+@media (min-width: 600px) {
+    .user-section {
+        flex-direction: row; /* Lado a lado para telas maiores */
+    }
+}
+
+.user-avatar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex-shrink: 0; /* Evita que o bloco da imagem seja reduzido */
+}
+
+.user-avatar img {
+    border-radius: 50%;
+    height: 80px;
+    width: 80px;
+    object-fit: cover;
+    border: 3px solid #007bff;
+}
+
+.user-avatar p {
+    margin-top: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+.user-details-container {
+    flex: 1; /* Garante que este bloco ocupe o espaço restante */
+}
+
+.publication-metadata p {
+    margin: 5px 0;
+}
+
+.publication-metadata p b {
+    color: #007bff;
+}
+
+/* Informações */
+.info-content h3 {
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+.info-content h2 {
+    margin: 10px 0;
+    font-size: 24px;
+    color: #333;
+}
+
+.info-content p {
+    margin: 5px 0;
+    color: #666;
+    word-wrap: break-word; /* Garante quebra de linha em textos longos */
+    overflow-wrap: break-word;
+}
+
+/* Bloco do mapa */
+.location-section {
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}
+
+.location-section h3 {
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+.map-box {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    height: 200px; /* Garante altura fixa */
+    width: 100%; /* Garante que ocupe a largura disponível */
+}
+
+/* Estilos para o título do feed */
+.feed-header {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+    border-radius: 5px;
+}
+
+/* Estilos para as publicações do feed */
+#publications {
+    padding: 8px;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 500%;
+    overflow-y: visible;
+}
+
+/* Ajustando o estilo da nova publicação */
+#new-post {
+    margin-top: 30px; /* Garante que o bloco da nova publicação não fique colado ao feed */
+}
+
+.new-post-header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+/* Alinhamento e disposição do conteúdo da nova publicação */
+.new-post-content {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.new-post-content .left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.new-post-content .right {
+    flex: 1;
+    position: relative;
+}
+
+#map {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+/* Estilos para os títulos dentro do feed */
+#feed h2 {
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+.hidden {
+    display: none;
+}
+

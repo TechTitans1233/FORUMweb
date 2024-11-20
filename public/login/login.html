@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="login.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <header>
+        <div>
+            <h1>Login</h1>
+        </div>
+    </header>
+
+    <main>
+        <!-- Formulário de Login de Usuário -->
+        <div class="form-container" id="userLogin">
+            <h2>Usuário</h2>
+            <form id="userLoginForm">
+                <input type="email" id="userEmail" placeholder="Email" required>
+                <input type="password" id="userPassword" placeholder="Senha" required>
+                <button type="submit">Entrar</button>
+                <p>
+                    Não possui uma conta? <a href="#" id="register-toggle" class="toggle-text">Crie uma conta</a>
+                </p>
+                <p>
+                    Login administrativo? <a href="#" id="admin-toggle" class="toggle-text">Clique aqui</a>
+                </p>
+            </form>
+        </div>
+
+        <!-- Formulário de Login Administrativo (inicialmente oculto) -->
+        <div class="form-container" id="adminLogin" style="display: none;">
+            <h2>Login Administrativo</h2>
+            <form id="adminLoginForm">
+                <input type="password" id="adminPassword" placeholder="Senha Administrativa" required>
+                <button type="submit">Entrar</button>
+                <p>
+                    Voltar ao login de usuário? <a href="#" id="user-toggle" class="toggle-text">Clique aqui</a>
+                </p>
+            </form>
+        </div>
+
+        <!-- Formulário de Cadastro (inicialmente oculto) -->
+        <div class="form-container" id="registerForm" style="display: none;">
+            <h2>Criar Conta</h2>
+            <form id="registerFormSubmit">
+                <input type="text" id="registerName" placeholder="Nome Completo" required>
+                <input type="email" id="registerEmail" placeholder="Email" required>
+                <input type="password" id="registerPassword" placeholder="Senha" required>
+                <input type="password" id="registerConfirmPassword" placeholder="Confirmar Senha" required>
+                <button type="submit">Cadastrar</button>
+                <p>
+                    Já possui uma conta? <a href="#" id="login-toggle" class="toggle-text">Clique aqui para fazer login</a>
+                </p>
+            </form>
+        </div>
+    </main>
+
+    <script src="login.js"></script>
+</body>
+</html>
