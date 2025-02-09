@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forum - Disaster Warning System</title>
     <link rel="stylesheet" href="forum.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css">
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -18,117 +19,102 @@
 <body>
 <div id="app">
     <header>
-        <h1><a href="#">Disaster Warning System</a></h1>
+        <h1>Disaster Warning System</h1>
     </header>
 
-    <div id="user-menu">
-        
-            <h2>Usuário</h2>
-            <div class="user-info">
-                <div class="user-photo">
-                    <img src="user-photo-url.jpg" alt="Foto do usuário" />
-                </div>
-                <div class="user-name">
-                    <p>Nome</p>
-                </div>
-            </div>
-        
-            <div class="user-links">
-                <a href="/perfil/perfil.html" class="user-link">Perfil</a>
-                <a href="/sair" class="user-link">Sair</a>
-            </div>
-        
-    </div>
-    
-
-    <main id="main-content">
-        <div id="feed">
-            <div class="feed-header">Feed</div>
-                <div id="publications">
-                    <!-- As publicações aparecerão aqui -->
-                </div>
-            
-        </div>
-        
-
-        <section id="new-post">
-            
-            <!-- Seção com classe hidden para ser controlada pelo botão -->
-            <div class="new-post-content">
-                <div class="left">
-                    <input type="text" id="titulo" placeholder="Título" required>
-                    <textarea id="conteudo" rows="4" placeholder="Conteúdo" required></textarea>
-                    <input type="text" id="endereco" placeholder="Endereço" required>
-                    <button id="publicar">Publicar</button>
-                    <p id="feedback"></p>
-                </div>
-                <div class="right">
-                    <div id="map" style="height: 300px; width: 100%;"></div>
-                    <div id="loading-map" style="display: none;">Carregando mapa...</div>
-                </div>
-            </div>
-
-            <div class="new-post-header">
-                <h2>Nova Publicação</h2>
-                <!-- Botão de alternância com funcionalidade oculta inicialmente -->
-                <button id="toggle-visibility">Ocultar</button>
-            </div>
-        </section>
-        
-    </main>
-
-    <div id="community">
-        
-            <h2>Comunidade</h2>
-        
-                <div class="search-user">
-                    <input type="text" id="search-user-input" placeholder="Procurar usuário..." />
-                </div>
+    <!-- Menu do usuário -->
+    <aside id="user-menu">
+        <div class="sidebar" id="sidebar">
+            <ul>
+                <li><a href="../forum/forum.html" class="button"><i class="fas fa-home"></i><span class="icon-text"> Início</span></a></li>
+                <li><a href="../perfil/perfil.html" class="button"><i class="fas fa-user"></i><span class="icon-text"> Perfil</span></a></li>
+                <li><a href="configuracoes.html" class="button"><i class="fas fa-cog"></i><span class="icon-text"> Configurações</span></a></li>
+                <li>
+                    <a href="#" class="button" id="notificacoes-button">
+                        <i class="fas fa-bell" id="notificacoes"></i>
+                        <span class="icon-text"> Notificações</span>
+                        <span id="notificacoes-count" class="notification-count hidden">0</span> <!-- Contador de notificações -->
+                    </a>
+                </li>
                 
-                <div class="user-list">
-                    <div class="user-item">
-                        <div class="user-photo">
-                            <img src="user-photo-url.jpg" alt="Foto do usuário" />
-                        </div>
-                        <div class="user-name">
-                            <p>Nome</p>
+                <!-- Modal para exibir notificações -->
+                <div id="notificacoes-modal" class="modal hidden">
+                    <div class="modal-content">
+                        <span class="close-button">&times;</span>
+                        <h2>Notificações</h2>
+                        <div id="notificacoes-list">
+                            <!-- As notificações serão inseridas aqui -->
                         </div>
                     </div>
                 </div>
-                <!-- Outros usuários podem ser listados da mesma forma -->
-        
-    </div>
+                <li><a href="sair.html" class="button"><i class="fas fa-sign-out-alt"></i><span class="icon-text"> Sair</span></a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <main id="main-content">
+        <section id="new-post">
+            <div class="new-post-header">
+                <h2>Nova Publicação</h2>
+                <button id="toggle-visibility">Exibir</button>
+            </div>
+            <div class="new-post-header2">
+                <div class="new-post-content hidden">
+                    <div class="form-section">
+                        <div class="inputs">
+                            <form id="publicacao-form">
+                                <div class="form-group">
+                                    <label for="titulo">Título:</label>
+                                    <input type="text" id="titulo" name="titulo" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="conteudo">Conteúdo:</label>
+                                    <textarea id="conteudo" name="conteudo" rows="4" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="endereco">Endereço:</label>
+                                    <input type="text" id="endereco" name="endereco" required>
+                                </div>
+                                <button type="submit" id="publicar">Publicar</button>
+                                <p id="feedback"></p>
+                            </form>
+                        </div>
+                        <div id="map" class="map" style="height: 300px; width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div id="feed">
+            <div class="feed-header">Feed</div>
+            <div id="publications">
+                <!-- As publicações aparecerão aqui -->
+            </div>
+        </div>
+    </main>
+
+    <aside id="community">
+        <div class="container">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Pesquisar usuários..." id="searchInput">
+            </div>
+
+            <div id="usuariosEncontrados">
+                <!-- Usuários encontrados serão dinamicamente inseridos aqui -->
+            </div>
     
+            <div id="usuariosOcultos" style="display: none;">
+                <!-- Usuários ocultos serão dinamicamente inseridos aqui -->
+            </div>
     
+            <button class="btn-ocultar" id="btnOcultar">Mostrar mais usuários</button>
+        </div>
+    </aside>
 
     <footer>
-        <div id="social-icons">
-            <a href="#"><img src="facebook-icon.png" alt="Facebook"></a>
-            <a href="#"><img src="twitter-icon.png" alt="Twitter"></a>
-            <a href="#"><img src="instagram-icon.png" alt="Instagram"></a>
-        </div>
-        <p>&copy; 2024 Disaster Warning System. Todos os direitos reservados.</p>
+        <p>© 2024 Minha Rede Social. Todos os direitos reservados.</p>
     </footer>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const toggleButton = document.getElementById('toggle-visibility');
-        const newPostContent = document.querySelector('.new-post-content');
-
-        toggleButton.addEventListener('click', () => {
-            if (newPostContent.classList.contains('hidden')) {
-                // Mostra a seção de nova publicação
-                newPostContent.classList.remove('hidden');
-                toggleButton.textContent = 'Ocultar';
-            } else {
-                // Oculta a seção de nova publicação
-                newPostContent.classList.add('hidden');
-                toggleButton.textContent = 'Exibir';
-            }
-        });
-    });
-</script>
 <script src="/forum/forum.js"></script>
 </body>
 </html>

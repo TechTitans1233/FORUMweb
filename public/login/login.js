@@ -50,43 +50,74 @@ document.getElementById("login-toggle").addEventListener("click", function (even
 document.getElementById("userLoginForm").addEventListener("submit", function (event) {
     event.preventDefault();
 
-    const email = document.getElementById("userEmail").value;
-    const password = document.getElementById("userPassword").value;
+    const email = document.getElementById("userEmail").value.trim();
+    const password = document.getElementById("userPassword").value.trim();
+    const submitButton = event.target.querySelector("button");
 
     if (!email || !password) {
         alert("Por favor, preencha todos os campos.");
         return;
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        alert("Por favor, insira um email válido.");
+        return;
+    }
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Entrando...";
+
     // Enviar login para o backend
-    fetch('/api/login', {  // Alteração aqui para '/api/login'
+    fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
     })
-    .then(response => {
-        if (!response.ok) { // Verifica se a resposta é ok
-            throw new Error("Erro ao autenticar usuário: " + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.message === "Usuário autenticado com sucesso!") {
-            alert("Login realizado com sucesso!");
-            window.location.href = "/forum/forum.html"; // Redirecionar para a página de dashboard
-        } else {
-            alert("Erro ao fazer login: " + data.message);
-        }
-    })
-    .catch(error => {
-        alert("Erro ao tentar fazer login: " + error.message);
-        document.getElementById("userEmail").value = "";
-        document.getElementById("userPassword").value = "";
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Erro ao autenticar usuário: " + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.message === "Usuário autenticado com sucesso!") {
+                // Login bem-sucedido, buscar dados do usuário
+                return fetch(`/api/users/email/${email}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Erro ao obter dados do usuário.");
+                        }
+                        return response.json();
+                    })
+                    .then(userData => {
+                        // Armazenar dados do usuário no localStorage
+                        localStorage.setItem("userEmail", userData.email);
+                        localStorage.setItem("userName", userData.name);
+                        localStorage.setItem("userId", userData.id);
+                        // Redirecionar para a página do fórum
+                        window.location.href = "../forum/forum.html";
+                    });
+            } else {
+                throw new Error(data.message);
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            alert("Erro: " + error.message);
+        })
+        .finally(() => {
+            submitButton.disabled = false;
+            submitButton.textContent = "Entrar";
+        });
 });
 
+
+
+
+
 // Função para realizar login administrativo
-document.getElementById("adminLoginForm").addEventListener("submit", function (event) {
+document.getElementById("adminLoginForm").addEventListener("submit", async function (event) {
     event.preventDefault();
 
     const password = document.getElementById("adminPassword").value;
@@ -96,14 +127,32 @@ document.getElementById("adminLoginForm").addEventListener("submit", function (e
         return;
     }
 
-    // Verifique a senha administrativa (ou outro método de autenticação)
-    if (password === "adminPassword123") {
-        alert("Login administrativo realizado com sucesso!");
-        window.location.href = "/admin/admin.html"; // Redirecionar para o painel administrativo
-    } else {
-        alert("Senha administrativa incorreta.");
+    try {
+        // Enviar a senha para o backend para autenticação
+        const response = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password })
+        });
+
+        if (!response.ok) {
+            throw new Error("Erro ao autenticar administrador: " + response.statusText);
+        }
+
+        const data = await response.json();
+        if (data.token) {
+            // Armazena o token no localStorage
+            localStorage.setItem("adminToken", data.token);
+            alert("Login administrativo realizado com sucesso!");
+            window.location.href = "../admin/admin.html"; // Redirecionar para o painel administrativo
+        } else {
+            throw new Error(data.message);
+        }
+    } catch (error) {
+        alert("Erro: " + error.message);
     }
 });
+
 
 // Função para cadastrar usuário
 document.getElementById("registerFormSubmit").addEventListener("submit", async function (event) {
@@ -152,3 +201,4 @@ document.getElementById("registerFormSubmit").addEventListener("submit", async f
         alert("Erro ao tentar cadastrar o usuário: " + error.message);
     });
 });
+

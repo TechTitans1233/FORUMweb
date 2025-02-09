@@ -3,19 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil do Usuário</title>
+    <title>Perfil do AMIGO</title>
     <link rel="stylesheet" href="perfil.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css">
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
         <!-- Cabeçalho -->
         <header>
-            <h1>Perfil do Usuário</h1>
+            <h1>Perfil do AMIGO</h1>
         </header>
 
         <!-- Menu do usuário -->
@@ -33,29 +38,21 @@
         
         <!-- Conteúdo principal -->
         <main id="main-content">
-            <div id="editProfileContainer" class="hidden"></div>
-            <div class="feed-header">Perfil do usuario</div>
+            <div class="feed-header">Perfil</div>
             <div class="container">
                 <div class="perfil">
                     <img src="sua-foto.jpg" alt="Foto de Perfil" class="foto-perfil">
                     <div class="info-perfil">
-                        <h1 class="nome" id="userNameDisplay">Nome do Usuário</h1>
-                        <p class="email" id="userEMAIL">usuario@email.com</p>
+                        <h1 class="nome" id="userNameDisplayAMIGO">Nome do AMIGO</h1>
+                        <p class="email" id="userEMAILamigo">usuario@email.com</p>
                         <div class="estatisticas">
-                            <span class="posts">Posts: <span id="postCount">0</span></span>
-                            <span class="seguidores">Seguidores: <span id="followerCount">0</span></span>
-                            <span class="seguindo">Seguindo: <span id="followingCount">0</span></span>
-                        </div>
-                        <button id="editProfileButton" class="btn-edit">Editar Perfil</button>
-                        <button id="deleteUser Button" class="btn-delete">Deletar Conta</button>
+                            <span class="posts">Posts: <span id="postCountAMIGO">0</span></span>
+                            <span class="seguidores">Seguidores: <span id="followerCountAMIGO">0</span></span>
+                            <span class="seguindo">Seguindo: <span id="followingCountAMIGO">0</span></span>
+                        </div>                            
                     </div>
                 </div>
-
-        
-
-                <div id="user-info"></div>
             </div>
-
             <div id="feed">
                 <div class="feed-header">Feed<div class="feed-header"><button class="btn-ocultar1" id="btnOcultar1">Ocultar Feed</button></div></div>
                 
@@ -67,14 +64,17 @@
         
         <aside id="community">
             <div class="container">
+                <!-- Barra de pesquisa -->
                 <div class="search-container">
                     <input type="text" class="search-input" placeholder="Pesquisar usuários..." id="searchInput">
                 </div>
-
+        
+                <!-- Usuários encontrados -->
                 <div id="usuariosEncontrados">
                     <!-- Usuários encontrados serão dinamicamente inseridos aqui -->
                 </div>
         
+                <!-- Usuários ocultos -->
                 <div id="usuariosOcultos" style="display: none;">
                     <!-- Usuários ocultos serão dinamicamente inseridos aqui -->
                 </div>
@@ -89,5 +89,6 @@
     </div>
     
     <script src="perfil.js"></script>
+
 </body>
 </html>

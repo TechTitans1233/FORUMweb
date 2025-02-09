@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Perfil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .perfil {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .foto-perfil {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+
+        .info-perfil {
+            flex-grow: 1;
+        }
+
+        .nome {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .email {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .estatisticas {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .titulo-posts {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+
+        .posts-container {
+            margin-top: 10px;
+            /* Aqui você pode adicionar estilos para os posts */
+        }
+
+        .btn-ocultar {
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-ocultar:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="perfil">
+            <img src="sua-foto.jpg" alt="Foto de Perfil" class="foto-perfil">
+            <div class="info-perfil">
+                <h1 class="nome">Seu Nome</h1>
+                <p class="email">seuemail@exemplo.com</p>
+                <div class="estatisticas">
+                    <span class="posts">Posts: 10</span>
+                    <span class="seguidores">Seguidores: 200</span>
+                    <span class="seguindo">Seguindo: 150</span>
+                </div>
+            </div>
+        </div>
+        <h2 class="titulo-posts">Posts</h2>
+        <div class="posts-container" id="postsContainer">
+            <!-- Aqui você pode adicionar a estrutura dos posts -->
+            <p>Post 1</p>
+            <p>Post 2</p>
+            <p>Post 3</p>
+        </div>
+        <button class="btn-ocultar" id="btnOcultar">Ocultar</button>
+    </div>
+
+    <script>
+        const btnOcultar = document.getElementById('btnOcultar');
+        const postsContainer = document.getElementById('postsContainer');
+
+        btnOcultar.addEventListener('click', () => {
+            if (postsContainer.style.display === 'none') {
+                postsContainer.style.display = 'block';
+                btnOcultar.textContent = 'Ocultar';
+            } else {
+                postsContainer.style.display = 'none';
+                btnOcultar.textContent = 'Mostrar';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -54,53 +54,6 @@ function deletePost(postId) {
     }
 }
 
-// Função para editar usuário
-function editUser(userId) {
-    fetch(`/api/users/${userId}`)
-        .then(response => response.json())
-        .then(user => {
-            const name = prompt('Editar nome:', user.name);
-            const email = prompt('Editar email:', user.email);
-
-            if (name && email) {
-                fetch(`/api/users/${userId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email })
-                })
-                    .then(() => fetchUsers()) // Recarrega a lista de usuários
-                    .catch(error => console.error('Erro ao editar usuário:', error));
-            }
-        })
-        .catch(error => console.error('Erro ao buscar dados do usuário:', error));
-}
-
-// Função para editar publicação
-function editPost(postId) {
-    fetch(`/api/publicacoes/${postId}`)
-        .then(response => response.json())
-        .then(post => {
-            const titulo = prompt('Editar título:', post.titulo);
-            const conteudo = prompt('Editar conteúdo:', post.conteudo);
-
-            if (titulo && conteudo) {
-                fetch(`/api/publicacoes/${postId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ titulo, conteudo })
-                })
-                    .then(() => fetchPosts()) // Recarrega a lista de publicações
-                    .catch(error => console.error('Erro ao editar publicação:', error));
-            }
-        })
-        .catch(error => console.error('Erro ao buscar dados da publicação:', error));
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    fetchUsers();
-    fetchPosts();
-});
-
 // Variável para armazenar a linha selecionada
 let selectedRow = null;
 
@@ -118,29 +71,6 @@ document.querySelectorAll('table').forEach(table => {
         selectedRow = row;
     });
 });
-
-// Função para editar a linha selecionada
-function editSelected(tableId) {
-    if (!selectedRow) {
-        alert('Por favor, selecione uma linha para editar.');
-        return;
-    }
-
-    const table = document.getElementById(tableId);
-    if (!table.contains(selectedRow)) {
-        alert('A linha selecionada não pertence a esta tabela.');
-        return;
-    }
-
-    const id = selectedRow.querySelector('td').innerText;  // Obtém o ID da linha selecionada
-
-    // Agora você pode verificar se é um usuário ou uma publicação e editar de acordo
-    if (tableId === 'users-table') {
-        editUser(id); // Chama a função de edição de usuário
-    } else if (tableId === 'posts-table') {
-        editPost(id); // Chama a função de edição de publicação
-    }
-}
 
 // Função para excluir a linha selecionada
 function deleteSelected(tableId) {
@@ -170,23 +100,123 @@ function deleteSelected(tableId) {
     }
 }
 
-// Funções de pesquisa
+// Função de pesquisa para usuários
 function searchUsers() {
     const searchValue = document.getElementById('search-users').value.toLowerCase();
     const rows = document.querySelectorAll('#users-table tbody tr');
 
     rows.forEach(row => {
-        const text = row.innerText.toLowerCase();
-        row.style.display = text.includes(searchValue) ? '' : 'none';
+        const id = row.cells[0].innerText.toLowerCase();
+        const name = row.cells[1].innerText.toLowerCase();
+        const email = row.cells[2].innerText.toLowerCase();
+
+        // Verifica se o valor pesquisado está em ID, nome ou email
+        const isMatch = id.includes(searchValue) || name.includes(searchValue) || email.includes(searchValue);
+
+        row.style.display = isMatch ? '' : 'none';
     });
 }
 
+// Função de pesquisa para publicações
 function searchPosts() {
     const searchValue = document.getElementById('search-posts').value.toLowerCase();
     const rows = document.querySelectorAll('#posts-table tbody tr');
 
     rows.forEach(row => {
-        const text = row.innerText.toLowerCase();
-        row.style.display = text.includes(searchValue) ? '' : 'none';
+        const id = row.cells[0].innerText.toLowerCase();
+        const title = row.cells[1].innerText.toLowerCase();
+        const content = row.cells[2].innerText.toLowerCase();
+
+        // Verifica se o valor pesquisado está em ID, título ou conteúdo
+        const isMatch = id.includes(searchValue) || title.includes(searchValue) || content.includes(searchValue);
+
+        row.style.display = isMatch ? '' : 'none';
     });
 }
+
+//funcoes para editar
+// Função para editar a linha selecionada
+function editSelected(tableId) {
+    if (!selectedRow) {
+        alert('Por favor, selecione uma linha para editar.');
+        return;
+    }
+
+    const table = document.getElementById(tableId);
+    if (!table.contains(selectedRow)) {
+        alert('A linha selecionada não pertence a esta tabela.');
+        return;
+    }
+
+    const id = selectedRow.querySelector('td').innerText;  // Obtém o ID da linha selecionada
+
+    // Para editar o usuário
+    if (tableId === 'users-table') {
+        const name = selectedRow.cells[1].innerText;
+        const email = selectedRow.cells[2].innerText;
+
+        const newName = prompt('Digite o novo nome:', name);
+        const newEmail = prompt('Digite o novo email:', email);
+        
+
+        if (newName && newEmail ) {
+            editUser(id, name, email, newName, newEmail);
+        }
+    } 
+    // Para editar a publicação
+    else if (tableId === 'posts-table') {
+        const title = selectedRow.cells[1].innerText;
+        const content = selectedRow.cells[2].innerText;
+
+        const newTitle = prompt('Digite o novo título:', title);
+        const newContent = prompt('Digite o novo conteúdo:', content);
+       
+
+        if (newTitle && newContent ) {
+            editPost(id, newTitle, newContent );
+        }
+    }
+}
+
+
+// Função para editar usuário
+function editUser(userId, oldName, oldEmail, newName, newEmail, newPassword) {
+    const data = { oldName, oldEmail, newName, newEmail, newPassword };
+    fetch(`/admin/usuarios/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Usuário atualizado com sucesso!');
+        fetchUsers(); // Recarrega a lista de usuários
+    })
+    .catch(error => console.error('Erro ao editar usuário:', error));
+}
+
+// Função para editar publicação
+function editPost(postId, endereco, titulo, conteudo, marcacao, lat, lon) {
+    const data = { endereco, titulo, conteudo, marcacao, lat, lon };
+    fetch(`/api/publicacoes/${postId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Publicação atualizada com sucesso!');
+        fetchPosts(); // Recarrega a lista de publicações
+    })
+    .catch(error => console.error('Erro ao editar publicação:', error));
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    fetchUsers();
+    fetchPosts();
+});

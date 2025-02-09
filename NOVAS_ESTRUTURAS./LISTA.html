@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Usuários</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .perfil {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .foto-perfil {
+            width: 50px; /* Tamanho reduzido para a foto do usuário */
+            height: 50px; /* Tamanho reduzido para a foto do usuário */
+            border-radius: 50%;
+            margin-right: 10px; /* Espaço entre a foto e o nome */
+        }
+
+        .info-perfil {
+            flex-grow: 1;
+            display: flex;
+            align-items: center; /* Alinha o nome e o link verticalmente */
+        }
+
+        .nome {
+            margin: 0;
+            font-size: 18px; /* Tamanho do texto do nome */
+        }
+
+        .ver-perfil {
+            margin-left: auto; /* Empurra o link para a direita */
+            font-size: 14px;
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        .ver-perfil:hover {
+            text-decoration: underline;
+        }
+
+        .btn-ocultar {
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none; /* Oculta o botão por padrão */
+        }
+
+        .btn-ocultar:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Barra de pesquisa -->
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Pesquisar usuários...">
+        </div>
+
+        <!-- Primeiro usuário (atual) -->
+        <div class="perfil">
+            <img src="sua-foto.jpg" alt="Foto de Perfil" class="foto-perfil">
+            <div class="info-perfil">
+                <h1 class="nome">Seu Nome</h1>
+            </div>
+        </div>
+
+        <!-- Usuários subsequentes -->
+        <div class="perfil">
+            <img src="foto-usuario1.jpg" alt="Foto de Usuário 1" class="foto-perfil">
+            <div class="info-perfil">
+                <h1 class="nome">Usuário 1</h1>
+                <a href="#" class="ver-perfil">Ver perfil</a>
+            </div>
+        </div>
+
+        <div class="perfil">
+            <img src="foto-usuario2.jpg" alt="Foto de Usuário 2" class="foto-perfil">
+            <div class="info-perfil">
+                <h1 class="nome">Usuário 2</h1>
+                <a href="#" class="ver-perfil">Ver perfil</a>
+            </div>
+        </div>
+
+        <div class="perfil">
+            <img src="foto-usuario3.jpg" alt="Foto de Usuário 3" class="foto-perfil">
+            <div class="info-perfil">
+                <h1 class="nome">Usuário 3</h1>
+                <a href="#" class="ver-perfil">Ver perfil</a>
+            </div>
+        </div>
+
+        <div class="perfil">
+            <img src="foto-usuario4.jpg" alt="Foto de Usuário 4" class="foto-perfil">
+            <div class="info-perfil">
+                <h1 class="nome">Usuário 4</h1>
+                <a href="#" class="ver-perfil">Ver perfil</a>
+            </div>
+        </div>
+
+        <div class="perfil">
+            <img src="foto-usuario5.jpg" alt="Foto de Usuário 5" class="foto-perfil">
+            <div class="info-perfil">
+                <h1 class="nome">Usuário 5</h1>
+                <a href="#" class="ver-perfil">Ver perfil</a>
+            </div>
+        </div>
+
+        <!-- Usuários ocultos -->
+        <div id="usuariosOcultos" style="display: none;">
+            <div class="perfil">
+                <img src="foto-usuario6.jpg" alt="Foto de Usuário 6 " class="foto-perfil">
+                <div class="info-perfil">
+                    <h1 class="nome">Usuário 6</h1>
+                    <a href="#" class="ver-perfil">Ver perfil</a>
+                </div>
+            </div>
+
+            <div class="perfil">
+                <img src="foto-usuario7.jpg" alt="Foto de Usuário 7" class="foto-perfil">
+                <div class="info-perfil">
+                    <h1 class="nome">Usuário 7</h1>
+                    <a href="#" class="ver-perfil">Ver perfil</a>
+                </div>
+            </div>
+
+            <div class="perfil">
+                <img src="foto-usuario8.jpg" alt="Foto de Usuário 8" class="foto-perfil">
+                <div class="info-perfil">
+                    <h1 class="nome">Usuário 8</h1>
+                    <a href="#" class="ver-perfil">Ver perfil</a>
+                </div>
+            </div>
+
+            <div class="perfil">
+                <img src="foto-usuario9.jpg" alt="Foto de Usuário 9" class="foto-perfil">
+                <div class="info-perfil">
+                    <h1 class="nome">Usuário 9</h1>
+                    <a href="#" class="ver-perfil">Ver perfil</a>
+                </div>
+            </div>
+
+            <div class="perfil">
+                <img src="foto-usuario10.jpg" alt="Foto de Usuário 10" class="foto-perfil">
+                <div class="info-perfil">
+                    <h1 class="nome">Usuário 10</h1>
+                    <a href="#" class="ver-perfil">Ver perfil</a>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-ocultar" id="btnOcultar">Mostrar mais usuários</button>
+    </div>
+
+    <script>
+        const btnOcultar = document.getElementById('btnOcultar');
+        const usuariosOcultos = document.getElementById('usuariosOcultos');
+
+        btnOcultar.addEventListener('click', () => {
+            if (usuariosOcultos.style.display === 'none') {
+                usuariosOcultos.style.display = 'block';
+                btnOcultar.textContent = 'Ocultar usuários';
+            } else {
+                usuariosOcultos.style.display = 'none';
+                btnOcultar.textContent = 'Mostrar mais usuários';
+            }
+        });
+    </script>
+</body>
+</html>
