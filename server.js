@@ -1,50 +1,113 @@
-import { v4 as uuidv4 } from 'uuid';
-import { initializeApp } from 'firebase/app';
 import express from 'express';
-import bodyParser from 'body-parser';
 import admin from 'firebase-admin';
+import path, { dirname, resolve } from 'path';
 import { readFileSync } from 'fs';
-import path from 'path';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';  
+import { fileURLToPath } from 'url';
 
-// Caminho para o arquivo JSON de credenciais do Firebase Admin
-const serviceAccountPath = path.resolve('projeto-pi2-firebase-adminsdk-phn8l-3380c640f9.json');
-const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf8'));
+// --- configuração de __dirname em ES Modules ---
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-// Inicializar o Firebase Admin SDK
+// --- inicialização do Admin SDK ---
+const serviceAccount = JSON.parse(
+  readFileSync(
+    resolve(__dirname, 'serviceAccountKey', 'projeto-pi2-firebase-adminsdk-phn8l-3380c640f9.json'),
+    'utf8'
+  )
+);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://projeto-pi2.firebaseio.com',
+  databaseURL: 'https://projeto-pi2.firebaseio.com'
 });
-
-// Configuração do Firebase Client SDK
-const firebaseConfig = {
-  apiKey: "AIzaSyBKXHZcr5gQ04qwm22HDur9sINyd_cg6_c", 
-  authDomain: "projeto-pi2.firebaseapp.com", 
-  projectId: "projeto-pi2", 
-  storageBucket: "projeto-pi2.appspot.com", 
-  messagingSenderId: "112085181246", 
-  appId: "1:112085181246:web:efdfa38d6d8815e7f0826f"
-};
-
-initializeApp(firebaseConfig);
-const auth = getAuth(); // Inicializando o Firebase Authentication
-
-// Instância do Firestore
 const db = admin.firestore();
+
+// --- servidor Express ---
 const server = express();
 
-// Serve arquivos estáticos da pasta 'public'
-server.use(express.static(path.join(path.resolve(), 'public')));
+// middlewares
+server.use(express.json());              // interpreta JSON no body
+server.use(express.static(path.join(__dirname, 'public')));
+server.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options','nosniff');
+  res.setHeader('X-Frame-Options','DENY');
+  next();
+});
 
-// Middleware para parsing de JSON
-server.use(bodyParser.json());
+// --- criar uma demarcação (armazenando SÓ a string de coords) ---
+server.post('/api/demarcacoes-coords', async (req, res) => {
+  const { titulo, conteudo, endereco, coordsString } = req.body;
+
+  // validação básica
+  if (![titulo, conteudo, endereco, coordsString].every(Boolean)) {
+    return res
+      .status(400)
+      .json({ message: 'Campos obrigatórios: titulo, conteudo, endereco, coordsString.' });
+  }
+
+  try {
+    const docRef = await db.collection('demarcacoes').add({
+      titulo,
+      conteudo,
+      endereco,
+      coordsString,  // permanece como texto puro
+      criadoEm: admin.firestore.FieldValue.serverTimestamp()
+    });
+    res.json({ message: 'Demarcação salva com sucesso!', id: docRef.id });
+  } catch (err) {
+    console.error('Erro ao salvar demarcação:', err);
+    res.status(500).json({ message: 'Erro interno ao salvar demarcação.' });
+  }
+});
+
+// --- listar todas as demarcações ---
+server.get('/api/demarcacoes-coords', async (req, res) => {
+  try {
+    const snapshot = await db
+      .collection('demarcacoes')
+      .orderBy('criadoEm', 'desc')
+      .get();
+
+    const lista = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()           // inclui titulo, conteudo, endereco, coordsString, criadoEm
+    }));
+    res.json(lista);
+  } catch (err) {
+    console.error('Erro ao buscar demarcações:', err);
+    res.status(500).json({ message: 'Erro interno ao buscar demarcações.' });
+  }
+});
+
 
 // Middleware para cabeçalhos de segurança básicos
 server.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   next();
+});
+
+// Rota única para criar usuário
+server.post('/api/users', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'Campos obrigatórios!' });
+    }
+    // Cria no Auth e salva no Firestore
+    const userRecord = await admin.auth().createUser({ email, password });
+    await db.collection('users').doc(userRecord.uid).set({ name, email });
+    // Fechamos corretamente o objeto JSON e a rota:
+    return res.status(201).json({
+      message: 'Usuário criado com sucesso!',
+      user: {
+        uid: userRecord.uid,
+        email: userRecord.email
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Erro interno', error: err.message });
+  }
 });
 
 // Rota para criar documento (CREATE) sem hash de senha
@@ -56,9 +119,7 @@ server.post('/api/users', async (req, res) => {
       return res.status(400).json({ message: 'Nome, email e senha são obrigatórios!' });
     }
 
-    // Criar o usuário com Firebase Authentication (sem hash de senha)
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+    
 
     // Salvar os dados do usuário no Firestore (sem senha)
     await db.collection('users').add({
@@ -156,36 +217,6 @@ server.delete('/api/users/:id', async (req, res) => {
     res.status(200).json({ message: 'Usuário deletado com sucesso!' });
   } catch (error) {
     res.status(500).json({ message: 'Erro ao deletar usuário', error: error.message });
-  }
-});
-
-// Rota para login (POST)
-server.post('/api/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Email e senha são obrigatórios!' });
-    }
-
-    // Autenticar o usuário com Firebase Authentication
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-
-    const user = userCredential.user;
-    const token = await user.getIdToken();  // Gera o token de autenticação para o usuário
-
-    res.status(200).json({
-      message: 'Usuário autenticado com sucesso!',
-      user: {
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-        photoURL: user.photoURL,
-      },
-      token,
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao autenticar usuário', error: error.message });
   }
 });
 
@@ -351,47 +382,6 @@ server.get('/api/users/email/:email/publications', async (req, res) => {
   }
 });
 
-
-// Rota para atualizar uma publicação (PUT)
-server.put('/api/publicacoes/:id', async (req, res) => {
-  try {
-    const { endereco, titulo, conteudo, marcacao, lat, lon } = req.body;
-
-    if (!endereco || !titulo || !conteudo || !marcacao || !lat || !lon) {
-      return res.status(400).json({ message: 'Campos obrigatórios faltando.' });
-    }
-
-    await db.collection('publicacoes').doc(req.params.id).update({
-      endereco,
-      titulo,
-      conteudo,
-      marcacao,
-      lat,
-      lon,
-    });
-
-    res.status(200).json({ message: 'Publicação atualizada com sucesso!' });
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao atualizar publicação', error: error.message });
-  }
-});
-
-// Rota para deletar uma publicação (DELETE)
-server.delete('/api/publicacoes/:id', async (req, res) => {
-  try {
-    const doc = await db.collection('publicacoes').doc(req.params.id).get();
-
-    if (!doc.exists) {
-      return res.status(404).json({ message: 'Publicação não encontrada!' });
-    }
-
-    await db.collection('publicacoes').doc(req.params.id).delete();
-    res.status(200).json({ message: 'Publicação deletada com sucesso!' });
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao deletar publicação', error: error.message });
-  }
-});
-
 // Rota para buscar um usuário pelo email e retornar nome, email e id
 server.get('/api/users/email/:email', async (req, res) => {
   try {
@@ -522,7 +512,7 @@ server.post('/api/amigos', async (req, res) => {
   }
 });
 
-//rotas para manipular colecao amigos
+//rotas para manipular colecao amigos==============
 // Rota para obter a quantidade de seguidores de um usuário
 server.get('/api/users/:id/seguidores', async (req, res) => {
   try {
@@ -555,45 +545,133 @@ server.get('/api/users/:id/seguindo', async (req, res) => {
 });
 
 
-
+// Seguranca===========
 import jwt from 'jsonwebtoken';
 const secretKey = 'UmaSENHA'; // Defina uma senha secreta para gerar o token
+
+let revokedTokens = []; // Lista para armazenar tokens revogados
+
+// Função para limpar tokens expirados da lista de revogados
+const limparTokensExpirados = () => {
+    const now = Date.now();
+    revokedTokens = revokedTokens.filter((token) => {
+        try {
+            jwt.verify(token, secretKey); // Verifica se o token ainda é válido
+            return true;
+        } catch (err) {
+            return false; // Remove tokens expirados
+        }
+    });
+};
+// Limpa tokens expirados a cada minuto
+setInterval(limparTokensExpirados, 6000000);
+
+// Middleware para verificar tokens
+const verificarToken = (req, res, next) => {
+    const token = req.headers['authorization']?.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ message: 'Token não fornecido.' }); // 401 Unauthorized
+    }
+
+    if (revokedTokens.includes(token)) {
+        return res.status(403).json({ message: 'Token revogado. Faça login novamente.' }); // 403 Forbidden
+    }
+
+    jwt.verify(token, secretKey, (err, decoded) => {
+        if (err) {
+            return res.status(403).json({ message: 'Token inválido ou expirado.' }); // 403 Forbidden
+        }
+        req.user = decoded; // Armazena os dados decodificados do token na requisição
+        next();
+    });
+};
 
 // Rota para login administrativo
 server.post('/api/admin/login', (req, res) => {
     const { password } = req.body;
 
+    if (!password) {
+        return res.status(400).json({ message: 'Senha administrativa é obrigatória!' }); // 400 Bad Request
+    }
+
     // Verifique a senha administrativa
     if (password === 'suaSenhaAdministrativa') {
-        // Gera um token
-        const token = jwt.sign({ role: 'admin' }, secretKey, { expiresIn: '1h' }); // O token expira em 1 hora
+        const token = jwt.sign({ role: 'admin' }, secretKey, { expiresIn: '1m' }); // Token expira em 5 minutos
         return res.status(200).json({ message: 'Login administrativo realizado com sucesso!', token });
     } else {
-        return res.status(403).json({ message: 'Senha administrativa incorreta.' });
+        return res.status(403).json({ message: 'Senha administrativa incorreta.' }); // 403 Forbidden
     }
 });
 
-// Middleware para verificar o token
-const verificarToken = (req, res, next) => {
-  const token = req.headers['authorization']?.split(' ')[1]; // Obtém o token do cabeçalho
+// Rota para login regular
+server.post('/api/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
 
-  if (!token) {
-      return res.status(401).json({ message: 'Token não fornecido.' }); // 401 Unauthorized
-  }
+        if (!email || !password) {
+            return res.status(400).json({ message: 'Email e senha são obrigatórios!' }); // 400 Bad Request
+        }
 
-  jwt.verify(token, secretKey, (err, decoded) => {
-      if (err) {
-          return res.status(403).json({ message: 'Token inválido.' }); // 403 Forbidden
-      }
-      req.user = decoded; // Armazena os dados decodificados do token na requisição
-      next(); // Chama a próxima função de middleware
-  });
-};
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
-// Exemplo de rota protegida
+        // Gera o token de autenticação com expiração de 55 minutos
+        const token = jwt.sign({ uid: user.uid, email: user.email }, secretKey, { expiresIn: '1m' });
+
+        return res.status(200).json({
+            message: 'Usuário autenticado com sucesso!',
+            user: {
+                uid: user.uid,
+                email: user.email,
+                displayName: user.displayName,
+                photoURL: user.photoURL,
+            },
+            token,
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Erro ao autenticar usuário.', error: error.message }); // 500 Internal Server Error
+    }
+});
+
+// Rota protegida para administradores
 server.get('/api/admin/protected', verificarToken, (req, res) => {
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({ message: 'Acesso negado. Apenas administradores podem acessar esta rota.' }); // 403 Forbidden
+    }
     res.status(200).json({ message: 'Você acessou uma rota protegida!', user: req.user });
 });
+
+// Rota para logout
+server.post('/api/logout', verificarToken, (req, res) => {
+    const token = req.headers['authorization']?.split(' ')[1];
+
+    if (!token) {
+        return res.status(400).json({ message: 'Token não fornecido.' }); // 400 Bad Request
+    }
+
+    if (revokedTokens.includes(token)) {
+        return res.status(400).json({ message: 'Você já realizou logout.' }); // 400 Bad Request
+    }
+
+    revokedTokens.push(token); // Adiciona o token à lista de revogados
+    return res.status(200).json({ message: 'Logout realizado com sucesso.' });
+});
+
+// Rota para validar o token
+server.post('/api/validate-token', verificarToken, (req, res) => {
+  return res.status(200).json({ message: 'Token válido!', user: req.user });
+});
+
+// Rota para validar o token
+server.post('/api/admin/validate-token', verificarToken, (req, res) => {
+  return res.status(200).json({ message: 'Token válido!', user: req.user });
+});
+
+export default server;
+
+
+
 
 
 //rotas de curtidas
@@ -706,6 +784,86 @@ server.get('/api/notificacoes/:usuarioId', async (req, res) => {
   }
 });
 
-server.listen(3000, () => {
-  console.log('Servidor Express rodando na porta 3000');
+// ROTA PARA ATUALIZAR PUBLICAÇÕES (EDITAR ENDEREÇO, TÍTULO E COMENTÁRIO)
+server.put('/api/publicacoes/:id', async (req, res) => {
+  try {
+    const {titulo, comentario } = req.body;
+
+    if (!titulo || !comentario) {
+      return res.status(400).json({ message: 'Campos obrigatórios faltando.' });
+    }
+
+    // Pegue os dados atuais da publicação
+    const doc = await db.collection('publicacoes').doc(req.params.id).get();
+    if (!doc.exists) {
+      return res.status(404).json({ message: 'Publicação não encontrada.' });
+    }
+
+    const existingData = doc.data();
+    
+    // Verifique se houve mudança
+    if (existingData.titulo === titulo && existingData.comentario === comentario) {
+      return res.status(200).json({ message: 'Nenhuma alteração detectada.' });
+    }
+
+    // Se houver alteração, faça a atualização
+    await db.collection('publicacoes').doc(req.params.id).update({
+      titulo,
+      comentario
+    });
+
+    res.status(200).json({ message: 'Publicação atualizada com sucesso!' });
+  } catch (error) {
+    console.error('Erro ao atualizar publicação:', error);
+    res.status(500).json({ message: 'Erro ao atualizar publicação', error: error.message });
+  }
 });
+
+// ROTA PARA EXCLUIR MÚLTIPLAS PUBLICAÇÕES DE UMA VEZ
+server.delete('/api/publicacoes', async (req, res) => {
+  try {
+    const { ids } = req.body; // Espera um array de IDs no corpo da requisição
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ message: 'Nenhum id fornecido para exclusão.' });
+    }
+
+    // Cria um batch para exclusão
+    const batch = db.batch();
+    ids.forEach(id => {
+      const docRef = db.collection('publicacoes').doc(id);
+      batch.delete(docRef);
+    });
+
+    await batch.commit();
+    res.status(200).json({ message: 'Publicações deletadas com sucesso!' });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao deletar publicações', error: error.message });
+  }
+});
+
+// ROTA PARA VERIFICAR SE O EMAIL JA ESTA CADASTRADO.
+server.get('/api/users/check-email/:email', async (req, res) => {
+  try {
+    const { email } = req.params;
+
+    // Buscar o usuário no Firestore usando o e-mail
+    const snapshot = await db.collection('users').where('email', '==', email).get();
+
+    // Se não houver usuário, o e-mail é único
+    if (snapshot.empty) {
+      return res.status(200).json({ isUnique: true });
+    }
+
+    // Caso contrário, o e-mail já está cadastrado
+    return res.status(200).json({ isUnique: false });
+  } catch (error) {
+    return res.status(500).json({ 
+      message: 'Erro ao verificar o e-mail', 
+      error: error.message 
+    });
+  }
+});
+
+
+server.listen(3000, () => console.log('Servidor rodando na porta 3000'));

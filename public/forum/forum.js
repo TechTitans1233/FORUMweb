@@ -573,3 +573,54 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+//LOGOUT
+document.addEventListener("DOMContentLoaded", function () {
+    const logoutButton = document.getElementById("logoutButton");
+
+    // Função de logout
+    function logout() {
+        // Limpa o token do armazenamento local
+        localStorage.removeItem("userToken");
+
+        // Redireciona para a página de login
+        window.location.href = "../login/login.html";
+    }
+
+    // Adiciona o evento de clique ao botão "Sair"
+    logoutButton.addEventListener("click", function (event) {
+        event.preventDefault(); // Impede o comportamento padrão de navegação
+        logout();
+    });
+});
+//RECUPERA TOKEN USUARIO
+const token = localStorage.getItem("userToken");
+
+if (!token) {
+    // Redireciona para a página de login se o token não estiver presente
+    window.location.href = "../login/login.html";
+} else {
+    // Validar o token com o backend se necessário
+    fetch('/api/validate-token', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Token inválido ou expirado.");
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Token válido:", data);
+    })
+    .catch(error => {
+        console.error("Erro ao validar token:", error);
+        alert("Sessão expirada. Faça login novamente.");
+        localStorage.removeItem("userToken");
+        window.location.href = "../login/login.html";
+    });
+}

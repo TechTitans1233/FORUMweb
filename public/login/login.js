@@ -95,6 +95,12 @@ document.getElementById("userLoginForm").addEventListener("submit", function (ev
                         localStorage.setItem("userEmail", userData.email);
                         localStorage.setItem("userName", userData.name);
                         localStorage.setItem("userId", userData.id);
+                        
+                        // Armazenar o token no localStorage
+                        if (data.token) {
+                            localStorage.setItem("userToken", data.token);  // Salva o token
+                        }
+
                         // Redirecionar para a página do fórum
                         window.location.href = "../forum/forum.html";
                     });
@@ -111,10 +117,6 @@ document.getElementById("userLoginForm").addEventListener("submit", function (ev
             submitButton.textContent = "Entrar";
         });
 });
-
-
-
-
 
 // Função para realizar login administrativo
 document.getElementById("adminLoginForm").addEventListener("submit", async function (event) {
@@ -154,7 +156,39 @@ document.getElementById("adminLoginForm").addEventListener("submit", async funct
 });
 
 
-// Função para cadastrar usuário
+// Função para validar o formato do e-mail utilizando expressão regular
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// Função assíncrona para verificar se o e-mail já existe (único)
+// Certifique-se de que o backend possua um endpoint para essa verificação,
+// por exemplo: /api/users/check-email que retorne { isUnique: true } se o e-mail for único.
+async function isEmailUnique(email) {
+    try {
+        const response = await fetch(`/api/users/check-email?email=${encodeURIComponent(email)}`);
+        const data = await response.json();
+        return data.isUnique;
+    } catch (error) {
+        console.error("Erro ao verificar a unicidade do e-mail:", error);
+        // Em caso de erro na verificação, é prudente tratar como não único
+        return false;
+    }
+}
+
+// Evento de 'blur' para o campo de e-mail, fornecendo feedback imediato
+document.getElementById("registerEmail").addEventListener("blur", async function () {
+    const email = this.value;
+    if (email && isValidEmail(email)) {
+        const unique = await isEmailUnique(email);
+        if (!unique) {
+            alert("Este e-mail já está em uso.");
+        }
+    }
+});
+
+// Evento de submit para o formulário de cadastro
 document.getElementById("registerFormSubmit").addEventListener("submit", async function (event) {
     event.preventDefault();
 
@@ -168,37 +202,49 @@ document.getElementById("registerFormSubmit").addEventListener("submit", async f
         return;
     }
 
+    if (!isValidEmail(email)) {
+        alert("Formato de e-mail inválido.");
+        return;
+    }
+
+    // Verifica a unicidade do e-mail antes de prosseguir
+    const emailUnique = await isEmailUnique(email);
+    if (!emailUnique) {
+        alert("Este e-mail já está em uso.");
+        return;
+    }
+
     if (password !== confirmPassword) {
         alert("As senhas não coincidem. Tente novamente.");
         return;
     }
 
     // Enviar dados de cadastro para o backend
-    fetch("/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
-    })
-    .then((response) => response.json())
-    .then((data) => {
+    try {
+        const response = await fetch("/api/users", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, password })
+        });
+        const data = await response.json();
+        
         if (data.message === "Usuário criado com sucesso!") {
             alert("Usuário cadastrado com sucesso!");
+            
+            // Limpa os campos do formulário
             document.getElementById("registerName").value = "";
             document.getElementById("registerEmail").value = "";
             document.getElementById("registerPassword").value = "";
             document.getElementById("registerConfirmPassword").value = "";
 
-            // Voltar ao login
-            const registerForm = document.getElementById("registerForm");
-            const userLogin = document.getElementById("userLogin");
-            registerForm.style.display = "none";
-            userLogin.style.display = "block";
+            // Alterna para a tela de login
+            document.getElementById("registerForm").style.display = "none";
+            document.getElementById("userLogin").style.display = "block";
         } else {
             alert("Erro ao cadastrar o usuário: " + data.message);
         }
-    })
-    .catch((error) => {
+    } catch (error) {
         alert("Erro ao tentar cadastrar o usuário: " + error.message);
-    });
+    }
 });
 

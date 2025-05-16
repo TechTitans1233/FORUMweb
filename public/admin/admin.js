@@ -54,50 +54,75 @@ function deletePost(postId) {
     }
 }
 
-// Variável para armazenar a linha selecionada
-let selectedRow = null;
+// Array para armazenar as linhas selecionadas
+let selectedRows = [];
 
-// Função para selecionar uma linha ao clicar
+// Função para selecionar ou desmarcar uma linha ao clicar
 document.querySelectorAll('table').forEach(table => {
     table.addEventListener('click', (event) => {
-        const row = event.target.closest('tr'); // Seleciona a linha clicada
-        if (!row) return; // Se não for uma linha, ignora
+        const row = event.target.closest('tr');
+        if (!row) return; // Ignora cliques fora de uma linha
+        // Garante que apenas linhas do corpo (tbody) sejam consideradas (evita cabeçalhos)
+        if (row.parentNode.tagName !== 'TBODY') return;
 
-        // Remove a seleção de outras linhas
-        document.querySelectorAll('tr').forEach(r => r.classList.remove('selected'));
-
-        // Marca a linha atual como selecionada
-        row.classList.add('selected');
-        selectedRow = row;
+        // Alterna a classe 'selected' na linha
+        if (row.classList.contains('selected')) {
+            row.classList.remove('selected');
+            selectedRows = selectedRows.filter(r => r !== row);
+        } else {
+            row.classList.add('selected');
+            selectedRows.push(row);
+        }
     });
 });
 
-// Função para excluir a linha selecionada
-function deleteSelected(tableId) {
-    if (!selectedRow) {
-        alert('Por favor, selecione uma linha para excluir.');
-        return;
-    }
-
+// Função para selecionar ou desmarcar todas as linhas de uma tabela específica
+function selectAllRows(tableId) {
     const table = document.getElementById(tableId);
-    if (!table.contains(selectedRow)) {
-        alert('A linha selecionada não pertence a esta tabela.');
+    const rows = Array.from(table.querySelectorAll('tbody tr'));
+    const allSelected = rows.every(row => row.classList.contains('selected'));
+
+    if (allSelected) {
+        // Se todas já estiverem selecionadas, desmarca todas
+        rows.forEach(row => {
+            row.classList.remove('selected');
+            selectedRows = selectedRows.filter(r => r !== row);
+        });
+    } else {
+        // Caso contrário, marca todas as linhas não selecionadas
+        rows.forEach(row => {
+            if (!row.classList.contains('selected')) {
+                row.classList.add('selected');
+                selectedRows.push(row);
+            }
+        });
+    }
+}
+
+// Função para excluir as linhas selecionadas de uma tabela específica
+function deleteSelected(tableId) {
+    const table = document.getElementById(tableId);
+    // Seleciona apenas as linhas marcadas que pertencem à tabela
+    const selectedRowsInTable = Array.from(table.querySelectorAll('tbody tr.selected'));
+
+    if (selectedRowsInTable.length === 0) {
+        alert('Por favor, selecione ao menos uma linha para excluir.');
         return;
     }
 
-    const id = selectedRow.querySelector('td').innerText;  // Obtém o ID da linha selecionada
-
-    if (confirm(`Tem certeza de que deseja excluir o registro ID ${id}?`)) {
-        if (tableId === 'users-table') {
-            deleteUser(id); // Exclui o usuário
-        } else if (tableId === 'posts-table') {
-            deletePost(id); // Exclui a publicação
+    selectedRowsInTable.forEach(row => {
+        const id = row.querySelector('td').innerText;  // Obtém o ID da linha
+        if (confirm(`Tem certeza de que deseja excluir o registro ID ${id}?`)) {
+            if (tableId === 'users-table') {
+                deleteUser(id); // Exclui o usuário
+            } else if (tableId === 'posts-table') {
+                deletePost(id); // Exclui a publicação
+            }
+            row.remove();  // Remove a linha da tabela
+            selectedRows = selectedRows.filter(r => r !== row);
+            alert(`Registro ID ${id} excluído com sucesso.`);
         }
-
-        selectedRow.remove();  // Remove a linha da tabela
-        selectedRow = null; // Reseta a linha selecionada
-        alert(`Registro ID ${id} excluído com sucesso.`);
-    }
+    });
 }
 
 // Função de pesquisa para usuários
@@ -112,7 +137,6 @@ function searchUsers() {
 
         // Verifica se o valor pesquisado está em ID, nome ou email
         const isMatch = id.includes(searchValue) || name.includes(searchValue) || email.includes(searchValue);
-
         row.style.display = isMatch ? '' : 'none';
     });
 }
@@ -129,65 +153,75 @@ function searchPosts() {
 
         // Verifica se o valor pesquisado está em ID, título ou conteúdo
         const isMatch = id.includes(searchValue) || title.includes(searchValue) || content.includes(searchValue);
-
         row.style.display = isMatch ? '' : 'none';
     });
 }
 
-//funcoes para editar
-// Função para editar a linha selecionada
+// Funções para editar
+// Atualização na função que edita linhas selecionadas para a tabela de publicações
 function editSelected(tableId) {
-    if (!selectedRow) {
+    const table = document.getElementById(tableId);
+    const selectedRowsInTable = Array.from(table.querySelectorAll('tbody tr.selected'));
+
+    if (selectedRowsInTable.length === 0) {
         alert('Por favor, selecione uma linha para editar.');
         return;
     }
 
-    const table = document.getElementById(tableId);
-    if (!table.contains(selectedRow)) {
-        alert('A linha selecionada não pertence a esta tabela.');
-        return;
-    }
+    selectedRowsInTable.forEach(row => {
+        const id = row.querySelector('td').innerText;
 
-    const id = selectedRow.querySelector('td').innerText;  // Obtém o ID da linha selecionada
+        if (tableId === 'users-table') {
+            const name = row.cells[1].innerText;
+            const email = row.cells[2].innerText;
 
-    // Para editar o usuário
-    if (tableId === 'users-table') {
-        const name = selectedRow.cells[1].innerText;
-        const email = selectedRow.cells[2].innerText;
+            const newName = prompt('Digite o novo nome:', name);
+            const newEmail = prompt('Digite o novo email:', email);
 
-        const newName = prompt('Digite o novo nome:', name);
-        const newEmail = prompt('Digite o novo email:', email);
-        
+            if (newName && newEmail) {
+                editUser(id, name, email, newName, newEmail);
+            }
+        } else if (tableId === 'posts-table') {
+            // Para publicações, agora solicitamos: título e comentário
+            const titulo = row.cells[1].innerText;
+            const comentario = row.cells[2].innerText;
 
-        if (newName && newEmail ) {
-            editUser(id, name, email, newName, newEmail);
+            const newTitulo = prompt('Digite o novo título:', titulo);
+            const newComentario = prompt('Digite o novo comentário:', comentario);
+
+            if (newTitulo && newComentario) {
+                editPost(id, newTitulo, newComentario);
+            }
         }
-    } 
-    // Para editar a publicação
-    else if (tableId === 'posts-table') {
-        const title = selectedRow.cells[1].innerText;
-        const content = selectedRow.cells[2].innerText;
-
-        const newTitle = prompt('Digite o novo título:', title);
-        const newContent = prompt('Digite o novo conteúdo:', content);
-       
-
-        if (newTitle && newContent ) {
-            editPost(id, newTitle, newContent );
-        }
-    }
+    });
 }
 
+// Função para enviar a atualização da publicação ao backend
+function editPost(postId,newTitulo, newComentario) {
+    const data = {  
+        titulo: newTitulo, 
+        comentario: newComentario 
+    };
 
-// Função para editar usuário
+    fetch(`/api/publicacoes/${postId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Publicação atualizada com sucesso!');
+        fetchPosts(); // Atualiza a lista de publicações
+    })
+    .catch(error => console.error('Erro ao editar publicação:', error));
+}
+
 function editUser(userId, oldName, oldEmail, newName, newEmail, newPassword) {
     const data = { oldName, oldEmail, newName, newEmail, newPassword };
     fetch(`/admin/usuarios/${userId}`, {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
     })
     .then(response => response.json())
     .then(data => {
@@ -197,26 +231,44 @@ function editUser(userId, oldName, oldEmail, newName, newEmail, newPassword) {
     .catch(error => console.error('Erro ao editar usuário:', error));
 }
 
-// Função para editar publicação
-function editPost(postId, endereco, titulo, conteudo, marcacao, lat, lon) {
-    const data = { endereco, titulo, conteudo, marcacao, lat, lon };
-    fetch(`/api/publicacoes/${postId}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert('Publicação atualizada com sucesso!');
-        fetchPosts(); // Recarrega a lista de publicações
-    })
-    .catch(error => console.error('Erro ao editar publicação:', error));
-}
-
 
 document.addEventListener("DOMContentLoaded", () => {
     fetchUsers();
     fetchPosts();
+});
+
+// TOKEN
+// RECUPERA TOKEN E VALIDA
+document.addEventListener("DOMContentLoaded", function () {
+    const token = localStorage.getItem("adminToken");
+
+    if (!token) {
+        alert("Acesso não autorizado. Faça login como administrador.");
+        window.location.href = "../login/login.html";
+        return;
+    }
+
+    // Valida o token no backend
+    fetch("/api/admin/validate-token", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Token inválido ou expirado.");
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Token válido:", data);
+    })
+    .catch(error => {
+        console.error("Erro ao validar token:", error);
+        alert("Sessão expirada. Faça login novamente.");
+        localStorage.removeItem("adminToken");
+        window.location.href = "../login/login.html";
+    });
 });

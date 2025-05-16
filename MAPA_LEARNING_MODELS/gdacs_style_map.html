@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Visualização de Áreas Preditas</title>
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet/dist/leaflet.css"
+    integrity="sha256-xwE/ZXi6Y9JvK5f08M0oh6Ym1lXvPQ+lfb/tUX6uEuM="
+    crossorigin=""
+  />
+  <style>
+    /* Garante que o mapa ocupe toda a tela */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet/dist/leaflet.js"
+    integrity="sha256-gZ7sp8bqgC6yL7aqxVLB8sADrLw5q4KXhzp3qnLi+gE="
+    crossorigin=""
+  ></script>
+  <script>
+    // 1) Inicializa o mapa centrado em uma coordenada genérica
+    const map = L.map('map').setView([-15.7801, -47.9292], 4); // Brasil central, zoom 4
+
+    // 2) Adiciona camada base OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // 3) Função de estilo para o GeoJSON
+    function styleFeature(feature) {
+      return {
+        color: '#FF0000',
+        weight: 2,
+        fillOpacity: 0.3
+      };
+    }
+
+    // 4) Carrega e adiciona o GeoJSON de predição
+    fetch('predicao_areas.geojson')
+      .then((response) => response.json())
+      .then((data) => {
+        const geojsonLayer = L.geoJSON(data, {
+          style: styleFeature,
+          onEachFeature: (feature, layer) => {
+            // Adiciona popup com informações básicas
+            const props = feature.properties;
+            const popupContent = `
+              <strong>Evento:</strong> ${props.eventid || 'N/A'}<br>
+              <strong>Área prevista:</strong> ${props.area_hist?.toFixed(2) || '—'}<sup>°</sup><br>
+            `;
+            layer.bindPopup(popupContent);
+          }
+        }).addTo(map);
+
+        // Ajusta o zoom para caber todas as features
+        map.fitBounds(geojsonLayer.getBounds());
+      })
+      .catch((err) => {
+        console.error('Erro ao carregar GeoJSON:', err);
+      });
+  </script>
+</body>
+</html>
