@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="1"
+            failures="0"
+            tests="0">
+
+  <testsuite name="perfil" id="perfil"
+    errors="1" failures="0" hostname="" package="perfil" skipped="1"
+    tests="0" time="0.07600" timestamp="">
+  
+
+  
+    <system-err>
+       An error occurred while creating a new GeckoDriver session: [SessionNotCreatedError] Session is already started
+  Verify if GeckoDriver is configured correctly; using:
+  {
+     start_process: true,
+     server_path: &#39;&#39;,
+     port: 4444,
+     host: &#39;localhost&#39;,
+     ssl: false,
+     default_path_prefix: &#39;&#39;,
+     proxy: undefined,
+     cli_args: {}
+  }
+
+ 
+  More info might be available in the log file: /Users/strangebrick/Desktop/WEBDisasterFROUM/logs/perfil_geckodriver.log
+    </system-err>
+  
+
+    
+    <error message="An error occurred while creating a new GeckoDriver session: [SessionNotCreatedError] Session is already started"><![CDATA[
+      SessionNotCreatedError: An error occurred while creating a new GeckoDriver session: [SessionNotCreatedError] Session is already started
+    at Object.throwDecodedError (/Users/strangebrick/Desktop/WEBDisasterFROUM/node_modules/selenium-webdriver/lib/error.js:521:15)
+    at parseHttpResponse (/Users/strangebrick/Desktop/WEBDisasterFROUM/node_modules/selenium-webdriver/lib/http.js:514:13)
+    at Executor.execute (/Users/strangebrick/Desktop/WEBDisasterFROUM/node_modules/selenium-webdriver/lib/http.js:446:28)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+      ]]></error>  
+
+  
+    
+    <testcase
+      name="Fluxo: criar usuário, login, acessar fórum e clicar em Perfil" classname="perfil">
+      <skipped />
+    </testcase>
+    
+  
+  </testsuite>
+</testsuites>

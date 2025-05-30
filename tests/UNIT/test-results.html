@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jest Test Results - login.test.js</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #333;
+    }
+    h2 {
+      color: #555;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      padding: 10px;
+      margin: 5px 0;
+      background-color: #f0f0f0;
+      border-radius: 5px;
+    }
+    .pass {
+      color: #28a745;
+      font-weight: bold;
+    }
+    .fail {
+      color: #dc3545;
+      font-weight: bold;
+    }
+    .details {
+      font-size: 0.9em;
+      color: #666;
+      margin-top: 5px;
+      word-wrap: break-word;
+    }
+    .test-suite {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Jest Test Results for login.test.js</h1>
+  <div class="test-suite">
+    <h2>Test Suite: Testes do login.js</h2>
+    <ul>
+      
+        <li>
+          <span class="pass">PASS</span> deve alternar para o login administrativo ao clicar em admin-toggle
+          
+        </li>
+      
+        <li>
+          <span class="pass">PASS</span> deve voltar ao login comum ao clicar em user-toggle
+          
+        </li>
+      
+        <li>
+          <span class="pass">PASS</span> deve mostrar o formulário de cadastro ao clicar em register-toggle
+          
+        </li>
+      
+        <li>
+          <span class="fail">FAIL</span> isValidEmail deve validar emails corretamente
+          <div class="details"><strong>Details:</strong> isValidEmail is not a function</div>
+        </li>
+      
+        <li>
+          <span class="fail">FAIL</span> deve realizar login do usuário com sucesso
+          <div class="details"><strong>Details:</strong> [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32m"/api/login"[39m, [32mAny<Object>[39m
+
+Number of calls: [31m0[39m</div>
+        </li>
+      
+        <li>
+          <span class="fail">FAIL</span> deve mostrar alerta se o email estiver inválido
+          <div class="details"><strong>Details:</strong> [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32m"Por favor, insira um email válido."[39m
+
+Number of calls: [31m0[39m</div>
+        </li>
+      
+        <li>
+          <span class="fail">FAIL</span> deve cadastrar usuário com sucesso
+          <div class="details"><strong>Details:</strong> [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32m"/api/users"[39m, [32mAny<Object>[39m
+
+Number of calls: [31m0[39m</div>
+        </li>
+      
+        <li>
+          <span class="fail">FAIL</span> deve realizar login administrativo com sucesso
+          <div class="details"><strong>Details:</strong> [2mexpect([22m[31mjest.fn()[39m[2m).[22mtoHaveBeenCalledWith[2m([22m[32m...expected[39m[2m)[22m
+
+Expected: [32m"/api/admin/login"[39m, [32mAny<Object>[39m
+
+Number of calls: [31m0[39m</div>
+        </li>
+      
+    </ul>
+  </div>
+</body>
+</html>
+    

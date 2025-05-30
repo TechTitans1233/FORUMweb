@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="0"
+            failures="1"
+            tests="1">
+
+  <testsuite name="login" id="login"
+    errors="0" failures="1" hostname="" package="login" skipped="0"
+    tests="1" time="19.44" timestamp="">
+  
+    <testcase name="Fluxo: login inválido, login admin inválido, criar usuário e login válido" classname="login" time="19.36" assertions="8">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+      <failure message="Testing if element &#39;#userLogin&#39; is hidden in 5000ms - expected &#34;true&#34; but got: &#34;false&#34; (5076ms)">    at Fluxo: login inválido, login admin inválido, criar usuário e login válido (/Users/strangebrick/Desktop/WEBDisasterFROUM/tests/E2E/login.cjs:40:15)</failure>
+
+    
+    </testcase>
+  
+
+  
+
+    
+
+  
+  </testsuite>
+</testsuites>

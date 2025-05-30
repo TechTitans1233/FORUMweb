@@ -162,31 +162,6 @@ function isValidEmail(email) {
     return emailRegex.test(email);
 }
 
-// Função assíncrona para verificar se o e-mail já existe (único)
-// Certifique-se de que o backend possua um endpoint para essa verificação,
-// por exemplo: /api/users/check-email que retorne { isUnique: true } se o e-mail for único.
-async function isEmailUnique(email) {
-    try {
-        const response = await fetch(`/api/users/check-email?email=${encodeURIComponent(email)}`);
-        const data = await response.json();
-        return data.isUnique;
-    } catch (error) {
-        console.error("Erro ao verificar a unicidade do e-mail:", error);
-        // Em caso de erro na verificação, é prudente tratar como não único
-        return false;
-    }
-}
-
-// Evento de 'blur' para o campo de e-mail, fornecendo feedback imediato
-document.getElementById("registerEmail").addEventListener("blur", async function () {
-    const email = this.value;
-    if (email && isValidEmail(email)) {
-        const unique = await isEmailUnique(email);
-        if (!unique) {
-            alert("Este e-mail já está em uso.");
-        }
-    }
-});
 
 // Evento de submit para o formulário de cadastro
 document.getElementById("registerFormSubmit").addEventListener("submit", async function (event) {
@@ -206,14 +181,7 @@ document.getElementById("registerFormSubmit").addEventListener("submit", async f
         alert("Formato de e-mail inválido.");
         return;
     }
-
-    // Verifica a unicidade do e-mail antes de prosseguir
-    const emailUnique = await isEmailUnique(email);
-    if (!emailUnique) {
-        alert("Este e-mail já está em uso.");
-        return;
-    }
-
+    
     if (password !== confirmPassword) {
         alert("As senhas não coincidem. Tente novamente.");
         return;
