@@ -1,0 +1,31 @@
+mensagem,categoria,localizacao,latitude,longitude,impacto
+"Não chove há semanas, tudo seco.",seca,"Petrolina, PE, Brasil",-9.3891,-40.5027,moderado
+The crops are dying due to drought.,seca,"Phoenix, AZ, USA",33.4484,-112.074,alto
+Las plantas se están muriendo por la sequía.,seca,"Monterrey, México",25.6866,-100.3161,alto
+Nous subissons une grave sécheresse.,seca,"Marselha, França",43.2965,5.3698,moderado
+Tanaman mati karena kekeringan.,seca,"Kupang, Indonésia",-10.1772,123.607,moderado
+Um ciclone se aproxima da costa.,ciclone,"Florianópolis, SC, Brasil",-27.5954,-48.548,alto
+Tropical cyclone approaching with force.,ciclone,"Suva, Fiji",-18.1416,178.4419,alto
+Ciclón tropical llegando con fuerza.,ciclone,"Santo Domingo, República Dominicana",18.4861,-69.9312,alto
+Cyclone tropical en approche.,ciclone,"Saint-Denis, Reunião",-20.8789,55.4481,moderado
+Siklon tropis mendekat dengan kekuatan.,ciclone,"Manado, Indonésia",1.4748,124.8428,alto
+Sentimos um forte abalo sísmico.,terremoto,"São Paulo, SP, Brasil",-23.5505,-46.6333,baixo
+We felt a strong earthquake.,terremoto,"Los Angeles, CA, USA",34.0522,-118.2437,alto
+Un fuerte sismo se sintió.,terremoto,"Cidade da Guatemala, Guatemala",14.6349,-90.5069,alto
+Nous avons ressenti un tremblement de terre.,terremoto,"Nice, França",43.7102,7.262,moderado
+Kami merasakan gempa bumi yang kuat.,terremoto,"Padang, Indonésia",-0.9471,100.4172,alto
+As ruas estão completamente alagadas.,enchente,"Belém, PA, Brasil",-1.4558,-48.4902,alto
+Streets are completely flooded.,enchente,"Houston, TX, USA",29.7604,-95.3698,alto
+Calles totalmente inundadas.,enchente,"Barranquilla, Colômbia",10.9878,-74.7889,moderado
+Les rues sont complètement inondées.,enchente,"Lyon, França",45.764,4.8357,moderado
+Jalanan tergenang air sepenuhnya.,enchente,"Jakarta, Indonésia",-6.2088,106.8456,alto
+Fogo avança rapidamente.,queimada,"Cuiabá, MT, Brasil",-15.6014,-56.0979,alto
+Fire spreading fast.,queimada,"California, USA",36.7783,-119.4179,alto
+El fuego avanza muy rápido.,queimada,"Santa Cruz, Bolívia",-17.7833,-63.1821,alto
+Le feu se propage rapidement.,queimada,"Marselha, França",43.2965,5.3698,moderado
+Api menyebar dengan cepat.,queimada,"Pontianak, Indonésia",-0.0263,109.3425,alto
+O vulcão entrou em erupção.,vulcao,"Cumbre Vieja, La Palma, Espanha",28.57,-17.84,alto
+The volcano has erupted.,vulcao,"Mount St. Helens, WA, USA",46.1912,-122.1944,alto
+El volcán hizo erupción.,vulcao,"Popocatépetl, México",19.0236,-98.6226,alto
+Le volcan est entré en éruption.,vulcao,"Piton de la Fournaise, Reunião",-21.2448,55.7089,alto
+Gunung berapi meletus.,vulcao,"Merapi, Indonésia",-7.5407,110.4462,alto
