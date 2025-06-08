@@ -798,3 +798,13 @@ if (!token) {
         window.location.href = "../login/login.html";
     });
 }
+
+// perfil.test.js
+export {
+  toggleComentarios,
+  updatePublicationsUserName,
+  curtirPublicacao,
+  updateUser,
+  relacionarAmigos,
+  carregarEstatisticas,
+};

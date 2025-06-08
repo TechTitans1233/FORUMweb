@@ -5,7 +5,7 @@
 
   <testsuite name="login" id="login"
     errors="1" failures="0" hostname="" package="login" skipped="1"
-    tests="0" time="0.01300" timestamp="">
+    tests="0" time="0.4170" timestamp="">
   
 
   
@@ -40,7 +40,7 @@
   
     
     <testcase
-      name="Teste da página de login e alternância de formulários" classname="login">
+      name="Fluxo: login inválido, login admin inválido, criar usuário e login válido" classname="login">
       <skipped />
     </testcase>
     

@@ -624,3 +624,6 @@ if (!token) {
         window.location.href = "../login/login.html";
     });
 }
+
+// ---------- forum.test.js----------
+export { curtirPublicacao, toggleComentarios };

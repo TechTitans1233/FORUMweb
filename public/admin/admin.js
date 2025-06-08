@@ -272,3 +272,15 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.href = "../login/login.html";
     });
 });
+
+export {
+  selectedRows,
+  fetchUsers,
+  fetchPosts,
+  deleteUser,
+  deletePost,
+  selectAllRows,
+  deleteSelected,
+  searchUsers,
+  searchPosts,
+};

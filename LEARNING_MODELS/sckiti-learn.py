@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 import joblib
 
 # Carregar dataset
-df = pd.read_csv("dataset_multilingue_localizado.csv")
+df = pd.read_csv("dataset_multilingue_localizado_expandido.csv")
 
 print(df.columns.tolist())  # ['mensagem', 'categoria', 'localizacao', 'latitude', 'longitude', 'impacto']
 
