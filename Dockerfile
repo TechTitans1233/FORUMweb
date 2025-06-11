@@ -31,8 +31,13 @@ USER node
 # Copy the rest of the source files into the image.
 COPY . .
 
+# Copia o script de entrada e dá permissão de execução
+COPY --chown=node:node entrypoint.sh /usr/src/app/entrypoint.sh
+RUN chmod +x /usr/src/app/entrypoint.sh
+
 # Expose the port that the application listens on.
 EXPOSE 3000
 
-# Run the application.
-CMD node server.js
+# Use o script de entrada com verificação de server.js
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+CMD ["node", "server.js"]

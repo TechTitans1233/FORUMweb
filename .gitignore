@@ -1,0 +1,13 @@
+# Arquivos de ambiente
+.env
+
+# Dependências
+node_modules/
+
+# Logs
+*.log
+
+# Diretórios temporários
+dist/
+build/
+tmp/
