@@ -1,0 +1,33 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Instalar dependências para testes
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    freetype-dev \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont \
+    curl
+
+# Configurar Chromium
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
+# Copiar package.json
+COPY package*.json ./
+
+# Instalar dependências (incluindo dev dependencies para testes)
+RUN npm ci
+
+# Instalar Nightwatch se não estiver no package.json
+RUN npm install nightwatch selenium-webdriver chromedriver geckodriver
+
+# Copiar código
+COPY . .
+
+# Aguardar serviços ficarem prontos
+CMD ["sh", "-c", "sleep 10 && npm run test:e2e"]

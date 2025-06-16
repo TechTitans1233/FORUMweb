@@ -1,0 +1,32 @@
+FROM node:22-alpine
+
+WORKDIR /app
+
+# Instalar dependências do sistema necessárias
+RUN apk update && apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    curl
+
+# Copiar package.json primeiro para melhor cache
+COPY package*.json ./
+
+# Instalar dependências Node.js
+RUN npm install
+
+# Instalar dependências adicionais se necessário
+RUN npm install express firebase-admin glob
+
+# Copiar código fonte
+COPY . .
+
+# Expor porta
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:3000/ || exit 1
+
+# Comando para iniciar
+CMD ["node", "server.js"]
