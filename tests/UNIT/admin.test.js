@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import * as adminModule from './admin'; // Importa tudo para podermos espiar (spyOn) funções internas
+import * as adminModule from '../../public/admin/admin.js'; // Importa tudo para podermos espiar (spyOn) funções internas
 
 describe('admin.js — testes unitários com Jest', () => {
   beforeEach(() => {
