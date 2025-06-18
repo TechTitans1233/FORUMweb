@@ -1,8 +1,11 @@
 .PHONY: help setup start stop restart test logs clean rebuild status shell python-shell dev install-node install-python test-unit test-int test-e2e
 
+.DEFAULT_GOAL := help
+
 help: ## Mostrar ajuda
 	@echo "Comandos disponíveis:"
-	@grep -E '^[a-zA-Z_-]+:.?## .$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?## .+' $(firstword $(MAKEFILE_LIST)) | sort | \
+	awk 'BEGIN {FS=":.*## "} {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 setup: ## Configuração inicial
 	@echo "🚀 Configurando ambiente..."
