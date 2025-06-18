@@ -1,8 +1,8 @@
-.PHONY: help setup start stop restart test logs clean rebuild status shell db
+.PHONY: help setup start stop restart test logs clean rebuild status shell python-shell dev install-node install-python test-unit test-int test-e2e
 
 help: ## Mostrar ajuda
 	@echo "Comandos disponíveis:"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $1, $2}'
+	@grep -E '^[a-zA-Z_-]+:.?## .$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
 
 setup: ## Configuração inicial
 	@echo "🚀 Configurando ambiente..."
@@ -23,12 +23,26 @@ restart: ## Reiniciar serviços
 	@echo "🔄 Reiniciando..."
 	@docker-compose restart
 
-test: ## Executar testes E2E
-	@echo "🧪 Executando testes..."
+test: ## Executar todos os testes (E2E + Unit + Integração)
+	@echo "🧪 Executando TODOS os testes (E2E, Unit e Integração)..."
+	@-$(MAKE) test-e2e
+	@-$(MAKE) test-unit
+	@-$(MAKE) test-int
+
+test-e2e: ## Executar testes E2E (Nightwatch)
+	@echo "🧪 Executando testes E2E (Nightwatch)..."
 	@docker-compose up -d web
 	@sleep 10
 	@docker-compose --profile testing up --build --abort-on-container-exit e2e-tests
 	@docker-compose --profile testing down
+
+test-unit: ## Executar testes unitários (Jest)
+	@echo "🧪 Executando testes Unitários (Jest)..."
+	@docker-compose exec web npm run test:unit
+
+test-int: ## Executar testes de integração (Jest + Supertest)
+	@echo "🧪 Executando testes de Integração (Jest + Supertest)..."
+	@docker-compose exec web npm run test:int
 
 logs: ## Mostrar logs
 	@docker-compose logs -f --tail=100

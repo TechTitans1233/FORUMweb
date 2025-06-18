@@ -42,6 +42,8 @@
     "dev": "nodemon server.js",
     "test:e2e": "nightwatch --config nightwatch.docker.conf.cjs",
     "test:e2e:local": "nightwatch --config nightwatch.conf.cjs",
+    "test:unit": "jest --config=jest.unit.config.js",
+    "test:int": "jest --config=jest.int.config.js",
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",

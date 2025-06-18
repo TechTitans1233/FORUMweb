@@ -1,1 +1,1 @@
-{"modules":{"login":{"modulePath":"/Users/strangebrick/Desktop/WEBDisasterFROUM/tests/E2E/login.cjs","status":"pass"}}}
+{"modules":{"admin":{"modulePath":"/app/tests/E2E/admin.cjs","status":"fail"},"forum":{"modulePath":"/app/tests/E2E/forum.cjs","status":"fail"},"login":{"modulePath":"/app/tests/E2E/login.cjs","status":"fail"},"perfil":{"modulePath":"/app/tests/E2E/perfil.cjs","status":"fail"}}}
