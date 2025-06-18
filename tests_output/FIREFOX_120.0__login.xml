@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="0"
+            failures="1"
+            tests="1">
+
+  <testsuite name="login" id="login"
+    errors="0" failures="1" hostname="" package="login" skipped="0"
+    tests="1" time="7.681" timestamp="">
+  
+    <testcase name="Fluxo: login inválido, login admin inválido, criar usuário e login válido" classname="login" time="7.681" assertions="2">
+
+      <failure message="Testing if the page title equals &#39;Login&#39; in 5000ms - expected &#34;is &#39;Login&#39;&#34; but got: &#34;Problem loading page&#34; (5123ms)">    at Fluxo: login inválido, login admin inválido, criar usuário e login válido (/app/tests/E2E/login.cjs:18:15)</failure>
+<system-out>[[ATTACHMENT|/app/tests_output/screenshots/login/Fluxo:-login-inválido,-login-admin-inválido,-criar-usuário-e-login-válido_FAILED_Jun-18-2025-003342-GMT+0000.png]]</system-out>
+    
+    </testcase>
+  
+
+  
+
+    
+
+  
+  </testsuite>
+</testsuites>

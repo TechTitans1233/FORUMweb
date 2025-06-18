@@ -3,7 +3,7 @@
  * @jest-environment jsdom
  */
 
-import { curtirPublicacao, toggleComentarios } from './forum';
+import { curtirPublicacao, toggleComentarios } from '../../public/forum/forum.js';
 
 beforeEach(() => {
   // Antes de cada teste, limpamos mocks e restauramos localStorage

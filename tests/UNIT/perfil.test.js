@@ -8,8 +8,8 @@ import {
   curtirPublicacao,
   updateUser,
   relacionarAmigos,
-  carregarEstatisticas,
-} from './perfil';
+  carregarEstatisticas
+} from '../../public/perfil/perfil.js';
 
 beforeEach(() => {
   jest.clearAllMocks();

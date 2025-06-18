@@ -1,0 +1,73 @@
+services:
+  # Aplicação Node.js
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Aplicação Python
+  python-app:
+    build:
+      context: ./LEARNING_MODELS/
+      dockerfile: ../Dockerfile.python
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./LEARNING_MODELS:/app
+      - /app/__pycache__
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=app.py
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Testes E2E com Nightwatch
+  e2e-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.e2e
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - web
+      - selenium
+    networks:
+      - app-network
+    profiles:
+      - testing
+    environment:
+      - SELENIUM_HOST=selenium
+      - BASE_URL=http://localhost:3000
+
+  # Selenium Grid para testes
+  selenium:
+    image: selenium/standalone-firefox:4.15.0
+    ports:
+      - "4444:4444"
+      - "7900:7900"  # VNC port para debug
+    volumes:
+      - /dev/shm:/dev/shm
+    networks:
+      - app-network
+    profiles:
+      - testing
+    environment:
+      - SE_VNC_NO_PASSWORD=1
+      - SE_NODE_MAX_SESSIONS=2
+      - SE_NODE_SESSION_TIMEOUT=300
+
+networks:
+  app-network:
+    driver: bridge

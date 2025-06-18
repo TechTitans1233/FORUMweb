@@ -104,5 +104,10 @@ def retrain():
     threading.Thread(target=treinar_modelos).start()
     return jsonify({"status": "Treinamento iniciado em segundo plano"}), 202
 
+@app.route("/", methods=["GET"])
+def health_check():
+    return jsonify({"status": "API Python funcionando!", "timestamp": datetime.datetime.now().isoformat()})
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    # IMPORTANTE: host='0.0.0.0' para aceitar conexões externas no container
+    app.run(host='0.0.0.0', port=5000, debug=True)
