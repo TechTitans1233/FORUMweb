@@ -5,12 +5,12 @@
 
   <testsuite name="admin" id="admin"
     errors="0" failures="1" hostname="" package="admin" skipped="0"
-    tests="1" time="8.653" timestamp="">
+    tests="1" time="7.885" timestamp="">
   
-    <testcase name="Login administrativo e validação da página de administração" classname="admin" time="8.651" assertions="2">
+    <testcase name="Login administrativo e validação da página de administração" classname="admin" time="7.884" assertions="2">
 
-      <failure message="Testing if the page title equals &#39;Login&#39; in 5000ms - expected &#34;is &#39;Login&#39;&#34; but got: &#34;Problem loading page&#34; (5169ms)">    at Login administrativo e validação da página de administração (/app/tests/E2E/admin.cjs:13:17)</failure>
-<system-out>[[ATTACHMENT|/app/tests_output/screenshots/admin/Login-administrativo-e-validação-da-página-de-administração_FAILED_Jun-17-2025-235415-GMT+0000.png]]</system-out>
+      <failure message="Testing if the page title equals &#39;Login&#39; in 5000ms - expected &#34;is &#39;Login&#39;&#34; but got: &#34;Problem loading page&#34; (5145ms)">    at Login administrativo e validação da página de administração (/app/tests/E2E/admin.cjs:13:17)</failure>
+<system-out>[[ATTACHMENT|/app/tests_output/screenshots/admin/Login-administrativo-e-validação-da-página-de-administração_FAILED_Jun-18-2025-003321-GMT+0000.png]]</system-out>
     
     </testcase>
   

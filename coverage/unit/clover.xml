@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1750204759952" clover="3.2.0">
-  <project timestamp="1750204759952" name="All files">
+<coverage generated="1750206837685" clover="3.2.0">
+  <project timestamp="1750206837685" name="All files">
     <metrics statements="128" coveredstatements="59" conditionals="50" coveredconditionals="13" methods="46" coveredmethods="27" elements="224" coveredelements="99" complexity="0" loc="128" ncloc="128" packages="1" files="1" classes="1"/>
     <file name="admin.js" path="/app/public/admin/admin.js">
       <metrics statements="128" coveredstatements="59" conditionals="50" coveredconditionals="13" methods="46" coveredmethods="27"/>
