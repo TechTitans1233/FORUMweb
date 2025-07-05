@@ -1,209 +1,206 @@
 import pandas as pd
+import random
+import json
+import os
 
-# 1) Definição de sinônimos (em múltiplos idiomas) para cada categoria de desastre
+# 1. Carregar as localidades do arquivo JSON
+def load_brazilian_cities_from_json(json_file_path):
+    cities_data = []
+    try:
+        with open(json_file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+
+        brazil_data = data.get("Brazil", {})
+        continent = brazil_data.get("continent", "América do Sul")
+        country = "Brasil"
+
+        for state_name, state_info in brazil_data.get("states", {}).items():
+            state_cities = state_info.get("cities", {})
+            
+            for city_name, city_info in state_cities.items():
+                lat_str = city_info.get("lat")
+                lon_str = city_info.get("lon")
+
+                final_lat = None
+                final_lon = None
+
+                # Tenta converter as coordenadas, se existirem e forem válidas
+                if lat_str and lon_str:
+                    try:
+                        final_lat = float(lat_str)
+                        final_lon = float(lon_str)
+                    except ValueError:
+                        # Se não puder converter para float, assume que são inválidas
+                        pass 
+                
+                # Adiciona a cidade, mesmo que as coordenadas sejam None (ausentes/inválidas)
+                cities_data.append({
+                    "cidade": city_name,
+                    "estado": state_name,
+                    "latitude": final_lat,  # Pode ser None
+                    "longitude": final_lon, # Pode ser None
+                    "continente": continent,
+                    "pais": country
+                })
+
+        print(f"✅ Carregadas {len(cities_data)} localidades do arquivo '{json_file_path}'.")
+        # Filtrar apenas cidades com coordenadas válidas para uma contagem mais precisa
+        # para o propósito de geração de volume se você for manter a lógica de multiplicação
+        # baseada em cidades COM COORDENADAS.
+        # Mas para o seu pedido, vamos contar todas as cidades carregadas.
+        return cities_data
+
+    except FileNotFoundError:
+        print(f"❌ Erro: O arquivo '{json_file_path}' não foi encontrado. Por favor, certifique-se de que ele está no mesmo diretório do script.")
+        print("Usando uma lista reduzida de locais de exemplo como fallback.")
+        return [
+            {"continente": "América do Sul", "pais": "Brasil", "estado": "São Paulo", "cidade": "São Paulo", "latitude": -23.55052, "longitude": -46.63331},
+            {"continente": "América do Sul", "pais": "Brasil", "estado": "Rio de Janeiro", "cidade": "Rio de Janeiro", "latitude": -22.906847, "longitude": -43.172897},
+            {"continente": "América do Sul", "pais": "Brasil", "estado": "Minas Gerais", "cidade": "Belo Horizonte", "latitude": -19.91667, "longitude": -43.93444},
+        ]
+    except json.JSONDecodeError:
+        print(f"❌ Erro: Não foi possível decodificar o arquivo JSON '{json_file_path}'. Verifique se o formato está correto.")
+        return []
+    except Exception as e:
+        print(f"❌ Ocorreu um erro inesperado ao carregar o JSON: {e}")
+        return []
+
+# Definição de sinônimos (permanece a mesma)
 disaster_synonyms = {
     "seca": [
-        # Português
-        "seca", "estiaje", "escassez", "aridez", "estio",
-        # Inglês
-        "drought", "dry spell", "aridity",
-        # Espanhol
-        "sequía", "seca extrema", "adicto al agua",
-        # Francês
-        "sécheresse", "étiolement",
-        # Indonésio/Malaio
-        "kekeringan", "kemarau"
+        "seca", "estiagem", "escassez hídrica", "aridez", "período de seca",
+        "falta d'água", "desidratação do solo", "crise hídrica", "secagem",
+        "terra seca", "verão rigoroso", "longa estiagem", "escassez pluviométrica",
+        "deterioração agrícola por seca", "seca severa", "seca extrema",
+        "estio prolongado", "déficit hídrico"
     ],
     "ciclone": [
-        # Português
-        "ciclone", "tempestade tropical", "tufão", "furacão",
-        # Inglês
-        "cyclone", "tropical storm", "hurricane", "typhoon",
-        # Espanhol
-        "ciclón", "huracán", "tifón",
-        # Francês
-        "cyclone tropical", "ouragan", "typhon",
-        # Indonésio/Malaio
-        "siklon", "topan"
+        "ciclone", "tempestade tropical", "tufão", "furacão", "ciclone extratropical",
+        "depressão tropical", "ciclone subtropical", "vendaval", "temporal",
+        "ciclone intenso", "ciclone devastador", "ciclone violento", "ciclone destrutivo",
+        "ciclone marinho", "ciclone costeiro", "ventos fortes", "vendos ciclônicos"
     ],
     "terremoto": [
-        # Português
-        "terremoto", "sismo", "tremor", "abalo sísmico",
-        # Inglês
-        "earthquake", "seismic shock", "tremor",
-        # Espanhol
-        "terremoto", "sismo fuerte", "temblor",
-        # Francês
-        "tremblement de terre", "séisme", "secousse",
-        # Indonésio/Malaio
-        "gempa bumi", "gempa", "guncangan"
+        "terremoto", "sismo", "tremor de terra", "abalo sísmico", "movimento telúrico",
+        "terremoto forte", "terremoto intenso", "terremoto devastador", "terremoto moderado",
+        "ruptura sísmica", "atividade sísmica", "abalos sísmicos", "crise sísmica",
+        "vibração do solo", "tremor de chão", "tremores de terra"
     ],
-    "enchente": [
-        # Português
-        "enchente", "alagamento", "inundação", "inundações",
-        # Inglês
-        "flood", "inundation", "flash flood",
-        # Espanhol
-        "inundación", "corriente de agua", "riada",
-        # Francês
-        "inondation", "crue", "dégringolade",
-        # Indonésio/Malaio
-        "banjir", "luapan air"
+    "desastre_hidrico": [ # Nova categoria para agrupar desastres de água
+        "enchente", "alagamento", "inundação", "cheia", "inundações",
+        "subida do nível da água", "transbordamento de rio", "alagamento urbano",
+        "córrego transbordando", "águas altas", "inundação repentina", "enxurrada",
+        "chuvas torrenciais", "transbordo", "situação de enchente", "dilúvio",
+        "massa d'água", "onda gigante", "tsunami", "ressaca marítima", "maré alta",
+        "inundação costeira", "inundação fluvial", "rompimento de barragem",
+        "ondas fortes", "ondas anômalas", "cabeça d'água"
     ],
     "queimada": [
-        # Português
-        "queimada", "incêndio florestal", "fogo", "fogaréu",
-        # Inglês
-        "wildfire", "forest fire", "bushfire",
-        # Espanhol
-        "incendio forestal", "fuego descontrolado", "quemazón",
-        # Francês
-        "feu de forêt", "incendie", "brasier",
-        # Indonésio/Malaio
-        "kebakaran hutan", "kebakaran lahan"
+        "queimada", "incêndio florestal", "fogo", "incêndio em mata", "queima",
+        "fogo descontrolado", "foco de incêndio", "incêndio em vegetação",
+        "chamas em floresta", "queimada ilegal",
+        "fumaça intensa", "destruição por fogo", "incêndio rural", "incêndio de grandes proporções",
+        "incêndio ambiental", "incêndio em lavoura"
     ],
     "vulcao": [
-        # Português
-        "vulcão", "erupção vulcânica", "explosão vulcânica",
-        # Inglês
-        "volcano", "volcanic eruption", "volcanic blast",
-        # Espanhol
-        "volcán", "erupción volcánica", "erupción",
-        # Francês
-        "volcan", "éruption volcanique", "explosion volcanique",
-        # Indonésio/Malaio
-        "gunung berapi", "erupsi"
+        "vulcão", "erupção vulcânica", "explosão vulcânica", "atividade vulcânica",
+        "cinzas vulcânicas", "lava", "fluxo piroclástico", "erupção de vulcão",
+        "vulcão ativo", "vulcão em erupção", "montanha de fogo", "desabamento vulcânico",
+        "gases vulcânicos", "atividade sísmica vulcânica", "erupção de cinzas"
+    ],
+    "deslizamento": [
+        "deslizamento", "desmoronamento", "queda de barreira", "movimento de massa",
+        "deslizamento de terra", "erosão", "encosta cedendo", "soterramento",
+        "risco de deslizamento", "solo instável", "barreira caindo", "terra cedendo",
+        "fluxo de detritos", "massa de solo", "deslizamento rochoso"
+    ],
+    "tempestade": [
+        "tempestade", "temporal", "chuva forte", "chuva intensa", "vendaval",
+        "granizo", "raios", "trovoada", "tempestade severa", "vento forte",
+        "chuva com vento", "tempestade elétrica", "chuva de granizo",
+        "microexplosão", "vento ciclônico"
     ]
 }
 
-# 2) Definição de uma lista abrangente de localidades (continente, país, estado/região, cidade e coordenadas)
-#    Aqui, apenas como amostra, inclui-se uma seleção de cidades em vários continentes. Você pode
-#    estender adicionando quantas quiser (países, estados, províncias, mais cidades etc.).
+# 2. Carregar as localidades
+json_file = "brazil_states_cities.json"
+locations = load_brazilian_cities_from_json(json_file)
 
-locations = [
-    # América do Sul
-    {"continente": "América do Sul", "pais": "Brasil",          "estado": "São Paulo",     "cidade": "São Paulo",        "latitude": -23.55052, "longitude": -46.63331},
-    {"continente": "América do Sul", "pais": "Brasil",          "estado": "Pernambuco",    "cidade": "Recife",           "latitude": -8.04756,  "longitude": -34.877},
-    {"continente": "América do Sul", "pais": "Colômbia",        "estado": "Atlántico",     "cidade": "Barranquilla",     "latitude": 10.96854,  "longitude": -74.78132},
-    {"continente": "América do Sul", "pais": "Argentina",       "estado": "Buenos Aires",  "cidade": "Buenos Aires",     "latitude": -34.60372, "longitude": -58.38159},
-    {"continente": "América do Sul", "pais": "Chile",           "estado": "Região Metropolitana", "cidade": "Santiago",    "latitude": -33.44889, "longitude": -70.66927},
+# 3. Geração de mensagens de exemplo automáticas (mais templates em português)
+def gerar_mensagem(sinonimo: str, cidade: str, estado: str, pais: str) -> str:
+    templates = [
+        f"Alerta de {sinonimo} em {cidade}, {estado}, {pais}.",
+        f"Atenção: {sinonimo} detectada em {cidade}, {estado}, {pais}.",
+        f"Emergência: {sinonimo} atingiu {cidade}, {estado}, {pais}.",
+        f"Notificação de {sinonimo} para {cidade}, {estado}, {pais}.",
+        f"Previsão de {sinonimo} em {cidade}, {estado}, {pais}.",
+        f"Risco de {sinonimo} iminente em {cidade}, {estado}, {pais}.",
+        f"Situação de {sinonimo} em {cidade}, {estado}, {pais}.",
+        f"Defesa Civil alerta sobre {sinonimo} em {cidade}/{estado}.",
+        f"Registrado {sinonimo} em {cidade}, {estado}.",
+        f"Grande {sinonimo} em {cidade}, {estado}.",
+        f"Comunicação de {sinonimo} na região de {cidade}, {estado}.",
+        f"Autoridades reportam {sinonimo} em {cidade}, {estado}."
+    ]
+    return random.choice(templates)
 
-    # América do Norte
-    {"continente": "América do Norte", "pais": "Estados Unidos", "estado": "Califórnia",    "cidade": "Los Angeles",     "latitude": 34.05223,  "longitude": -118.24368},
-    {"continente": "América do Norte", "pais": "Estados Unidos", "estado": "Arizona",       "cidade": "Phoenix",         "latitude": 33.44838,  "longitude": -112.07404},
-    {"continente": "América do Norte", "pais": "México",         "estado": "Nuevo León",    "cidade": "Monterrey",       "latitude": 25.68661,  "longitude": -100.31612},
-    {"continente": "América do Norte", "pais": "Canadá",         "estado": "Ontário",       "cidade": "Toronto",         "latitude": 43.65107,  "longitude": -79.347015},
-    {"continente": "América do Norte", "pais": "Estados Unidos", "estado": "Texas",         "cidade": "Houston",         "latitude": 29.76043,  "longitude": -95.3698},
+# 4. Possíveis níveis de impacto
+impact_levels = ["baixo", "moderado", "alto", "catastrófico", "gravíssimo", "extremo"]
 
-    # Europa
-    {"continente": "Europa",          "pais": "França",         "estado": "Provence-Alpes-Côte d'Azur", "cidade": "Marselha",   "latitude": 43.29648,  "longitude": 5.36978},
-    {"continente": "Europa",          "pais": "França",         "estado": "Provence-Alpes-Côte d'Azur", "cidade": "Nice",       "latitude": 43.71017,  "longitude": 7.26195},
-    {"continente": "Europa",          "pais": "Reunião",        "estado": "Reunião",       "cidade": "Saint-Denis",      "latitude": -20.87891, "longitude": 55.44813},
-    {"continente": "Europa",          "pais": "Espanha",        "estado": "Ilhas Canárias", "cidade": "La Palma (Cumbre Vieja)", "latitude": 28.5700, "longitude": -17.8400},
-    {"continente": "Europa",          "pais": "Reino Unido",    "estado": "Inglaterra",    "cidade": "Londres",         "latitude": 51.50735,  "longitude": -0.127758},
-
-    # Ásia
-    {"continente": "Ásia",            "pais": "Índia",          "estado": "Gujarat",       "cidade": "Ahmedabad",       "latitude": 23.02251,  "longitude": 72.57136},
-    {"continente": "Ásia",            "pais": "Japão",          "estado": "Tóquio",        "cidade": "Tóquio",          "latitude": 35.68949,  "longitude": 139.69171},
-    {"continente": "Ásia",            "pais": "Indonésia",      "estado": "Oeste de Java", "cidade": "Jacarta",         "latitude": -6.20876,  "longitude": 106.8456},
-    {"continente": "Ásia",            "pais": "Filipinas",      "estado": "Luzon",         "cidade": "Manila",          "latitude": 14.59951,  "longitude": 120.98422},
-    {"continente": "Ásia",            "pais": "Nepal",          "estado": "Bagmati",       "cidade": "Kathmandu",       "latitude": 27.71725,  "longitude": 85.32396},
-
-    # África
-    {"continente": "África",          "pais": "Nigéria",        "estado": "Lagos",         "cidade": "Lagos",           "latitude": 6.52438,   "longitude": 3.37921},
-    {"continente": "África",          "pais": "Níger",          "estado": "Niamey",        "cidade": "Niamey",          "latitude": 13.51253,  "longitude": 2.11265},
-    {"continente": "África",          "pais": "Quênia",         "estado": "Nairobi",       "cidade": "Nairobi",         "latitude": -1.29207,  "longitude": 36.82193},
-    {"continente": "África",          "pais": "África do Sul",  "estado": "Gauteng",       "cidade": "Pretória",        "latitude": -25.74787, "longitude": 28.22927},
-    {"continente": "África",          "pais": "Indonésia",      "estado": "Reunião",       "cidade": "Piton de la Fournaise", "latitude": -21.2448, "longitude": 55.70889},  # Vulcão
-
-    # Oceania
-    {"continente": "Oceania",         "pais": "Austrália",      "estado": "Nova Gales do Sul", "cidade": "Sydney",      "latitude": -33.86882, "longitude": 151.2093},
-    {"continente": "Oceania",         "pais": "Austrália",      "estado": "Colúmbia Britânica", "cidade": "Brisbane",    "latitude": -27.46977, "longitude": 153.02513},
-    {"continente": "Oceania",         "pais": "Fiji",           "estado": "Central",       "cidade": "Suva",           "latitude": -18.1248,  "longitude": 178.4501},
-    {"continente": "Oceania",         "pais": "Nova Zelândia",  "estado": "Wellington",    "cidade": "Wellington",     "latitude": -41.28646, "longitude": 174.77623},
-    {"continente": "Oceania",         "pais": "Indonésia",      "estado": "Sulawesi do Norte", "cidade": "Manado",     "latitude": 1.4748,    "longitude": 124.8428},
-]
-
-# 3) Geração de mensagens de exemplo automáticas
-#    Para cada combinação [categoria → cada sinônimo] × [cada localidade da lista], monta-se uma mensagem genérica.
-#    Você pode customizar esse template de "mensagem" para incluir construções em diferentes línguas, se desejar.
-
-def gerar_mensagem(sinonimo: str, cidade: str, pais: str, idioma: str) -> str:
-    """
-    Retorna uma mensagem de exemplo combinando sinônimo de desastre + localização.
-    Se quiser suportar mais idiomas, inclua condições adicionais aqui.
-    """
-    # Detectar idioma básico pela presença de acentos ou pelas listas de sinônimos (simplifica o exemplo)
-    if idioma == "pt":
-        return f"Alerta: {sinonimo} em {cidade}, {pais}."
-    elif idioma == "en":
-        return f"Alert: {sinonimo} in {cidade}, {pais}."
-    elif idioma == "es":
-        return f"Alerta: {sinonimo} en {cidade}, {pais}."
-    elif idioma == "fr":
-        return f"Alerte : {sinonimo} à {cidade}, {pais}."
-    elif idioma == "id":
-        return f"Peringatan: {sinonimo} di {cidade}, {pais}."
-    else:
-        return f"{sinonimo} em {cidade}, {pais}."
-
-# 4) Mapeamento de sinônimos para idioma (bastante simplificado, mas você pode estender)
-#    O objetivo é ter uma forma de saber em qual idioma está cada sinônimo.
-idioma_por_sinonimo = {}
-for category, sinonimos in disaster_synonyms.items():
-    for s in sinonimos:
-        s_lower = s.lower()
-        # Heurística bem simples: se contém acentos agudos comuns em português ou espanhol → pt/es; 
-        # se tiver 'drought', 'hurricane' → en; 'sécheresse','inondation' → fr; etc.
-        if any(x in s_lower for x in ["sécher", "inond", "ouragan", "typhon"]):
-            idioma_por_sinonimo[s] = "fr"
-        elif any(x in s_lower for x in ["drought", "cyclone", "hurricane", "flood", "earthquake", "wildfire", "volcano"]):
-            idioma_por_sinonimo[s] = "en"
-        elif any(x in s_lower for x in ["sequía", "huracán", "inundación", "temblor", "incendio", "volcán"]):
-            idioma_por_sinonimo[s] = "es"
-        elif any(x in s_lower for x in ["kekeringan", "siklon", "gempa", "banjir", "kebakaran", "gunung"]):
-            idioma_por_sinonimo[s] = "id"
-        else:
-            # Por padrão, assume português se não identificou outro
-            idioma_por_sinonimo[s] = "pt"
-
-# 5) Possíveis níveis de impacto (pode ser aleatório ou ciclar)
-impact_levels = ["baixo", "moderado", "alto", "catastrófico"]
-
-# 6) Montagem do dataset final
+# 5. Montagem do dataset final
 dataset_expanded = []
-for categoria, sinonimos in disaster_synonyms.items():
-    for sinonimo in sinonimos:
-        idioma = idioma_por_sinonimo.get(sinonimo, "pt")
-        for loc in locations:
-            cidade = loc["cidade"]
-            pais = loc["pais"]
-            lat = loc["latitude"]
-            lon = loc["longitude"]
-            continente = loc["continente"]
-            estado = loc["estado"]
-            # Gera a mensagem no idioma adequado
-            mensagem = gerar_mensagem(sinonimo, cidade, pais, idioma)
-            # Para variar um pouco, simplesmente escolhemos impacto baseado em posição de índice
-            # (por exemplo, ciclo pelos níveis de impacto conforme combinamos itens)
-            impacto = impact_levels[(hash(sinonimo + cidade) % len(impact_levels))]
 
-            registro = {
-                "mensagem": mensagem,
-                "categoria": categoria,
-                "sinonimo": sinonimo,
-                "idioma": idioma,
-                "continente": continente,
-                "pais": pais,
-                "estado": estado,
-                "cidade": cidade,
-                "latitude": lat,
-                "longitude": lon,
-                "impacto": impacto
-            }
-            dataset_expanded.append(registro)
+# Calcular o número total de sinônimos
+total_synonyms = sum(len(syns) for syns in disaster_synonyms.values())
+# Calcular o número de localidades (TODAS as carregadas, mesmo sem coord)
+total_locations = len(locations)
 
-# 7) Criação do DataFrame e salvamento em CSV (UTF-8)
+# Definir o número mínimo de exemplos que você deseja
+min_examples_target = 40000
+
+# Se a combinação direta de sinônimos x localidades já atingir o alvo, não precisamos de multiplicador
+if total_synonyms * total_locations >= min_examples_target:
+    multiplier_for_volume = 1
+    print(f"Volume alvo ({min_examples_target}) atingido com {total_synonyms * total_locations} combinações diretas.")
+else:
+    # Caso contrário, calcular o multiplicador necessário
+    # Adicionando 1 para arredondar para cima e garantir que o alvo seja atingido
+    # Isso garante que todas as cidades sejam repetidas um número X de vezes por sinônimo.
+    multiplier_for_volume = (min_examples_target // (total_synonyms * total_locations)) + 1
+    print(f"Volume alvo ({min_examples_target}) não atingido. Usando multiplicador: {multiplier_for_volume}")
+
+# Iterar sobre CADA CIDADE e CADA SINÔNIMO para garantir que todas as cidades sejam usadas.
+# Isso é mais robusto do que random.choice(locations) para garantir o uso de TODAS as cidades.
+for loc in locations:
+    cidade = loc["cidade"]
+    estado = loc["estado"]
+    pais = loc["pais"]
+    lat = loc["latitude"]
+    lon = loc["longitude"]
+    continente = loc["continente"]
+
+    for categoria, sinonimos in disaster_synonyms.items():
+        for sinonimo in sinonimos:
+            for _ in range(multiplier_for_volume): # Repetir para atingir o volume desejado
+                mensagem = gerar_mensagem(sinonimo, cidade, estado, pais)
+                impacto = random.choice(impact_levels)
+
+                registro = {
+                    "mensagem": mensagem,
+                    "categoria": categoria,
+                    "sinonimo": sinonimo,
+                    "idioma": "pt",
+                    "continente": continente,
+                    "pais": pais,
+                    "estado": estado,
+                    "cidade": cidade,
+                    "latitude": lat, # Pode ser None
+                    "longitude": lon, # Pode ser None
+                    "impacto": impacto
+                }
+                dataset_expanded.append(registro)
+
+# 6. Criação do DataFrame e salvamento em CSV (UTF-8)
 df_expanded = pd.DataFrame(dataset_expanded)
 
 # Ordenar colunas para facilitar leitura
@@ -226,5 +223,5 @@ df_expanded = df_expanded[colunas_ordenadas]
 print(f"✅ Dataset expandido gerado com {len(df_expanded)} registros.")
 
 # Salvar em CSV
-df_expanded.to_csv("dataset_multilingue_localizado_expandido.csv", index=False, encoding="utf-8")
-print("✅ Arquivo 'dataset_multilingue_localizado_expandido.csv' salvo com sucesso.")
+df_expanded.to_csv("dataset_portugues_brasil_expandido.csv", index=False, encoding="utf-8")
+print("✅ Arquivo 'dataset_portugues_brasil_expandido.csv' salvo com sucesso.")
