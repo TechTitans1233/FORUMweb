@@ -4,7 +4,7 @@ module.exports = {
       const loginUrl      = 'http://127.0.0.1:3000/login/login.html';
       const adminPassword = 'suaSenhaAdministrativa';
       // Supondo que o HTML de admin esteja em:
-      const adminUrlPart  = '/public/admin/admin.html'; 
+      const adminUrlPart  = 'http://127.0.0.1:3000/admin/admin.html';
   
       browser
         // 1) Abre a página de login
@@ -27,6 +27,7 @@ module.exports = {
         // 4) Preenche a senha administrativa e envia
         .setValue('#adminPassword', adminPassword)
         .click('#adminLoginForm button[type="submit"]')
+        .acceptAlert()
         .pause(1500)
   
         // 5) Verifica que houve redirecionamento para a página de administração

@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Carregar informações do usuário
-    const userName = localStorage.getItem("userName") || "Nome do Usuário";
-    const userEmail = localStorage.getItem("userEmail") || "usuario@email.com";
+    const userName = localStorage.getItem("userName");
+    const userEmail = localStorage.getItem("userEmail");
     const userId = localStorage.getItem("userId"); // Certifique-se de que o userId está sendo armazenado
     const postCount = 0; // Inicialmente 0, você pode buscar isso do backend
     const followerCount = 0; // Inicialmente 0
@@ -392,7 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Evento para deletar usuário
-    document.getElementById('deleteUser Button').addEventListener('click', async function() {
+    document.getElementById('deleteUserButton').addEventListener('click', async function() {
         if (confirm('Tem certeza que deseja deletar sua conta?')) {
             await deleteUser (userId);
         }
@@ -800,11 +800,11 @@ if (!token) {
 }
 
 // perfil.test.js
-export {
+/*export {
   toggleComentarios,
   updatePublicationsUserName,
   curtirPublicacao,
   updateUser,
   relacionarAmigos,
   carregarEstatisticas,
-};
+};*/

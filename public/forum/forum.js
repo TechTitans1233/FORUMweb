@@ -437,6 +437,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+document.getElementById('toggle-visibility').addEventListener('click', () => {
+  document.querySelector('.new-post-content').classList.toggle('hidden');
+});
+
+
 //oculta a seccao de nova publicacao
 document.addEventListener('DOMContentLoaded', () => {
     const toggleButton = document.getElementById('toggle-visibility');
