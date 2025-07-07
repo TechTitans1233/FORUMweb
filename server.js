@@ -3,10 +3,23 @@ import admin from 'firebase-admin';
 import path, { dirname, resolve } from 'path';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { initializeApp } from 'firebase/app';
+import 'dotenv/config';
 
 // --- configuração de __dirname em ES Modules ---
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+const firebaseConfig = {
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  // ... outras configurações do seu projeto
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
 
 // --- inicialização do Admin SDK ---
 const serviceAccount = JSON.parse(
