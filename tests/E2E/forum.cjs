@@ -33,7 +33,6 @@ module.exports = {
         .setValue('#registerPassword', randomPassword)
         .setValue('#registerConfirmPassword', randomPassword)
         .click('#registerFormSubmit button[type="submit"]')
-        .acceptAlert()
         .pause(1000)
   
         // 4) Verifica que voltou ao formulário de login de usuário
@@ -43,7 +42,6 @@ module.exports = {
         .setValue('#userEmail', randomEmail)
         .setValue('#userPassword', randomPassword)
         .click('#userLoginForm button[type="submit"]')
-        .acceptAlert()
         .pause(1500)
   
         // 6) Navega para a página do fórum
@@ -54,7 +52,7 @@ module.exports = {
         // 7) Exibe o formulário de nova publicação
         .assert.visible('#toggle-visibility')
         .click('#toggle-visibility')
-        .waitForElementVisible('#publicacao-form', 2000)
+        .pause(500)
         .assert.visible('#publicacao-form')
   
         // 8) Preenche e submete a nova publicação

@@ -15,6 +15,7 @@ const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
   authDomain: process.env.FIREBASE_AUTH_DOMAIN,
   projectId: process.env.FIREBASE_PROJECT_ID,
+  // ... outras configurações do seu projeto
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
@@ -630,7 +631,6 @@ server.post('/api/login', async (req, res) => {
 
         // Gera o token de autenticação com expiração de 55 minutos
         const token = jwt.sign({ uid: user.uid, email: user.email }, secretKey, { expiresIn: '1m' });
-        localStorage.setItem("userToken", token);
 
         return res.status(200).json({
             message: 'Usuário autenticado com sucesso!',
