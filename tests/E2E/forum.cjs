@@ -14,7 +14,9 @@ module.exports = {
       // Dados da publicação
       const postTitle      = `Título ${ts}`;
       const postContent    = `Conteúdo de teste ${ts}`;
-      const postAddress    = `Endereço ${ts}`;
+      const postAddress    = `Avenida Paulista`;
+      const postXPath = `//div[@id="publications"]//div[contains(@class, "publicacao") and .//div[contains(@class, "titulo-publicacao") and .//h3[text()="${postTitle}"]]]`;
+
   
       browser
         // 1) Abre a página de login
@@ -24,7 +26,8 @@ module.exports = {
   
         // 2) Abre formulário de cadastro
         .click('#register-toggle')
-        .pause(500)
+        .acceptAlert()
+        .pause(1500)
         .assert.visible('#registerForm')
   
         // 3) Preenche formulário de cadastro e envia
@@ -33,6 +36,7 @@ module.exports = {
         .setValue('#registerPassword', randomPassword)
         .setValue('#registerConfirmPassword', randomPassword)
         .click('#registerFormSubmit button[type="submit"]')
+        .acceptAlert()
         .pause(1000)
   
         // 4) Verifica que voltou ao formulário de login de usuário
@@ -42,6 +46,7 @@ module.exports = {
         .setValue('#userEmail', randomEmail)
         .setValue('#userPassword', randomPassword)
         .click('#userLoginForm button[type="submit"]')
+        .acceptAlert()
         .pause(1500)
   
         // 6) Navega para a página do fórum
@@ -52,7 +57,7 @@ module.exports = {
         // 7) Exibe o formulário de nova publicação
         .assert.visible('#toggle-visibility')
         .click('#toggle-visibility')
-        .pause(500)
+        .waitForElementVisible('#publicacao-form', 2000)
         .assert.visible('#publicacao-form')
   
         // 8) Preenche e submete a nova publicação
@@ -73,28 +78,28 @@ module.exports = {
   
         // Seleciona o primeiro .post que contenha o título
         .useXpath()
-        .waitForElementVisible(`//div[@id="publications"]//div[contains(@class, "post") and .//h3[text()="${postTitle}"]]`, 2000)
-        .click(`//div[@id="publications"]//div[contains(@class, "post") and .//h3[text()="${postTitle}"]]//button[contains(@class, "like-button")]`)
-        .pause(500)
+        .waitForElementVisible(`//div[@id="publications"]//div[contains(@class, "publicacao") and .//div[contains(@class, "titulo-publicacao") and .//h3[text()="${postTitle}"]]]`, 2000)
+        .click(`${postXPath}//button[contains(@class, "curtir")]`)
+        .pause(2500)
   
         // 11) Verifica que o contador de curtidas aumentou
         //     (assume-se que exista um elemento .like-count dentro do post que mudou para “1”)
         .assert.containsText(
-          `//div[@id="publications"]//div[contains(@class, "post") and .//h3[text()="${postTitle}"]]//span[contains(@class, "like-count")]`,
+          `${postXPath}//span[contains(@class, "curtidas-count")]`,
           '1'
         )
   
         // 12) Adiciona um comentário à própria publicação
         .setValue(
-          `//div[@id="publications"]//div[contains(@class, "post") and .//h3[text()="${postTitle}"]]//input[contains(@class, "comment-input")]`,
+          `${postXPath}//input[contains(@class, "comentario-input")]`,
           'Comentário de teste'
         )
-        .click(`//div[@id="publications"]//div[contains(@class, "post") and .//h3[text()="${postTitle}"]]//button[contains(@class, "comment-button")]`)
+        .click(`${postXPath}//button[contains(@class, "enviar-comentario")]`)
         .pause(500)
   
         // 13) Verifica que o comentário apareceu
         .assert.containsText(
-          `//div[@id="publications"]//div[contains(@class, "post") and .//h3[text()="${postTitle}"]]//div[contains(@class, "comments")]`,
+          `${postXPath}//div[contains(@class, "lista-comentarios")]//div[contains(@class, "comentario")]//div[contains(@class, "info-comentario")]//div[contains(@class, "texto-comentario") and contains(text(), "Comentário de teste")]`,
           'Comentário de teste'
         )
   
@@ -125,4 +130,3 @@ module.exports = {
         .end();
     }
   };
-  

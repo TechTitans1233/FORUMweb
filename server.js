@@ -3,608 +3,657 @@ import admin from 'firebase-admin';
 import path, { dirname, resolve } from 'path';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
+import jwt from 'jsonwebtoken';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { initializeApp } from 'firebase/app';
+import 'dotenv/config';
 
 // --- configuração de __dirname em ES Modules ---
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// --- inicialização do Admin SDK ---
+const firebaseConfig = {
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+
 const serviceAccount = JSON.parse(
-  readFileSync(
-    resolve(__dirname, 'serviceAccountKey', 'projeto-pi2-firebase-adminsdk-phn8l-3380c640f9.json'),
-    'utf8'
-  )
+    readFileSync(
+        resolve(__dirname, 'serviceAccountKey', 'projeto-pi2-firebase-adminsdk-phn8l-b17a5faff4.json'),
+        'utf8'
+    )
 );
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://projeto-pi2.firebaseio.com'
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: 'https://projeto-pi2.firebaseio.com'
 });
 const db = admin.firestore();
 
-// --- servidor Express ---
+// --------------------------------------
+// Criar servidor Express
+// --------------------------------------
 const server = express();
-
-// middlewares
-server.use(express.json());              // interpreta JSON no body
+server.use(express.json());
 server.use(express.static(path.join(__dirname, 'public')));
 server.use((req, res, next) => {
-  res.setHeader('X-Content-Type-Options','nosniff');
-  res.setHeader('X-Frame-Options','DENY');
-  next();
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    next();
+});
+
+// Chave secreta para JWT - **MUITO IMPORTANTE: USE UMA VARIÁVEL DE AMBIENTE EM PRODUÇÃO**
+const secretKey = 'UmaSENHASecretaEforte'; // Defina uma senha secreta para gerar o token
+
+let revokedTokens = []; // Lista para armazenar tokens revogados
+
+// Middleware para verificar tokens JWT personalizados
+const verificarToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader?.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ message: 'Token não fornecido.' });
+    }
+
+    if (revokedTokens.includes(token)) {
+        return res.status(403).json({ message: 'Token revogado. Faça login novamente.' });
+    }
+
+    jwt.verify(token, secretKey, (err, decoded) => {
+        if (err) {
+            console.log('Erro ao verificar token:', err.message);
+            return res.status(403).json({ message: 'Token inválido ou expirado.' });
+        }
+        req.user = decoded; // Decoded conterá os dados do payload (uid, email, role, name, etc.)
+        next();
+    });
+};
+
+// Middleware para cabeçalhos de segurança básicos
+server.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    next();
 });
 
 // --- criar uma demarcação (armazenando SÓ a string de coords) ---
-server.post('/api/demarcacoes-coords', async (req, res) => {
-  const { titulo, conteudo, endereco, coordsString } = req.body;
+server.post('/api/demarcacoes-coords', verificarToken, async (req, res) => { // Protegida
+    const { titulo, conteudo, endereco, coordsString } = req.body;
 
-  // validação básica
-  if (![titulo, conteudo, endereco, coordsString].every(Boolean)) {
-    return res
-      .status(400)
-      .json({ message: 'Campos obrigatórios: titulo, conteudo, endereco, coordsString.' });
-  }
+    // validação básica
+    if (![titulo, conteudo, endereco, coordsString].every(Boolean)) {
+        return res
+            .status(400)
+            .json({ message: 'Campos obrigatórios: titulo, conteudo, endereco, coordsString.' });
+    }
 
-  try {
-    const docRef = await db.collection('demarcacoes').add({
-      titulo,
-      conteudo,
-      endereco,
-      coordsString,  // permanece como texto puro
-      criadoEm: admin.firestore.FieldValue.serverTimestamp()
-    });
-    res.json({ message: 'Demarcação salva com sucesso!', id: docRef.id });
-  } catch (err) {
-    console.error('Erro ao salvar demarcação:', err);
-    res.status(500).json({ message: 'Erro interno ao salvar demarcação.' });
-  }
+    try {
+        const docRef = await db.collection('demarcacoes').add({
+            titulo,
+            conteudo,
+            endereco,
+            coordsString,  // permanece como texto puro
+            criadoEm: admin.firestore.FieldValue.serverTimestamp()
+        });
+        res.json({ message: 'Demarcação salva com sucesso!', id: docRef.id });
+    } catch (err) {
+        console.error('Erro ao salvar demarcação:', err);
+        res.status(500).json({ message: 'Erro interno ao salvar demarcação.' });
+    }
 });
 
 // --- listar todas as demarcações ---
 server.get('/api/demarcacoes-coords', async (req, res) => {
-  try {
-    const snapshot = await db
-      .collection('demarcacoes')
-      .orderBy('criadoEm', 'desc')
-      .get();
+    try {
+        const snapshot = await db
+            .collection('demarcacoes')
+            .orderBy('criadoEm', 'desc')
+            .get();
 
-    const lista = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()           // inclui titulo, conteudo, endereco, coordsString, criadoEm
-    }));
-    res.json(lista);
-  } catch (err) {
-    console.error('Erro ao buscar demarcações:', err);
-    res.status(500).json({ message: 'Erro interno ao buscar demarcações.' });
-  }
-});
-
-
-// Middleware para cabeçalhos de segurança básicos
-server.use((req, res, next) => {
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
-  next();
+        const lista = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()          // inclui titulo, conteudo, endereco, coordsString, criadoEm
+        }));
+        res.json(lista);
+    } catch (err) {
+        console.error('Erro ao buscar demarcações:', err);
+        res.status(500).json({ message: 'Erro interno ao buscar demarcações.' });
+    }
 });
 
 // Rota única para criar usuário
 server.post('/api/users', async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: 'Campos obrigatórios!' });
+    try {
+        const { name, email, password } = req.body;
+        if (!name || !email || !password) {
+            return res.status(400).json({ message: 'Campos obrigatórios: name, email, password.' });
+        }
+        // Verifica se o e-mail já está em uso para evitar duplicatas antes de criar
+        const userSnapshot = await db.collection('users').where('email', '==', email).get();
+        if (!userSnapshot.empty) {
+            return res.status(409).json({ message: 'Este e-mail já está cadastrado.' });
+        }
+
+        // Cria no Auth e salva no Firestore
+        const userRecord = await admin.auth().createUser({ email, password });
+        // **ATENÇÃO:** Armazenar senha no Firestore é uma PRÁTICA INSEGURA.
+        // Em produção, NUNCA armazene senhas em texto plano ou reversível no Firestore.
+        // O ideal é usar apenas o Firebase Authentication e não duplicar a senha aqui.
+        await db.collection('users').doc(userRecord.uid).set({ name, email, password });
+        return res.status(201).json({
+            message: 'Usuário criado com sucesso!',
+            user: {
+                uid: userRecord.uid,
+                email: userRecord.email,
+                name: name
+            }
+        });
+    } catch (err) {
+        console.error(err);
+        // Trata erros de email já em uso do Firebase Auth
+        if (err.code === 'auth/email-already-exists') {
+            return res.status(409).json({ message: 'Este e-mail já está cadastrado no sistema de autenticação.' });
+        }
+        return res.status(500).json({ message: 'Erro interno ao criar usuário', error: err.message });
     }
-    // Cria no Auth e salva no Firestore
-    const userRecord = await admin.auth().createUser({ email, password });
-    await db.collection('users').doc(userRecord.uid).set({ name, email });
-    // Fechamos corretamente o objeto JSON e a rota:
-    return res.status(201).json({
-      message: 'Usuário criado com sucesso!',
-      user: {
-        uid: userRecord.uid,
-        email: userRecord.email
-      }
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: 'Erro interno', error: err.message });
-  }
-});
-
-// Rota para criar documento (CREATE) sem hash de senha
-server.post('/api/users', async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
-
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: 'Nome, email e senha são obrigatórios!' });
-    }
-
-    
-
-    // Salvar os dados do usuário no Firestore (sem senha)
-    await db.collection('users').add({
-      name,
-      email,
-      uid: user.uid,
-    });
-
-    res.status(201).json({
-      message: 'Usuário criado com sucesso!',
-      user: {
-        uid: user.uid,
-        email: user.email,
-      },
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao criar usuário', error: error.message });
-  }
 });
 
 // Rota para obter todos os usuários, ocultando a senha
 server.get('/api/users', async (req, res) => {
-  try {
-    const snapshot = await db.collection('users').get();
-    if (snapshot.empty) {
-      return res.status(404).json({ message: 'Nenhum usuário encontrado!' });
+    try {
+        const snapshot = await db.collection('users').get();
+        if (snapshot.empty) {
+            return res.status(404).json({ message: 'Nenhum usuário encontrado!' });
+        }
+        const users = snapshot.docs.map(doc => {
+            const { password, ...userData } = doc.data(); // Remove a senha do retorno
+            return { id: doc.id, ...userData };
+        });
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao buscar usuários', error: error.message });
     }
-    const users = snapshot.docs.map(doc => {
-      const { password, ...userData } = doc.data(); // Remove a senha do retorno
-      return { id: doc.id, ...userData };
-    });
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao buscar usuários', error: error.message });
-  }
 });
 
 // Rota para atualizar usuário com dados antigos e novos
-server.put('/admin/usuarios/:userId', async (req, res) => {
-  try {
-      const { userId } = req.params;
-      const { newName, newEmail, password } = req.body;
+server.put('/admin/usuarios/:userId', verificarToken, async (req, res) => { // Protegida
+    try {
+        const { userId } = req.params;
+        const { newName, newEmail, password } = req.body;
 
-      // Verificar se o usuário existe com o ID fornecido
-      const userRef = db.collection('users').doc(userId);
-      const userDoc = await userRef.get();
+        // Verificar se o usuário existe com o ID fornecido
+        const userRef = db.collection('users').doc(userId);
+        const userDoc = await userRef.get();
 
-      if (!userDoc.exists) {
-          return res.status(404).json({ message: 'Usuário não encontrado!' });
-      }
+        if (!userDoc.exists) {
+            return res.status(404).json({ message: 'Usuário não encontrado!' });
+        }
 
-      const userData = userDoc.data();
+        const userData = userDoc.data();
 
-      // Verificar se a senha fornecida corresponde à senha do banco de dados
-      //if (userData.password !== password) {
-        //  return res.status(400).json({ message: 'Senha incorreta!' });
-      //}
+        // Verificar se a senha fornecida corresponde à senha do banco de dados (Apenas para simulação. NÃO USE EM PRODUÇÃO!)
+        if (userData.password !== password) {
+            return res.status(400).json({ message: 'Senha incorreta!' });
+        }
 
-      // Atualizar os dados do usuário
-      await userRef.update({
-          name: newName,
-          email: newEmail,
-      });
+        // Atualizar os dados do usuário
+        await userRef.update({
+            name: newName,
+            email: newEmail,
+        });
 
-      // Atualizar o nome nas publicações
-      const postsRef = db.collection('publicacoes').where('usuario', '==', userData.name);
-      const postsSnapshot = await postsRef.get();
-      const batch = db.batch();
+        // --- CORREÇÃO AQUI: Atualizar o campo 'usuario' nas publicações ---
+        // Buscamos as publicações DO USUÁRIO específico pelo userId
+        const postsRef = db.collection('publicacoes').where('userId', '==', userId);
+        const postsSnapshot = await postsRef.get();
+        const batch = db.batch();
 
-      postsSnapshot.forEach(postDoc => {
-          batch.update(postDoc.ref, { usuario: newName });
-      });
+        postsSnapshot.forEach(postDoc => {
+            // Atualiza o campo 'usuario' (nome do autor) para o novo nome
+            batch.update(postDoc.ref, { usuario: newName });
+        });
 
-      await batch.commit();
+        await batch.commit();
 
-      res.status(200).json({ message: 'Usuário atualizado com sucesso!' });
-  } catch (error) {
-      res.status(500).json({ message: 'Erro ao atualizar usuário', error: error.message });
-  }
+        res.status(200).json({ message: 'Usuário atualizado com sucesso!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao atualizar usuário', error: error.message });
+    }
 });
 
 // Rota para deletar um usuário (DELETE)
-server.delete('/api/users/:id', async (req, res) => {
-  try {
-    const userId = req.params.id;
+server.delete('/api/users/:id', verificarToken, async (req, res) => { // Protegida
+    try {
+        const userId = req.params.id;
 
-    const userRef = db.collection('users').doc(userId);
-    const doc = await userRef.get();
+        const userRef = db.collection('users').doc(userId);
+        const doc = await userRef.get();
 
-    if (!doc.exists) {
-      return res.status(404).json({ message: 'Usuário não encontrado!' });
+        if (!doc.exists) {
+            return res.status(404).json({ message: 'Usuário não encontrado!' });
+        }
+
+        // Opcional: Deletar posts, comentários, etc., associados a este usuário
+        // Isso pode ser complexo e exige cuidado para não apagar dados errados.
+
+        await userRef.delete();
+        res.status(200).json({ message: 'Usuário deletado com sucesso!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao deletar usuário', error: error.message });
     }
-
-    await userRef.delete();
-    res.status(200).json({ message: 'Usuário deletado com sucesso!' });
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao deletar usuário', error: error.message });
-  }
 });
+
+// --- Controle de Última Publicação para evitar duplicatas rápidas ---
+const lastPublicationTimes = new Map(); // Mapa para userId -> último timestamp da publicação
 
 // Rota para criar publicação
-server.post('/api/publicacoes', async (req, res) => {
-  try {
-      const { endereco, titulo, conteudo, lat, lon, usuario } = req.body;
+server.post('/api/publicacoes', verificarToken, async (req, res) => {
+    try {
+        // userId e userName agora vêm do token decodificado (req.user)
+        const userId = req.user.uid;
+        const userName = req.user.name; // O nome do usuário que criou a publicação
 
-      // Verificar campos obrigatórios
-      if (!endereco || !titulo || !conteudo || !lat || !lon || !usuario) {
-          return res.status(400).json({ message: 'Campos obrigatórios faltando.' });
-      }
+        const { endereco, titulo, conteudo, lat, lon, marcacao } = req.body;
 
-      const novaPublicacao = {
-          endereco,
-          titulo,
-          conteudo,
-          lat,
-          lon,
-          usuario,  // Nome do usuário é armazenado aqui
-          curtidas: 0, // Inicializa o número de curtidas como 0
-          dataCriacao: admin.firestore.Timestamp.now(),  // Usando o Timestamp do Firestore para armazenar a data
-      };
+        // Validação básica
+        if (![endereco, titulo, conteudo, lat, lon].every(Boolean)) {
+            return res.status(400).json({ message: 'Campos obrigatórios faltando: endereco, titulo, conteudo, lat, lon.' });
+        }
 
-      // Adicionando a publicação no Firestore
-      const docRef = await db.collection('publicacoes').add(novaPublicacao);
-      novaPublicacao.id = docRef.id;  // Adiciona o ID gerado do Firestore à publicação
+        // --- PREVENÇÃO BÁSICA DE CLIQUE DUPLO NO BACKEND ---
+        // Verifica se o usuário publicou algo muito recentemente (ex: nos últimos 3 segundos)
+        const now = Date.now();
+        const lastTime = lastPublicationTimes.get(userId) || 0;
+        const debounceTime = 3000; // 3 segundos
 
-      res.status(201).json(novaPublicacao);  // Retorna a publicação com o ID gerado
-  } catch (error) {
-      console.error(error);  // Log de erro para ajudar a debugar
-      res.status(500).json({ message: 'Erro ao criar publicação.' });
-  }
-});
+        if (now - lastTime < debounceTime) {
+            // Verifica se a requisição atual é idêntica à última feita
+            const lastReqBody = lastPublicationTimes.get(`${userId}_lastReqBody`);
+            if (JSON.stringify(req.body) === lastReqBody) {
+                console.warn(`Publicação duplicada detectada para userId: ${userId}. Ignorando.`);
+                return res.status(409).json({ message: 'Você já publicou algo muito semelhante recentemente. Por favor, aguarde e tente novamente.' });
+            }
+        }
+        // Atualiza o timestamp e o corpo da requisição para o usuário
+        lastPublicationTimes.set(userId, now);
+        lastPublicationTimes.set(`${userId}_lastReqBody`, JSON.stringify(req.body));
 
-// Rota para criar comentários
-server.post('/api/comentarios', async (req, res) => {
-  try {
-      const { publicacaoId, comentario, usuario } = req.body;
 
-      // Verificar campos obrigatórios
-      if (!publicacaoId || !comentario || !usuario) {
-          return res.status(400).json({ message: 'Campos obrigatórios faltando.' });
-      }
+        const novaPublicacao = {
+            endereco,
+            titulo,
+            conteudo,
+            lat,
+            lon,
+            userId,           // O ID do usuário que fez a publicação
+            usuario: userName, // <--- **CORREÇÃO AQUI: Salva o nome do usuário no campo 'usuario'**
+            curtidas: 0,
+            dataCriacao: admin.firestore.Timestamp.now(),
+        };
 
-      // Verificar se o comentário não é vazio
-      if (comentario.trim() === '') {
-          return res.status(400).json({ message: 'O comentário não pode ser vazio.' });
-      }
+        // Adiciona a 'marcacao' apenas se ela existir no corpo da requisição
+        if (marcacao) {
+            novaPublicacao.marcacao = marcacao; // Armazena a string GeoJSON aqui
+        }
 
-      const novoComentario = {
-          publicacaoId,
-          comentario,
-          usuario,
-          dataCriacao: admin.firestore.Timestamp.now(),  // Usando o Timestamp do Firestore para armazenar a data
-      };
+        const docRef = await db.collection('publicacoes').add(novaPublicacao);
+        novaPublicacao.id = docRef.id;
 
-      // Adicionando o comentário no Firestore
-      const docRef = await db.collection('comentarios').add(novoComentario);
-      novoComentario.id = docRef.id;  // Adiciona o ID gerado do Firestore ao comentário
-
-      res.status(201).json(novoComentario);  // Retorna o comentário com o ID gerado
-  } catch (error) {
-      console.error(error);  // Log de erro para ajudar a debugar
-      res.status(500).json({ message: 'Erro ao criar comentário.' });
-  }
-});
-
-// Rota para buscar comentários de uma publicação
-server.get('/api/publicacoes/:id/comentarios', async (req, res) => {
-  const { id } = req.params;
-
-  try {
-      const comentariosSnapshot = await db.collection('comentarios').where('publicacaoId', '==', id).get();
-      const comentarios = comentariosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-      res.status(200).json(comentarios);
-  } catch (error) {
-      console.error("Erro ao buscar comentários:", error);
-      res.status(500).json({ message: 'Erro ao buscar comentários.' });
-  }
+        res.status(201).json(novaPublicacao);
+    } catch (error) {
+        console.error("Erro ao criar publicação:", error);
+        res.status(500).json({ message: 'Erro ao criar publicação.', error: error.message });
+    }
 });
 
 // Rota para obter todas as publicações (GET)
 server.get('/api/publicacoes', async (req, res) => {
-  try {
-      const snapshot = await db.collection('publicacoes').get();
-      if (snapshot.empty) {
-          return res.status(404).json({ message: 'Nenhuma publicação encontrada!' });
-      }
+    try {
+        const snapshot = await db.collection('publicacoes').get();
+        if (snapshot.empty) {
+            return res.status(404).json({ message: 'Nenhuma publicação encontrada!' });
+        }
 
-      const publicacoes = await Promise.all(snapshot.docs.map(async (doc) => {
-          const data = doc.data();
-          const curtidasSnapshot = await db.collection('curtidas').where('publicacaoId', '==', doc.id).get();
-          const curtidasCount = curtidasSnapshot.size; // Conta o número de documentos na coleção de curtidas
+        const publicacoes = await Promise.all(snapshot.docs.map(async (doc) => {
+            const data = doc.data();
+            const curtidasSnapshot = await db.collection('curtidas').where('publicacaoId', '==', doc.id).get();
+            const curtidasCount = curtidasSnapshot.size;
 
-          return {
-              id: doc.id,
-              ...data,
-              curtidas: curtidasCount, // Adiciona o número de curtidas
-              dataCriacao: data.dataCriacao ? data.dataCriacao.toDate() : null, // Converte o Timestamp para Date
-          };
-      }));
+            return {
+                id: doc.id,
+                ...data,
+                curtidas: curtidasCount,
+                dataCriacao: data.dataCriacao ? data.dataCriacao.toDate() : null,
+            };
+        }));
 
-      res.status(200).json(publicacoes);
-  } catch (error) {
-      console.error(error); // Log de erro para ajudar a debugar
-      res.status(500).json({ message: 'Erro ao buscar publicações', error: error.message });
-  }
+        res.status(200).json(publicacoes);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erro ao buscar publicações', error: error.message });
+    }
 });
 
 // Rota para obter uma publicação por ID (GET)
 server.get('/api/publicacoes/:id', async (req, res) => {
-  try {
-    const doc = await db.collection('publicacoes').doc(req.params.id).get();
-    if (!doc.exists) {
-      return res.status(404).json({ message: 'Publicação não encontrada!' });
-    }
+    try {
+        const doc = await db.collection('publicacoes').doc(req.params.id).get();
+        if (!doc.exists) {
+            return res.status(404).json({ message: 'Publicação não encontrada!' });
+        }
 
-    res.status(200).json({ id: doc.id, ...doc.data() });
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao buscar publicação', error: error.message });
-  }
+        res.status(200).json({ id: doc.id, ...doc.data() });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao buscar publicação', error: error.message });
+    }
 });
 
-//Rota para buscar as publicacoes de um usuario especifico.
-server.get('/api/users/email/:email/publications', async (req, res) => {
-  try {
-    const { email } = req.params;
+// Rota para buscar as publicacoes de um usuario especifico.
+server.get('/api/users/:userId/publications', verificarToken, async (req, res) => {
+    try {
+        const { userId } = req.params;
 
-    // Buscar o usuário no Firestore usando o email
-    const userSnapshot = await db.collection('users').where('email', '==', email).get();
+        // Adição: Verificar se o usuário logado tem permissão para ver essas publicações
+        // Exemplo 1: Apenas o próprio usuário pode ver suas publicações
+        if (req.user.uid !== userId) {
+            // Exemplo 2: Se você quiser que admins também possam ver:
+            // if (req.user.uid !== userId && req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Acesso negado. Você não tem permissão para ver as publicações deste usuário.' });
+        }
 
-    if (userSnapshot.empty) {
-      return res.status(404).json({ message: 'Usuário não encontrado!' });
+
+        const userDoc = await db.collection('users').doc(userId).get();
+
+        if (!userDoc.exists) {
+            return res.status(404).json({ message: 'Usuário não encontrado!' });
+        }
+
+        const user = { id: userDoc.id, name: userDoc.data().name, email: userDoc.data().email };
+        const userName = user.name;
+
+        const publicationsSnapshot = await db.collection('publicacoes').where('userId', '==', userId).get();
+
+        const publications = publicationsSnapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                ...data,
+                usuario: data.usuario || userName,
+                dataCriacao: data.dataCriacao ? data.dataCriacao.toDate() : null,
+            };
+        });
+
+        res.status(200).json({
+            user,
+            publications,
+            publicationsCount: publications.length,
+        });
+    } catch (error) {
+        console.error("Erro ao buscar usuário e publicações:", error);
+        res.status(500).json({ message: 'Erro ao buscar usuário e publicações', error: error.message });
     }
+});
 
-    const user = userSnapshot.docs.map(doc => {
-      const { name, email } = doc.data(); // Extrair nome e email
-      return { id: doc.id, name, email }; // Retornar apenas id, name e email
-    })[0]; // Pegar o primeiro resultado
+// Rota para criar comentários
+server.post('/api/comentarios', verificarToken, async (req, res) => { // Protegida
+    try {
+        // userId e userName podem vir do token decodificado (req.user)
+        const usuarioId = req.user.uid;
+        const usuarioNome = req.user.name;
 
-    // Buscar as publicações do usuário
-    const publicationsSnapshot = await db.collection('publicacoes').where('userId', '==', user.id).get();
+        const { publicacaoId, comentario } = req.body;
 
-    const publications = publicationsSnapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        ...data,
-        dataCriacao: data.dataCriacao ? data.dataCriacao.toDate() : null, // Converte o Timestamp para Date
-      };
-    });
+        // Verificar campos obrigatórios
+        if (!publicacaoId || !comentario) {
+            return res.status(400).json({ message: 'Campos obrigatórios faltando: publicacaoId, comentario.' });
+        }
 
-    // Retornar o usuário, publicações e a contagem de publicações
-    res.status(200).json({
-      user,
-      publications,
-      publicationsCount: publications.length, // Adiciona a contagem de publicações
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao buscar usuário e publicações', error: error.message });
-  }
+        // Verificar se o comentário não é vazio
+        if (comentario.trim() === '') {
+            return res.status(400).json({ message: 'O comentário não pode ser vazio.' });
+        }
+
+        const novoComentario = {
+            publicacaoId,
+            comentario,
+            usuario: usuarioNome, // <--- Usa o nome do usuário do token para consistência
+            usuarioId: usuarioId, // Adiciona o ID do usuário que comentou
+            dataCriacao: admin.firestore.Timestamp.now(),
+        };
+
+        const docRef = await db.collection('comentarios').add(novoComentario);
+        novoComentario.id = docRef.id;
+
+        res.status(201).json(novoComentario);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erro ao criar comentário.' });
+    }
+});
+
+// Rota para buscar comentários de uma publicação
+server.get('/api/publicacoes/:id/comentarios', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const comentariosSnapshot = await db.collection('comentarios').where('publicacaoId', '==', id).orderBy('dataCriacao', 'asc').get(); // Ordenado por data
+        const comentarios = comentariosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        res.status(200).json(comentarios);
+    } catch (error) {
+        console.error("Erro ao buscar comentários:", error);
+        res.status(500).json({ message: 'Erro ao buscar comentários.' });
+    }
 });
 
 // Rota para buscar um usuário pelo email e retornar nome, email e id
 server.get('/api/users/email/:email', async (req, res) => {
-  try {
-    const { email } = req.params;
-    
-    // Buscar o usuário no Firestore usando o email
-    const snapshot = await db.collection('users').where('email', '==', email).get();
+    try {
+        const { email } = req.params;
 
-    if (snapshot.empty) {
-      return res.status(404).json({ message: 'Usuário não encontrado!' });
+        const snapshot = await db.collection('users').where('email', '==', email).get();
+
+        if (snapshot.empty) {
+            return res.status(404).json({ message: 'Usuário não encontrado!' });
+        }
+
+        const user = snapshot.docs.map(doc => {
+            const { name, email } = doc.data();
+            return { id: doc.id, name, email };
+        })[0];
+
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao buscar usuário', error: error.message });
     }
-
-    const user = snapshot.docs.map(doc => {
-      const { name, email } = doc.data(); // Extrair nome e email
-      return { id: doc.id, name, email }; // Retornar apenas id, name e email
-    })[0];  // Como o email é único, podemos pegar o primeiro resultado
-
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao buscar usuário', error: error.message });
-  }
 });
+
 //Rotas para editarADMIN
-// Rota para editar um usuário (PUT)
-server.put('/api/users/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { name, email } = req.body;
+// Rota para editar um usuário (PUT) - Protegida
+server.put('/api/users/:id', verificarToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, email } = req.body;
 
-    if (!name || !email) {
-      return res.status(400).json({ message: 'Nome e email são obrigatórios.' });
+        if (!name || !email) {
+            return res.status(400).json({ message: 'Nome e email são obrigatórios.' });
+        }
+
+        const userRef = db.collection('users').doc(id);
+        const userDoc = await userRef.get();
+
+        if (!userDoc.exists) {
+            return res.status(404).json({ message: 'Usuário não encontrado!' });
+        }
+
+        await userRef.update({
+            name,
+            email,
+        });
+
+        res.status(200).json({ message: 'Usuário atualizado com sucesso!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao atualizar usuário', error: error.message });
     }
-
-    const userRef = db.collection('users').doc(id);
-    const userDoc = await userRef.get();
-
-    if (!userDoc.exists) {
-      return res.status(404).json({ message: 'Usuário não encontrado!' });
-    }
-
-    await userRef.update({
-      name,
-      email,
-    });
-
-    res.status(200).json({ message: 'Usuário atualizado com sucesso!' });
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao atualizar usuário', error: error.message });
-  }
 });
-// Rota para editar uma publicação (PUT)
-server.put('/api/publicacoes/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { endereco, titulo, conteudo, marcacao, lat, lon } = req.body;
 
-    if (!endereco || !titulo || !conteudo || !lat || !lon) {
-      return res.status(400).json({ message: 'Campos obrigatórios faltando.' });
+// Rota para editar uma publicação (PUT) - CONSOLIDADA - Protegida
+server.put('/api/publicacoes/:id', verificarToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { endereco, titulo, conteudo, lat, lon } = req.body;
+
+        if (!endereco && !titulo && !conteudo && !lat && !lon) {
+            return res.status(400).json({ message: 'Pelo menos um campo (endereco, titulo, conteudo, lat, lon) é obrigatório para atualização.' });
+        }
+
+        const publicacaoRef = db.collection('publicacoes').doc(id);
+        const publicacaoDoc = await publicacaoRef.get();
+
+        if (!publicacaoDoc.exists) {
+            return res.status(404).json({ message: 'Publicação não encontrada!' });
+        }
+
+        const updateData = {};
+        if (endereco !== undefined) updateData.endereco = endereco;
+        if (titulo !== undefined) updateData.titulo = titulo;
+        if (conteudo !== undefined) updateData.conteudo = conteudo;
+        if (lat !== undefined) updateData.lat = lat;
+        if (lon !== undefined) updateData.lon = lon;
+
+        await publicacaoRef.update(updateData);
+
+        res.status(200).json({ message: 'Publicação atualizada com sucesso!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao atualizar publicação', error: error.message });
     }
-
-    const publicacaoRef = db.collection('publicacoes').doc(id);
-    const publicacaoDoc = await publicacaoRef.get();
-
-    if (!publicacaoDoc.exists) {
-      return res.status(404).json({ message: 'Publicação não encontrada!' });
-    }
-
-    await publicacaoRef.update({
-      endereco,
-      titulo,
-      conteudo,
-      marcacao,
-      lat,
-      lon,
-    });
-
-    res.status(200).json({ message: 'Publicação atualizada com sucesso!' });
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao atualizar publicação', error: error.message });
-  }
 });
 
 // Rota para buscar usuários pelo nome
 server.get('/api/users/name/:name', async (req, res) => {
-  try {
-    const { name } = req.params;
+    try {
+        const { name } = req.params;
 
-    // Buscar usuários no Firestore usando o nome
-    const snapshot = await db.collection('users').where('name', '>=', name).where('name', '<=', name + '\uf8ff').get();
+        const snapshot = await db.collection('users').where('name', '>=', name).where('name', '<=', name + '\uf8ff').get();
 
-    if (snapshot.empty) {
-      return res.status(404).json({ message: 'Nenhum usuário encontrado com esse nome!' });
+        if (snapshot.empty) {
+            return res.status(404).json({ message: 'Nenhum usuário encontrado com esse nome!' });
+        }
+
+        const users = snapshot.docs.map(doc => {
+            const { email } = doc.data();
+            return { id: doc.id, name: doc.data().name, email };
+        });
+
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao buscar usuários', error: error.message });
     }
-
-    const users = snapshot.docs.map(doc => {
-      const { email } = doc.data(); // Extrair email
-      return { id: doc.id, name: doc.data().name, email }; // Retornar apenas id, name e email
-    });
-
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao buscar usuários', error: error.message });
-  }
 });
 
-// Rota para criar uma relação de amizade( colecao amigos )
-server.post('/api/amigos', async (req, res) => {
-  try {
-    const { usuarioId, amigoId } = req.body;
+// Rota para criar uma relação de amizade (coleção amigos)
+server.post('/api/amigos', verificarToken, async (req, res) => { // Protegida
+    try {
+        const { amigoId } = req.body;
+        const usuarioId = req.user.uid; // ID do usuário do token
 
-    // Verificar se a relação já existe
-    const amizadeExistente = await db.collection('amigos').where('usuarioId', '==', usuarioId).where('amigoId', '==', amigoId).get();
+        // Evitar que o usuário siga a si mesmo
+        if (usuarioId === amigoId) {
+            return res.status(400).json({ message: 'Você não pode seguir a si mesmo.' });
+        }
 
-    if (!amizadeExistente.empty) {
-      return res.status(400).json({ message: 'Você já está seguindo este usuário.' });
+        // Verificar se a relação já existe
+        const amizadeExistente = await db.collection('amigos').where('usuarioId', '==', usuarioId).where('amigoId', '==', amigoId).get();
+
+        if (!amizadeExistente.empty) {
+            return res.status(400).json({ message: 'Você já está seguindo este usuário.' });
+        }
+
+        // Adicionar a nova relação de amizade
+        await db.collection('amigos').add({
+            usuarioId,
+            amigoId,
+            dataCriacao: admin.firestore.Timestamp.now(),
+        });
+
+        res.status(201).json({ message: 'Relação de amizade criada com sucesso!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao criar relação de amizade', error: error.message });
     }
-
-    // Adicionar a nova relação de amizade
-    await db.collection('amigos').add({
-      usuarioId,
-      amigoId,
-      dataCriacao: admin.firestore.Timestamp.now(),
-    });
-
-    res.status(201).json({ message: 'Relação de amizade criada com sucesso!' });
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao criar relação de amizade', error: error.message });
-  }
 });
 
 //rotas para manipular colecao amigos==============
 // Rota para obter a quantidade de seguidores de um usuário
 server.get('/api/users/:id/seguidores', async (req, res) => {
-  try {
-    const { id } = req.params;
+    try {
+        const { id } = req.params;
 
-    // Buscar todas as relações de amizade onde o amigo é o usuário
-    const seguidoresSnapshot = await db.collection('amigos').where('amigoId', '==', id).get();
+        const seguidoresSnapshot = await db.collection('amigos').where('amigoId', '==', id).get();
 
-    const quantidadeSeguidores = seguidoresSnapshot.size; // Conta o número de documentos
+        const quantidadeSeguidores = seguidoresSnapshot.size;
 
-    res.status(200).json({ quantidadeSeguidores });
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao buscar seguidores', error: error.message });
-  }
+        res.status(200).json({ quantidadeSeguidores });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao buscar seguidores', error: error.message });
+    }
 });
+
 // Rota para obter a quantidade de usuários que um usuário está seguindo
 server.get('/api/users/:id/seguindo', async (req, res) => {
-  try {
-    const { id } = req.params;
+    try {
+        const { id } = req.params;
 
-    // Buscar todas as relações de amizade onde o usuário é o que está seguindo
-    const seguindoSnapshot = await db.collection('amigos').where('usuarioId', '==', id).get();
+        const seguindoSnapshot = await db.collection('amigos').where('usuarioId', '==', id).get();
 
-    const quantidadeSeguindo = seguindoSnapshot.size; // Conta o número de documentos
+        const quantidadeSeguindo = seguindoSnapshot.size;
 
-    res.status(200).json({ quantidadeSeguindo });
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao buscar seguindo', error: error.message });
-  }
+        res.status(200).json({ quantidadeSeguindo });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao buscar seguindo', error: error.message });
+    }
 });
-
-
-// Seguranca===========
-import jwt from 'jsonwebtoken';
-const secretKey = 'UmaSENHA'; // Defina uma senha secreta para gerar o token
-
-let revokedTokens = []; // Lista para armazenar tokens revogados
 
 // Função para limpar tokens expirados da lista de revogados
 const limparTokensExpirados = () => {
-    const now = Date.now();
     revokedTokens = revokedTokens.filter((token) => {
         try {
-            jwt.verify(token, secretKey); // Verifica se o token ainda é válido
+            jwt.verify(token, secretKey);
             return true;
         } catch (err) {
-            return false; // Remove tokens expirados
+            return false;
         }
     });
 };
 // Limpa tokens expirados a cada minuto
-setInterval(limparTokensExpirados, 6000000);
+setInterval(limparTokensExpirados, 60000);
 
-// Middleware para verificar tokens
-const verificarToken = (req, res, next) => {
-    const token = req.headers['authorization']?.split(' ')[1];
 
-    if (!token) {
-        return res.status(401).json({ message: 'Token não fornecido.' }); // 401 Unauthorized
-    }
-
-    if (revokedTokens.includes(token)) {
-        return res.status(403).json({ message: 'Token revogado. Faça login novamente.' }); // 403 Forbidden
-    }
-
-    jwt.verify(token, secretKey, (err, decoded) => {
-        if (err) {
-            return res.status(403).json({ message: 'Token inválido ou expirado.' }); // 403 Forbidden
-        }
-        req.user = decoded; // Armazena os dados decodificados do token na requisição
-        next();
-    });
-};
+// Rota protegida para validar token
+server.post('/api/validate-token', verificarToken, (req, res) => {
+    res.status(200).json({ message: 'Token válido.', user: req.user });
+});
 
 // Rota para login administrativo
 server.post('/api/admin/login', (req, res) => {
     const { password } = req.body;
 
     if (!password) {
-        return res.status(400).json({ message: 'Senha administrativa é obrigatória!' }); // 400 Bad Request
+        return res.status(400).json({ message: 'Senha administrativa é obrigatória!' });
     }
 
-    // Verifique a senha administrativa
-    if (password === 'suaSenhaAdministrativa') {
-        const token = jwt.sign({ role: 'admin' }, secretKey, { expiresIn: '1m' }); // Token expira em 5 minutos
+    if (password === 'suaSenhaAdministrativa') { // AINDA UMA SENHA HARDCODED, MUDE ISSO EM PRODUÇÃO
+        const token = jwt.sign({ role: 'admin' }, secretKey, { expiresIn: '1h' });
         return res.status(200).json({ message: 'Login administrativo realizado com sucesso!', token });
     } else {
-        return res.status(403).json({ message: 'Senha administrativa incorreta.' }); // 403 Forbidden
+        return res.status(403).json({ message: 'Senha administrativa incorreta.' });
     }
 });
 
-// Rota para login regular
+// Rota para login regular (agora gerando seu próprio JWT)
 server.post('/api/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -617,7 +666,8 @@ server.post('/api/login', async (req, res) => {
         const user = userCredential.user;
 
         // Gera o token de autenticação com expiração de 55 minutos
-        const token = jwt.sign({ uid: user.uid, email: user.email }, secretKey, { expiresIn: '1m' });
+        const token = jwt.sign({ uid: user.uid, email: user.email, name: user.displayName}, secretKey, { expiresIn: '15m' });
+        //localStorage.setItem("userToken", token);
 
         return res.status(200).json({
             message: 'Usuário autenticado com sucesso!',
@@ -627,7 +677,7 @@ server.post('/api/login', async (req, res) => {
                 displayName: user.displayName,
                 photoURL: user.photoURL,
             },
-            token,
+            token: token
         });
     } catch (error) {
         return res.status(500).json({ message: 'Erro ao autenticar usuário.', error: error.message }); // 500 Internal Server Error
@@ -637,7 +687,7 @@ server.post('/api/login', async (req, res) => {
 // Rota protegida para administradores
 server.get('/api/admin/protected', verificarToken, (req, res) => {
     if (req.user.role !== 'admin') {
-        return res.status(403).json({ message: 'Acesso negado. Apenas administradores podem acessar esta rota.' }); // 403 Forbidden
+        return res.status(403).json({ message: 'Acesso negado. Apenas administradores podem acessar esta rota.' });
     }
     res.status(200).json({ message: 'Você acessou uma rota protegida!', user: req.user });
 });
@@ -647,223 +697,178 @@ server.post('/api/logout', verificarToken, (req, res) => {
     const token = req.headers['authorization']?.split(' ')[1];
 
     if (!token) {
-        return res.status(400).json({ message: 'Token não fornecido.' }); // 400 Bad Request
+        return res.status(400).json({ message: 'Token não fornecido.' });
     }
 
     if (revokedTokens.includes(token)) {
-        return res.status(400).json({ message: 'Você já realizou logout.' }); // 400 Bad Request
+        return res.status(400).json({ message: 'Você já realizou logout.' });
     }
 
-    revokedTokens.push(token); // Adiciona o token à lista de revogados
+    revokedTokens.push(token);
     return res.status(200).json({ message: 'Logout realizado com sucesso.' });
 });
 
-// Rota para validar o token
-server.post('/api/validate-token', verificarToken, (req, res) => {
-  return res.status(200).json({ message: 'Token válido!', user: req.user });
-});
-
-// Rota para validar o token
-server.post('/api/admin/validate-token', verificarToken, (req, res) => {
-  return res.status(200).json({ message: 'Token válido!', user: req.user });
-});
-
-export default server;
-
-
-
+// Rotas que precisam de proteção com 'verificarToken' (já listadas, apenas para clareza)
+// server.post('/api/demarcacoes-coords', verificarToken, async (req, res) => { /* ... */ });
+// server.post('/api/publicacoes', verificarToken, async (req, res) => { /* ... */ });
+// server.put('/api/publicacoes/:id', verificarToken, async (req, res) => { /* ... */ });
+// server.delete('/api/publicacoes', verificarToken, async (req, res) => { /* ... */ });
+// server.post('/api/comentarios', verificarToken, async (req, res) => { /* ... */ });
+// server.post('/api/publicacoes/:id/curtir', verificarToken, async (req, res) => { /* ... */ });
+// server.delete('/api/publicacoes/:id/descurtir', verificarToken, async (req, res) => { /* ... */ });
+// server.post('/api/amigos', verificarToken, async (req, res) => { /* ... */ });
+// server.post('/api/notificacoes', verificarToken, async (req, res) => { /* ... */ });
 
 
 //rotas de curtidas
-// Rota para curtir uma publicação
-server.post('/api/publicacoes/:id/curtir', async (req, res) => {
-  try {
-    const { userId } = req.body; // O ID do usuário que está curtindo
-    const publicacaoId = req.params.id; // O ID da publicação a ser curtida
+// Rota para curtir uma publicação - Protegida
+server.post('/api/publicacoes/:id/curtir', verificarToken, async (req, res) => {
+    try {
+        const userId = req.user.uid; // ID do usuário vem do token
+        const publicacaoId = req.params.id;
 
-    // Verificar se a curtida já existe
-    const curtidaExistente = await db.collection('curtidas')
-      .where('publicacaoId', '==', publicacaoId)
-      .where('userId', '==', userId)
-      .get();
+        const curtidaExistente = await db.collection('curtidas')
+            .where('publicacaoId', '==', publicacaoId)
+            .where('userId', '==', userId)
+            .get();
 
-    if (!curtidaExistente.empty) {
-      return res.status(400).json({ message: 'Você já curtiu esta publicação.' });
+        if (!curtidaExistente.empty) {
+            return res.status(400).json({ message: 'Você já curtiu esta publicação.' });
+        }
+
+        await db.collection('curtidas').add({
+            publicacaoId,
+            userId,
+            dataCriacao: admin.firestore.Timestamp.now(),
+        });
+
+        const publicacaoRef = db.collection('publicacoes').doc(publicacaoId);
+        await publicacaoRef.update({
+            curtidas: admin.firestore.FieldValue.increment(1),
+        });
+
+        res.status(201).json({ message: 'Publicação curtida com sucesso!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao curtir a publicação', error: error.message });
     }
-
-    // Adicionar a nova curtida
-    await db.collection('curtidas').add({
-      publicacaoId,
-      userId,
-      dataCriacao: admin.firestore.Timestamp.now(),
-    });
-
-    // Atualizar o contador de curtidas na publicação
-    const publicacaoRef = db.collection('publicacoes').doc(publicacaoId);
-    await publicacaoRef.update({
-      curtidas: admin.firestore.FieldValue.increment(1), // Incrementa o contador de curtidas
-    });
-
-    res.status(201).json({ message: 'Publicação curtida com sucesso!' });
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao curtir a publicação', error: error.message });
-  }
 });
 
-// Rota para descurtir uma publicação
-server.delete('/api/publicacoes/:id/descurtir', async (req, res) => {
-  try {
-    const { userId } = req.body; // O ID do usuário que está descurtindo
-    const publicacaoId = req.params.id; // O ID da publicação a ser descurtida
+// Rota para descurtir uma publicação - Protegida
+server.delete('/api/publicacoes/:id/descurtir', verificarToken, async (req, res) => {
+    try {
+        const userId = req.user.uid; // ID do usuário vem do token
+        const publicacaoId = req.params.id;
 
-    // Verificar se a curtida existe
-    const curtidaExistente = await db.collection('curtidas')
-      .where('publicacaoId', '==', publicacaoId)
-      .where('userId', '==', userId)
-      .get();
+        const curtidaExistente = await db.collection('curtidas')
+            .where('publicacaoId', '==', publicacaoId)
+            .where('userId', '==', userId)
+            .get();
 
-    if (curtidaExistente.empty) {
-      return res.status(400).json({ message: 'Você ainda não curtiu esta publicação.' });
+        if (curtidaExistente.empty) {
+            return res.status(400).json({ message: 'Você ainda não curtiu esta publicação.' });
+        }
+
+        const curtidaId = curtidaExistente.docs[0].id;
+        await db.collection('curtidas').doc(curtidaId).delete();
+
+        const publicacaoRef = db.collection('publicacoes').doc(publicacaoId);
+        await publicacaoRef.update({
+            curtidas: admin.firestore.FieldValue.increment(-1),
+        });
+
+        res.status(200).json({ message: 'Publicação descurtida com sucesso!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao descurtir a publicação', error: error.message });
     }
-
-    // Remover a curtida
-    const curtidaId = curtidaExistente.docs[0].id; // Pega o ID da curtida existente
-    await db.collection('curtidas').doc(curtidaId).delete();
-
-    // Atualizar o contador de curtidas na publicação
-    const publicacaoRef = db.collection('publicacoes').doc(publicacaoId);
-    await publicacaoRef.update({
-      curtidas: admin.firestore.FieldValue.increment(-1), // Decrementa o contador de curtidas
-    });
-
-    res.status(200).json({ message: 'Publicação descurtida com sucesso!' });
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao descurtir a publicação', error: error.message });
-  }
 });
 
 //Rotas para notificacoes
-// Rota para criar uma notificação
-server.post('/api/notificacoes', async (req, res) => {
-  try {
-    const { usuarioId, mensagem } = req.body;
+// Rota para criar uma notificação - Protegida
+server.post('/api/notificacoes', verificarToken, async (req, res) => {
+    try {
+        const usuarioId = req.user.uid; // ID do usuário vem do token
+        const { mensagem } = req.body;
 
-    // Verificar campos obrigatórios
-    if (!usuarioId || !mensagem) {
-      return res.status(400).json({ message: 'Usuário ID e mensagem são obrigatórios.' });
+        if (!mensagem) {
+            return res.status(400).json({ message: 'Mensagem é obrigatória.' });
+        }
+
+        const novaNotificacao = {
+            usuarioId,
+            mensagem,
+            dataCriacao: admin.firestore.Timestamp.now(),
+        };
+
+        const docRef = await db.collection('notificacoes').add(novaNotificacao);
+        novaNotificacao.id = docRef.id;
+
+        res.status(201).json(novaNotificacao);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erro ao criar notificação.' });
     }
-
-    const novaNotificacao = {
-      usuarioId,
-      mensagem,
-      dataCriacao: admin.firestore.Timestamp.now(), // Usando o Timestamp do Firestore para armazenar a data
-    };
-
-    // Adicionando a notificação no Firestore
-    const docRef = await db.collection('notificacoes').add(novaNotificacao);
-    novaNotificacao.id = docRef.id; // Adiciona o ID gerado do Firestore à notificação
-
-    res.status(201).json(novaNotificacao); // Retorna a notificação com o ID gerado
-  } catch (error) {
-    console.error(error); // Log de erro para ajudar a debugar
-    res.status(500).json({ message: 'Erro ao criar notificação.' });
-  }
 });
+
 // Rota para buscar notificações de um usuário
-server.get('/api/notificacoes/:usuarioId', async (req, res) => {
-  const { usuarioId } = req.params;
+server.get('/api/notificacoes/:usuarioId', verificarToken, async (req, res) => { // Protegida
+    const { usuarioId } = req.params;
 
-  try {
-    const notificacoesSnapshot = await db.collection('notificacoes').where('usuarioId', '==', usuarioId).orderBy('dataCriacao', 'desc').get();
-    const notificacoes = notificacoesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    // Garante que o usuário só possa ver suas próprias notificações, a menos que seja admin
+    if (req.user.uid !== usuarioId && req.user.role !== 'admin') {
+        return res.status(403).json({ message: 'Acesso negado. Você não tem permissão para ver essas notificações.' });
+    }
 
-    res.status(200).json(notificacoes);
-  } catch (error) {
-    console.error("Erro ao buscar notificações:", error);
-    res.status(500).json({ message: 'Erro ao buscar notificações.' });
-  }
+    try {
+        const notificacoesSnapshot = await db.collection('notificacoes').where('usuarioId', '==', usuarioId).orderBy('dataCriacao', 'desc').get();
+        const notificacoes = notificacoesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        res.status(200).json(notificacoes);
+    } catch (error) {
+        console.error("Erro ao buscar notificações:", error);
+        res.status(500).json({ message: 'Erro ao buscar notificações.' });
+    }
 });
 
-// ROTA PARA ATUALIZAR PUBLICAÇÕES (EDITAR ENDEREÇO, TÍTULO E COMENTÁRIO)
-server.put('/api/publicacoes/:id', async (req, res) => {
-  try {
-    const {titulo, comentario } = req.body;
+// ROTA PARA EXCLUIR MÚLTIPLAS PUBLICAÇÕES DE UMA VEZ - Protegida
+server.delete('/api/publicacoes', verificarToken, async (req, res) => {
+    try {
+        const { ids } = req.body;
 
-    if (!titulo || !comentario) {
-      return res.status(400).json({ message: 'Campos obrigatórios faltando.' });
+        if (!ids || !Array.isArray(ids) || ids.length === 0) {
+            return res.status(400).json({ message: 'Nenhum id fornecido para exclusão.' });
+        }
+
+        const batch = db.batch();
+        ids.forEach(id => {
+            const docRef = db.collection('publicacoes').doc(id);
+            batch.delete(docRef);
+        });
+
+        await batch.commit();
+        res.status(200).json({ message: 'Publicações deletadas com sucesso!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao deletar publicações', error: error.message });
     }
-
-    // Pegue os dados atuais da publicação
-    const doc = await db.collection('publicacoes').doc(req.params.id).get();
-    if (!doc.exists) {
-      return res.status(404).json({ message: 'Publicação não encontrada.' });
-    }
-
-    const existingData = doc.data();
-    
-    // Verifique se houve mudança
-    if (existingData.titulo === titulo && existingData.comentario === comentario) {
-      return res.status(200).json({ message: 'Nenhuma alteração detectada.' });
-    }
-
-    // Se houver alteração, faça a atualização
-    await db.collection('publicacoes').doc(req.params.id).update({
-      titulo,
-      comentario
-    });
-
-    res.status(200).json({ message: 'Publicação atualizada com sucesso!' });
-  } catch (error) {
-    console.error('Erro ao atualizar publicação:', error);
-    res.status(500).json({ message: 'Erro ao atualizar publicação', error: error.message });
-  }
-});
-
-// ROTA PARA EXCLUIR MÚLTIPLAS PUBLICAÇÕES DE UMA VEZ
-server.delete('/api/publicacoes', async (req, res) => {
-  try {
-    const { ids } = req.body; // Espera um array de IDs no corpo da requisição
-
-    if (!ids || !Array.isArray(ids) || ids.length === 0) {
-      return res.status(400).json({ message: 'Nenhum id fornecido para exclusão.' });
-    }
-
-    // Cria um batch para exclusão
-    const batch = db.batch();
-    ids.forEach(id => {
-      const docRef = db.collection('publicacoes').doc(id);
-      batch.delete(docRef);
-    });
-
-    await batch.commit();
-    res.status(200).json({ message: 'Publicações deletadas com sucesso!' });
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao deletar publicações', error: error.message });
-  }
 });
 
 // ROTA PARA VERIFICAR SE O EMAIL JA ESTA CADASTRADO.
 server.get('/api/users/check-email/:email', async (req, res) => {
-  try {
-    const { email } = req.params;
+    try {
+        const { email } = req.params;
 
-    // Buscar o usuário no Firestore usando o e-mail
-    const snapshot = await db.collection('users').where('email', '==', email).get();
+        const snapshot = await db.collection('users').where('email', '==', email).get();
 
-    // Se não houver usuário, o e-mail é único
-    if (snapshot.empty) {
-      return res.status(200).json({ isUnique: true });
+        if (snapshot.empty) {
+            return res.status(200).json({ isUnique: true });
+        }
+
+        return res.status(200).json({ isUnique: false });
+    } catch (error) {
+        return res.status(500).json({
+            message: 'Erro ao verificar o e-mail',
+            error: error.message
+        });
     }
-
-    // Caso contrário, o e-mail já está cadastrado
-    return res.status(200).json({ isUnique: false });
-  } catch (error) {
-    return res.status(500).json({ 
-      message: 'Erro ao verificar o e-mail', 
-      error: error.message 
-    });
-  }
 });
-
 
 server.listen(3000, () => console.log('Servidor rodando na porta 3000'));

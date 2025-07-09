@@ -1,629 +1,716 @@
-// Configuração inicial do mapa principal
-const mainMap = L.map('map').setView([-23.55052, -46.633308], 20);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-}).addTo(mainMap);
+// forum.js
+console.log('forum.js está carregando e executando!');
 
-// Grupo de camadas para os desenhos no mapa principal
-const drawnItems = new L.FeatureGroup();
-mainMap.addLayer(drawnItems);
+// Variáveis globais (ou acessíveis) para o mapa,
+// para que possam ser acessadas em diferentes funções e listeners
+let mainMap;
+let drawnItems;
+let drawControl;
 
-// Controles de desenho no mapa principal
-const drawControl = new L.Control.Draw({
-    edit: { featureGroup: drawnItems },
-    draw: {
-        polygon: true,
-        polyline: true,
-        rectangle: true,
-        circle: true,
-        marker: true
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOMContentLoaded disparado. Iniciando configurações do fórum.');
+
+    // --- 1. Inicialização do Mapa Principal (Movido para dentro do DOMContentLoaded) ---
+    const mapElement = document.getElementById('map');
+    if (mapElement) {
+        try {
+            mainMap = L.map('map').setView([-23.55052, -46.633308], 20);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(mainMap);
+
+            drawnItems = new L.FeatureGroup();
+            mainMap.addLayer(drawnItems);
+
+            drawControl = new L.Control.Draw({
+                edit: { featureGroup: drawnItems },
+                draw: {
+                    polygon: true,
+                    polyline: true,
+                    rectangle: true,
+                    circle: true,
+                    marker: true
+                }
+            });
+            mainMap.addControl(drawControl);
+
+            console.log('Mapa Leaflet principal inicializado.');
+
+            mainMap.on('draw:created', function (event) {
+                const layer = event.layer;
+                drawnItems.addLayer(layer);
+                const publicarButton = document.getElementById('publicar');
+                if (publicarButton) {
+                    publicarButton.dataset.shape = JSON.stringify(layer.toGeoJSON());
+                    console.log('Forma desenhada e armazenada no botão Publicar.');
+                }
+            });
+
+            mainMap.on('draw:drawstart', function () {
+                const publicarButton = document.getElementById('publicar');
+                if (publicarButton && publicarButton.dataset.shape) {
+                    delete publicarButton.dataset.shape;
+                    console.log('Desenho anterior limpo do botão Publicar.');
+                }
+            });
+
+        } catch (error) {
+            console.error('Erro ao inicializar o mapa Leaflet principal:', error);
+        }
+    } else {
+        console.warn('Elemento #map para o mapa principal não encontrado. O mapa não será inicializado.');
     }
-});
-mainMap.addControl(drawControl);
 
-// Geocodificação do endereço ao perder o foco no campo
-document.getElementById('endereco').addEventListener('blur', function () {
-    const address = this.value;
-    if (!address) return;
-    const geocodeUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
-    fetch(geocodeUrl)
-        .then(response => response.json())
-        .then(data => {
-            if (data.length > 0) {
-                const { lat, lon } = data[0];
-                mainMap.setView([lat, lon], 13);
-                L.marker([lat, lon]).addTo(mainMap).bindPopup(`Localização: ${address}`).openPopup();
-            } else {
-                alert("Endereço não encontrado.");
+    // --- 2. Lógica do Botão Toggle "Nova Publicação" ---
+    const toggleButton = document.getElementById('toggle-visibility');
+    const newPostContent = document.querySelector('.new-post-content');
+
+    if (toggleButton && newPostContent) {
+        toggleButton.textContent = 'Ocultar';
+
+        toggleButton.addEventListener('click', () => {
+            const isHidden = newPostContent.classList.toggle('hidden');
+            toggleButton.textContent = isHidden ? 'Exibir' : 'Ocultar';
+
+            if (!isHidden && mainMap && typeof mainMap.invalidateSize === 'function') {
+                setTimeout(() => {
+                    mainMap.invalidateSize();
+                }, 100);
             }
-        })
-        .catch(error => console.error("Erro ao buscar endereço:", error));
-});
+        });
+    } else {
+        console.error('Elemento toggleButton ou newPostContent não encontrado. Funcionalidade de toggle desabilitada.');
+    }
 
-// Armazena o desenho em formato GeoJSON ao concluí-lo
-mainMap.on('draw:created', function (event) {
-    const layer = event.layer;
-    drawnItems.addLayer(layer);
-    document.getElementById('publicar').dataset.shape = JSON.stringify(layer.toGeoJSON());
-});
+    // --- 3. Geocodificação do endereço ao perder o foco no campo ---
+    const enderecoInput = document.getElementById('endereco');
+    if (enderecoInput) {
+        enderecoInput.addEventListener('blur', function () {
+            const address = this.value.trim();
+            if (!address) return;
 
-// Função para adicionar uma publicação (no lado do cliente) e enviar para o backend
-document.getElementById('publicar').addEventListener('click', (e) => {
-    e.preventDefault();
+            const geocodeUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`;
+            fetch(geocodeUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.length > 0) {
+                        const { lat, lon } = data[0];
+                        if (mainMap) {
+                            mainMap.setView([lat, lon], 13);
+                            mainMap.eachLayer(function (layer) {
+                                if (layer instanceof L.Marker && layer !== drawnItems) {
+                                    mainMap.removeLayer(layer);
+                                }
+                            });
+                            L.marker([lat, lon]).addTo(mainMap).bindPopup(`Localização: ${address}`).openPopup();
+                        }
+                    } else {
+                        alert("Endereço não encontrado.");
+                    }
+                })
+                .catch(error => console.error("Erro ao buscar endereço:", error));
+        });
+    } else {
+        console.warn('Elemento #endereco não encontrado. Geocodificação desabilitada.');
+    }
 
-    // Valores do formulário
-    const titulo = document.querySelector('#titulo').value.trim();
-    const conteudo = document.querySelector('#conteudo').value.trim();
-    const endereco = document.querySelector('#endereco').value.trim();
-    
-    // Recuperando o nome do usuário do localStorage
-    const userName = localStorage.getItem("userName");
+    // --- 4. Função para adicionar uma publicação (no lado do cliente) e enviar para o backend ---
+    const publicarButton = document.getElementById('publicar');
+    if (publicarButton) {
+        publicarButton.addEventListener('click', async (e) => {
+            e.preventDefault();
 
-    // Geocodificação do endereço
-    const geocodeUrl = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(endereco)}&apiKey=526703722e01495ebde57e4393f8aa68`;
-    fetch(geocodeUrl)
-        .then(response => response.json())
-        .then(data => {
-            if (!data.features.length) {
-                document.getElementById('feedback').textContent = 'Endereço não encontrado.';
+            const titulo = document.querySelector('#titulo').value.trim();
+            const conteudo = document.querySelector('#conteudo').value.trim();
+            const endereco = document.querySelector('#endereco').value.trim();
+            const feedbackElement = document.getElementById('feedback');
+
+            const userName = localStorage.getItem("userName");
+            const userId = localStorage.getItem("userId");
+            const userToken = localStorage.getItem("userToken");
+
+            if (!userName || !userId || !userToken) {
+                alert("Você precisa estar logado para publicar.");
                 return;
             }
 
-            const [lon, lat] = data.features[0].geometry.coordinates;
-
-            // Enviar a publicação para o backend
-            return fetch('/api/publicacoes', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    titulo,
-                    conteudo,
-                    endereco,
-                    lat,
-                    lon,
-                    usuario: userName // Incluindo o nome do usuário na publicação
-                })
-            });
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erro ao enviar a publicação');
+            if (!titulo || !conteudo || !endereco) {
+                feedbackElement.textContent = 'Por favor, preencha todos os campos.';
+                feedbackElement.style.color = 'red';
+                return;
             }
-            return response.json(); // Retorna a publicação criada
-        })
-        .then(publicacao => {
-            // Criar a notificação
-            return fetch('/api/notificacoes', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    usuarioId: localStorage.getItem("userId"), // ID do usuário que está recebendo a notificação
-                    mensagem: `${userName} fez uma nova publicação: "${titulo}"`
-                })
-            })
-            .then(notificationResponse => {
-                if (!notificationResponse.ok) {
-                    throw new Error('Erro ao criar notificação');
+
+            let lat, lon;
+            try {
+                const geocodeUrl = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(endereco)}&apiKey=526703722e01495ebde57e4393f8aa68`;
+                const geoapifyResponse = await fetch(geocodeUrl);
+                const geoapifyData = await geoapifyResponse.json();
+
+                if (!geoapifyData.features || geoapifyData.features.length === 0) {
+                    feedbackElement.textContent = 'Endereço não encontrado ou inválido pela Geoapify.';
+                    feedbackElement.style.color = 'red';
+                    return;
                 }
-                return notificationResponse.json(); // Retorna a notificação criada
-            })
-            .then(notification => {
-                console.log('Notificação criada:', notification);
-            })
-            .catch(error => {
-                console.error("Erro ao criar notificação:", error);
-            })
-            .finally(() => {
-                // Recarregar a página após a publicação ser enviada com sucesso
-                window.location.reload();
-            });
-        })
-        .catch(error => {
-            console.error("Erro ao enviar a publicação:", error);
-            document.getElementById('feedback').textContent = 'Erro ao publicar.';
-        });
-});
-// Função para enviar comentários
-document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('enviar-comentario')) {
-        const publicacaoId = e.target.dataset.id;
-        const comentarioInput = e.target.previousElementSibling;
-        const comentario = comentarioInput.value.trim();
-
-        if (!comentario) {
-            alert("Por favor, escreva um comentário.");
-            return;
-        }
-
-        // Enviar o comentário para o backend
-        fetch('/api/comentarios', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                publicacaoId,
-                comentario,
-                usuario: localStorage.getItem("userName") // Incluindo o nome do usuário
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Comentário adicionado:', data);
-            // Adicionar o comentário à lista de comentários
-            const listaComentarios = e.target.closest('.publicacao').querySelector('.lista-comentarios');
-            const novoComentarioHTML = `
-                <div class="comentario">
-                    <img src="foto_usuario.jpg" alt="Foto do Usuário" class="foto-usuario">
-                    <div class="info-comentario">
-                        <span class="nome-usuario">${data.usuario}</span>
-                        <span class="tempo-comentario">${new Date(data.dataCriacao).toLocaleString()}</span>
-                        <div class="texto-comentario">${data.comentario}</div>
-                    </div>
-                </div>`;
-            listaComentarios.innerHTML += novoComentarioHTML;
-            listaComentarios.style.display = 'block'; // Mostrar comentários
-            comentarioInput.value = ''; // Limpar o campo de comentário
-        })
-        .catch(error => {
-            console.error("Erro ao enviar comentário:", error);
-        });
-    }
-});
-// Função para curtir uma publicação
-async function curtirPublicacao(postId, button) {
-    const userId = localStorage.getItem("userId"); // Obtém o ID do usuário do localStorage
-
-    if (!userId) {
-        alert("Você precisa estar logado para curtir uma publicação.");
-        return;
-    }
-
-    try {
-        const response = await fetch(`/api/publicacoes/${postId}/curtir`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ userId }), // Envia o ID do usuário no corpo da requisição
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Erro ao curtir a publicação');
-        }
-
-        const data = await response.json();
-        console.log(data.message); // Mensagem de sucesso
-
-        // Criar a notificação
-        fetch('/api/notificacoes', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                usuarioId: localStorage.getItem("postOwnerId"), // ID do usuário que é o dono da publicação
-                mensagem: `${localStorage.getItem("userName")} curtiu sua publicação: "${postId}"`
-            })
-        })
-        .then(notificationResponse => {
-            if (!notificationResponse.ok) {
-                throw new Error('Erro ao criar notificação');
+                [lon, lat] = geoapifyData.features[0].geometry.coordinates;
+            } catch (error) {
+                console.error("Erro ao geocodificar endereço com Geoapify:", error);
+                feedbackElement.textContent = 'Erro ao geocodificar endereço.';
+                feedbackElement.style.color = 'red';
+                return;
             }
-            return notificationResponse.json();
-        })
-        .then(notification => {
-            console.log('Notificação criada:', notification);
-        })
-        .catch(error => {
-            console.error("Erro ao criar notificação:", error);
-        });
 
-        // O restante do código para atualizar a contagem de curtidas na interface...
-    } catch (error) {
-        console.error(error.message);
+            const postData = {
+                titulo,
+                conteudo,
+                endereco,
+                lat,
+                lon,
+                // userId e userName serão pegos do token no backend
+            };
+
+            if (publicarButton.dataset.shape) {
+                postData.marcacao = publicarButton.dataset.shape;
+            }
+
+            try {
+                const response = await fetch('/api/publicacoes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userToken}`
+                    },
+                    body: JSON.stringify(postData)
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    feedbackElement.textContent = 'Publicação criada com sucesso!';
+                    feedbackElement.style.color = 'green';
+                    document.getElementById('publicacao-form').reset();
+                    drawnItems.clearLayers();
+                    delete publicarButton.dataset.shape;
+
+                    await carregarPublicacoes();
+                } else {
+                    feedbackElement.textContent = data.message || 'Erro ao criar publicação.';
+                    feedbackElement.style.color = 'red';
+                }
+            } catch (error) {
+                console.error("Erro ao enviar a publicação:", error);
+                feedbackElement.textContent = 'Erro de rede ao enviar publicação.';
+                feedbackElement.style.color = 'red';
+            }
+        });
+    } else {
+        console.warn('Elemento #publicar não encontrado. Funcionalidade de publicação desabilitada.');
     }
-}
-// Exibir publicações já existentes (carregar do backend)
-document.addEventListener('DOMContentLoaded', () => {
-    fetch('/api/publicacoes')
-        .then(response => response.json())
-        .then(publicacoes => {
-            publicacoes.forEach(post => {
+
+    // --- 5. Funcionalidade para enviar comentários (Delegate Event) ---
+    document.addEventListener('click', async (e) => {
+        if (e.target.classList.contains('enviar-comentario')) {
+            const publicacaoId = e.target.dataset.id;
+            const comentarioInput = e.target.previousElementSibling;
+            const comentario = comentarioInput.value.trim();
+
+            const userName = localStorage.getItem("userName");
+            const userToken = localStorage.getItem("userToken");
+
+            if (!comentario) {
+                alert("Por favor, escreva um comentário.");
+                return;
+            }
+            if (!userToken) {
+                alert("Você precisa estar logado para comentar.");
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/comentarios', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userToken}`
+                    },
+                    body: JSON.stringify({
+                        publicacaoId,
+                        comentario,
+                        // usuario e userId serão pegos do token no backend
+                    })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    const listaComentarios = e.target.closest('.publicacao').querySelector('.lista-comentarios');
+                    const dataComentario = data.dataCriacao && data.dataCriacao._seconds ?
+                                            new Date(data.dataCriacao._seconds * 1000).toLocaleString() :
+                                            new Date().toLocaleString(); // Fallback para data atual se não houver timestamp
+
+                    const novoComentarioHTML = `
+                        <div class="comentario">
+                            <img src="foto_usuario.jpg" alt="Foto do Usuário" class="foto-perfil-comentario">
+                            <div class="info-comentario">
+                                <span class="nome-usuario">${data.usuario || userName}</span>
+                                <span class="tempo-comentario">${dataComentario}</span>
+                                <div class="texto-comentario">${data.comentario}</div>
+                            </div>
+                        </div>`;
+                    const noCommentsMessage = listaComentarios.querySelector('.no-comments-message');
+                    if (noCommentsMessage) {
+                        noCommentsMessage.remove();
+                    }
+                    listaComentarios.innerHTML += novoComentarioHTML;
+                    listaComentarios.style.display = 'block';
+                    comentarioInput.value = '';
+                } else {
+                    alert(`Erro ao enviar comentário: ${data.message || 'Erro desconhecido'}`);
+                }
+            } catch (error) {
+                console.error("Erro ao enviar comentário (rede):", error);
+                alert("Erro de rede ao enviar comentário.");
+            }
+        }
+    });
+
+    // --- Lógica para Curtir/Descurtir (Delegando Eventos) ---
+    document.addEventListener('click', async (e) => {
+        if (e.target.classList.contains('curtir')) {
+            const publicacaoId = e.target.dataset.id;
+            const curtidasCountElement = e.target.querySelector('.curtidas-count');
+            const token = localStorage.getItem('userToken');
+
+            if (!token) {
+                alert("Você precisa estar logado para curtir ou descurtir.");
+                return;
+            }
+
+            const jaCurtiu = e.target.classList.contains('curtido-por-mim');
+
+            if (jaCurtiu) {
+                try {
+                    const response = await fetch(`/api/publicacoes/${publicacaoId}/descurtir`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        e.target.classList.remove('curtido-por-mim');
+                        if (curtidasCountElement) {
+                            curtidasCountElement.textContent = parseInt(curtidasCountElement.textContent) - 1;
+                        }
+                        e.target.innerHTML = `Curtir <span class="curtidas-count">${curtidasCountElement ? curtidasCountElement.textContent : 0}</span>`;
+
+                    } else {
+                        alert(`Erro ao descurtir: ${data.message}`);
+                    }
+                } catch (error) {
+                    console.error('Erro de rede ao descurtir publicação:', error);
+                    alert('Erro de rede ao descurtir publicação.');
+                }
+            } else {
+                try {
+                    const response = await fetch(`/api/publicacoes/${publicacaoId}/curtir`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        e.target.classList.add('curtido-por-mim');
+                        if (curtidasCountElement) {
+                            curtidasCountElement.textContent = parseInt(curtidasCountElement.textContent) + 1;
+                        }
+                        e.target.innerHTML = `Descurtir <span class="curtidas-count">${curtidasCountElement ? curtidasCountElement.textContent : 0}</span>`;
+
+                    } else {
+                        alert(`Erro ao curtir: ${data.message}`);
+                    }
+                } catch (error) {
+                    console.error('Erro de rede ao curtir publicação:', error);
+                    alert('Erro de rede ao curtir publicação.');
+                }
+            }
+        }
+    });
+
+    // --- 6. Função para carregar publicações existentes (Melhorada e encapsulada) ---
+    async function carregarPublicacoes() {
+        const currentUserId = localStorage.getItem("userId");
+        const userToken = localStorage.getItem("userToken"); // Pega o token para enviar na requisição
+
+        try {
+            // Inclui o token no cabeçalho para que o backend possa verificar as curtidas do usuário
+            const response = await fetch('/api/publicacoes', {
+                headers: {
+                    'Authorization': `Bearer ${userToken}`
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const publicacoes = await response.json();
+            const publicationsContainer = document.querySelector('#publications');
+            if (!publicationsContainer) {
+                console.error('Contêiner de publicações #publications não encontrado.');
+                return;
+            }
+            publicationsContainer.innerHTML = '';
+
+            for (const post of publicacoes) {
                 const publicationHTML = document.createElement('div');
                 publicationHTML.classList.add('publicacao');
+
+                // Usa isLikedByMe diretamente do backend (se implementado)
+                // Caso contrário, use a lógica com curtidasPorUsuarios se o backend enviar os IDs
+                const isLikedByMe = post.isLikedByMe || (post.curtidasPorUsuarios && post.curtidasPorUsuarios.includes(currentUserId));
+                const buttonText = isLikedByMe ? `Descurtir <span class="curtidas-count">${post.curtidas || 0}</span>` : `Curtir <span class="curtidas-count">${post.curtidas || 0}</span>`;
+                const buttonClass = isLikedByMe ? 'curtir curtido-por-mim' : 'curtir';
+
                 publicationHTML.innerHTML = `
                     <div class="cabecalho">
                         <img src="foto_usuario.jpg" alt="Foto do Usuário" class="foto-usuario">
                         <div class="info-usuario">
-                            <span class="nome-usuario">${post.usuario}</span>
-                            <span class="tempo-postagem">${new Date(post.dataCriacao).toLocaleString()}</span>
+                            <span class="nome-usuario">${post.usuario}</span> <span class="tempo-postagem">${new Date(post.dataCriacao).toLocaleString()}</span>
                         </div>
                     </div>
-                    <div class="titulo-publicacao">${post.titulo}</div>
+                    <div class="titulo-publicacao"><h3>${post.titulo}</h3></div>
+                    <div class="conteudo-publicacao">${post.conteudo}</div>
                     <div class="location-section">
                         <div id="map-${post.id}" class="map-box" style="height: 200px;"></div>
                     </div>
                     <div class="acoes">
-                        <button class="curtir" data-id="${post.id}">Curtir <span class="curtidas-count">${post.curtidas || 0}</span></button>
+                        <button class="${buttonClass}" data-id="${post.id}">${buttonText}</button>
                         <div class="comentarios">
                             <input type="text" placeholder="Escreva um comentário..." class="comentario-input">
                             <button class="enviar-comentario" data-id="${post.id}">Comentar</button>
                         </div>
                     </div>
-                    <div class="toggle-comentarios" onclick="toggleComentarios(this)">Mostrar Comentários</div>
+                    <button class="toggle-comentarios-btn">Mostrar Comentários</button>
                     <div class="lista-comentarios" style="display: none;">
-                        <!-- Comentários serão adicionados aqui -->
                     </div>`;
 
-                const publicationsContainer = document.querySelector('#publications');
                 publicationsContainer.appendChild(publicationHTML);
 
-                // Criar o mapa para a publicação
-                const newMap = L.map(`map-${post.id}`).setView([post.lat, post.lon], 13);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; OpenStreetMap contributors'
-                }).addTo(newMap);
-
-                L.marker([post.lat, post.lon]).addTo(newMap).bindPopup(`<b>${post.titulo}</b><br>${post.endereco}`).openPopup();
-
-                // Adicionar a marcação geométrica, se houver
-                if (post.marcacao) {
+                const newMapId = `map-${post.id}`;
+                const postMapElement = document.getElementById(newMapId);
+                if (postMapElement) {
                     try {
-                        const marcacaoGeoJSON = JSON.parse(post.marcacao); // Certifique-se de que a marcacao é um JSON válido
+                        const newPostMap = L.map(newMapId).setView([post.lat, post.lon], 13);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; OpenStreetMap contributors'
+                        }).addTo(newPostMap);
 
-                        if (marcacaoGeoJSON && marcacaoGeoJSON.geometry && marcacaoGeoJSON.geometry.coordinates.length > 0) {
-                            if (marcacaoGeoJSON.type === "Feature" && marcacaoGeoJSON.geometry.type === "Polygon") {
-                                const latLngs = marcacaoGeoJSON.geometry.coordinates[0].map(coord => [coord[1], coord[0]]); // Inverte a ordem de lat/lon
-                                L.polygon(latLngs, {
-                                    color: 'green',
-                                    weight: 3,
-                                    opacity: 0.5,
-                                    fillColor: 'yellow',
-                                    fillOpacity: 0.2
-                                }).addTo(newMap);
-                            } else {
-                                L.geoJSON(marcacaoGeoJSON, {
-                                    onEachFeature: (feature, layer) => {
-                                        layer.bindPopup(`<b>${post.titulo}</b><br>${post.endereco}`);
+                        L.marker([post.lat, post.lon]).addTo(newPostMap).bindPopup(`<b>${post.titulo}</b><br>${post.endereco}`).openPopup();
+
+                        if (post.marcacao) {
+                            try {
+                                const marcacaoGeoJSON = JSON.parse(post.marcacao);
+                                if (marcacaoGeoJSON && marcacaoGeoJSON.geometry && marcacaoGeoJSON.geometry.coordinates) {
+                                    if (marcacaoGeoJSON.type === "Feature" && marcacaoGeoJSON.geometry.type === "Polygon") {
+                                        const latLngs = marcacaoGeoJSON.geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
+                                        L.polygon(latLngs, {
+                                            color: 'green',
+                                            weight: 3,
+                                            opacity: 0.5,
+                                            fillColor: 'yellow',
+                                            fillOpacity: 0.2
+                                        }).addTo(newPostMap);
+                                    } else {
+                                        L.geoJSON(marcacaoGeoJSON, {
+                                            onEachFeature: (feature, layer) => {
+                                                layer.bindPopup(`<b>${post.titulo}</b><br>${post.endereco}`);
+                                            }
+                                        }).addTo(newPostMap);
                                     }
-                                }).addTo(newMap);
+                                }
+                            } catch (error) {
+                                console.error(`Erro ao analisar marcação para ${newMapId}:`, error);
                             }
-                        } else {
-                            console.warn("GeoJSON vazio ou inválido:", marcacaoGeoJSON);
                         }
-                    } catch (error) {
-                        console.error("Erro ao analisar a marcação:", error);
+                    } catch (mapError) {
+                        console.error(`Erro ao inicializar mapa para publicação ${post.id}:`, mapError);
                     }
                 }
 
-                // Adicionar evento de clique ao botão de curtir
-                const curtirButton = publicationHTML.querySelector('.curtir');
-                curtirButton.addEventListener('click', () => {
-                    curtirPublicacao(post.id, curtirButton); // Passa o ID da publicação e o botão
-                });
+                // Carregar comentários para a publicação (USANDO A ROTA /api/publicacoes/:id/comentarios)
+                try {
+                    const comentariosResponse = await fetch(`/api/publicacoes/${post.id}/comentarios`);
+                    if (!comentariosResponse.ok) {
+                        throw new Error(`HTTP error! status: ${comentariosResponse.status}`);
+                    }
+                    const comentarios = await comentariosResponse.json();
+                    const listaComentarios = publicationHTML.querySelector('.lista-comentarios');
+                    listaComentarios.innerHTML = '';
 
-                // Carregar comentários para a publicação
-                fetch(`/api/publicacoes/${post.id}/comentarios`)
-                    .then(response => response.json())
-                    .then(comentarios => {
-                        const listaComentarios = publicationHTML.querySelector('.lista-comentarios');
+                    if (comentarios.length === 0) {
+                        listaComentarios.innerHTML = '<p class="no-comments-message">Nenhum comentário ainda.</p>';
+                    } else {
                         comentarios.forEach(comentario => {
+                            // dataCriacao pode vir como Timestamp do Firebase Admin SDK (_seconds)
+                            const dataComentario = comentario.dataCriacao && comentario.dataCriacao._seconds ?
+                                                    new Date(comentario.dataCriacao._seconds * 1000).toLocaleString() :
+                                                    new Date(comentario.dataCriacao).toLocaleString(); // Fallback para string de data
+
                             const comentarioHTML = `
                                 <div class="comentario">
-                                    <img src="foto_usuario.jpg" alt="Foto do Usuário" class="foto-usuario">
+                                    <img src="foto_usuario.jpg" alt="Foto do Usuário" class="foto-perfil-comentario">
                                     <div class="info-comentario">
                                         <span class="nome-usuario">${comentario.usuario}</span>
-                                        <span class="tempo-comentario">${new Date(comentario.dataCriacao).toLocaleString()}</span>
+                                        <span class="tempo-comentario">${dataComentario}</span>
                                         <div class="texto-comentario">${comentario.comentario}</div>
                                     </div>
                                 </div>`;
                             listaComentarios.innerHTML += comentarioHTML;
                         });
-                    })
-                    .catch(error => console.error('Erro ao carregar comentários:', error));
-            });
-        })
-        .catch(error => console.error('Erro ao carregar publicações:', error));
-});
-//localstorage
-document.addEventListener('DOMContentLoaded', () => {
-    // Recuperar os dados do localStorage
-    const userName = localStorage.getItem("userName");
-
-    // Verificar se o nome do usuário está presente no localStorage
-    if (userName) {
-        // Exibir o nome do usuário no HTML
-        document.getElementById("userNameDisplay").innerText = "Bem-vindo, " + userName;
+                    }
+                } catch (error) {
+                    console.error(`Erro ao carregar comentários para publicação ${post.id}:`, error);
+                }
+            }
+        } catch (error) {
+            console.error('Erro ao carregar publicações:', error);
+        }
     }
+    carregarPublicacoes();
 
-    
-   
+    // --- 7. Logout (Unificado) ---
+    const logoutButton = document.getElementById("logoutButton");
+    const logoutLink = document.getElementById('logout-link');
 
-    // Lidar com o logout
-        document.getElementById('logout-link').addEventListener('click', (event) => {
+    const handleLogout = (event) => {
         event.preventDefault();
+        localStorage.removeItem("userToken");
         localStorage.removeItem("userEmail");
         localStorage.removeItem("userName");
-        window.location.href = "login/login.html"; // Redireciona para a página de login
-    });
-});
-// Função para alternar a exibição dos comentários
-function toggleComentarios(button) {
-    const listaComentarios = button.closest('.publicacao').querySelector('.lista-comentarios');
-    if (listaComentarios.style.display === 'none' || listaComentarios.style.display === '') {
-        listaComentarios.style.display = 'block';
-        button.textContent = 'Ocultar Comentários';
-    } else {
-        listaComentarios.style.display = 'none';
-        button.textContent = 'Mostrar Comentários';
-    }
-}
-//localstorage
-document.addEventListener('DOMContentLoaded', () => {
-    // Recuperar os dados do localStorage
-    const userName = localStorage.getItem("userName");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("amigoId");
+        localStorage.removeItem("amigoName");
+        localStorage.removeItem("amigoEmail");
+        window.location.href = "../login/login.html";
+    };
 
-    // Verificar se o nome do usuário está presente no localStorage
-    if (userName) {
-        // Exibir o nome do usuário no HTML
-        document.getElementById("userNameDisplay").innerText = "Bem-vindo, " + userName;
+    if (logoutButton) {
+        logoutButton.addEventListener("click", handleLogout);
+    }
+    if (logoutLink) {
+        logoutLink.addEventListener("click", handleLogout);
     }
 
-    // Lidar com o logout
-    document.getElementById('logout-link').addEventListener('click', (event) => {
-        event.preventDefault();
-        localStorage.removeItem("userEmail");
-        localStorage.removeItem("userName");
-        window.location.href = "login/login.html"; // Redireciona para a página de login
-    });
-});
+    // --- 8. Lógica de Validação de Token (Assíncrona) ---
+    async function validateToken() {
+        const token = localStorage.getItem("userToken");
+        if (!token) {
+            window.location.href = "../login/login.html";
+            return;
+        }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.querySelector('.search-input');
-    const usuariosOcultos = document.getElementById('usuariosOcultos');
-
-    // Função para carregar usuários
-    async function carregarUsuarios() {
         try {
-            const response = await fetch('/api/users'); // Altere para a URL correta da sua API
+            const response = await fetch('/api/validate-token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Token inválido ou expirado.");
+            }
+        } catch (error) {
+            console.error("Erro ao validar token:", error);
+            alert("Sessão expirada. Faça login novamente.");
+            localStorage.removeItem("userToken");
+            localStorage.removeItem("userEmail");
+            localStorage.removeItem("userName");
+            localStorage.removeItem("userId");
+            window.location.href = "../login/login.html";
+        }
+    }
+    validateToken();
+
+    // --- 9. Funcionalidade de pesquisa de usuários (Consolidada e Corrigida) ---
+    const searchInput = document.getElementById('searchInput');
+    const usuariosEncontradosContainer = document.getElementById('usuariosEncontrados');
+    const usuariosOcultosContainer = document.getElementById('usuariosOcultos');
+
+    let allUsers = [];
+
+    async function carregarTodosUsuarios() {
+        try {
+            const response = await fetch('/api/users');
             if (!response.ok) {
                 throw new Error('Erro ao buscar usuários');
             }
-            const users = await response.json();
-            exibirUsuarios(users);
+            allUsers = await response.json();
+            exibirUsuarios(allUsers, usuariosOcultosContainer);
         } catch (error) {
-            console.error('Erro ao carregar usuários:', error);
+            console.error('Erro ao carregar todos os usuários:', error);
         }
     }
 
-    // Função para exibir usuários
-    function exibirUsuarios(users) {
-        usuariosOcultos.innerHTML = ''; // Limpa a lista de usuários
-
+    function exibirUsuarios(users, container) {
+        if (!container) {
+            console.error('Contêiner de usuários não encontrado.');
+            return;
+        }
+        container.innerHTML = '';
         users.forEach(user => {
             const userBlock = document.createElement('div');
             userBlock.className = 'perfil';
             userBlock.innerHTML = `
-                <img src="foto-usuario.jpg" alt="Foto de ${user.nome}" class="foto-perfil">
+                <img src="foto-usuario.jpg" alt="Foto de ${user.name}" class="foto-perfil">
                 <div class="info-perfil">
-                    <h1 class="nome">${user.nome}</h1>
-                    <a href="#" class="ver-perfil">Ver perfil</a>
+                    <h1 class="nome">${user.name}</h1>
+                    <a href="#" class="ver-perfil" data-id="${user.id}" data-name="${user.name}" data-email="${user.email}">Ver perfil</a>
                 </div>
             `;
-            usuariosOcultos.appendChild(userBlock);
+            container.appendChild(userBlock);
+        });
+
+        const verPerfilLinks = container.querySelectorAll('.ver-perfil');
+        verPerfilLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                const userId = link.getAttribute('data-id');
+                const userName = link.getAttribute('data-name');
+                const userEmail = link.getAttribute('data-email');
+
+                localStorage.setItem('amigoId', userId);
+                localStorage.setItem('amigoName', userName);
+                localStorage.setItem('amigoEmail', userEmail);
+
+                window.location.href = '../perfil/perfilAMIGO.html';
+            });
         });
     }
 
-    // Função para filtrar usuários
-    function filtrarUsuarios(users) {
-        const searchTerm = searchInput.value.toLowerCase();
-        const filteredUsers = users.filter(user => user.nome.toLowerCase().includes(searchTerm));
-        exibirUsuarios(filteredUsers);
-    }
-
-    // Carregar usuários ao iniciar
-    carregarUsuarios();
-
-    // Adicionar evento de input para a barra de pesquisa
-    searchInput.addEventListener('input', () => {
-        // Chama a função de filtrar usuários
-        filtrarUsuarios(users);
-    });
-});
-
-//oculta a seccao de nova publicacao
-document.addEventListener('DOMContentLoaded', () => {
-    const toggleButton = document.getElementById('toggle-visibility');
-    const newPostContent = document.querySelector('.new-post-content');
-
-    toggleButton.addEventListener('click', () => {
-        if (newPostContent.classList.contains('hidden')) {
-            // Mostra a seção de nova publicação
-            newPostContent.classList.remove('hidden');
-            toggleButton.textContent = 'Ocultar';
-
-            // Aguarda um pequeno tempo e força o Leaflet a recalcular o mapa
-            setTimeout(() => {
-                mainMap.invalidateSize();
-            }, 300);
-        } else {
-            // Oculta a seção de nova publicação
-            newPostContent.classList.add('hidden');
-            toggleButton.textContent = 'Exibir';
-        }
-    });
-});
-
-// Funcionalidade de pesquisa de usuários
-const searchInput = document.getElementById('searchInput');
-searchInput.addEventListener('input', () => {
-    const query = searchInput.value.trim();
-    if (query.length > 0) {
-        fetch(`/api/users/name/${encodeURIComponent(query)}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Nenhum usuário encontrado');
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.trim().toLowerCase();
+            if (query.length > 0) {
+                const filteredUsers = allUsers.filter(user => user.name.toLowerCase().includes(query));
+                if (usuariosOcultosContainer) usuariosOcultosContainer.style.display = 'none';
+                exibirUsuarios(filteredUsers, usuariosEncontradosContainer);
+                if (usuariosEncontradosContainer) {
+                    usuariosEncontradosContainer.style.display = 'block';
                 }
-                return response.json();
-            })
-            .then(users => {
-                const usuariosEncontrados = document.getElementById('usuariosEncontrados');
-                usuariosEncontrados.innerHTML = ''; // Limpar resultados anteriores
-                users.forEach(user => {
-                    const userHTML = `
-                        <div class="perfil">
-                            <img src="foto_usuario.jpg" alt="Foto de ${user.name}" class="foto-perfil">
-                            <div class="info-perfil">
-                                <h1 class="nome">${user.name}</h1>
-                                <a href="#" class="ver-perfil" data-id="${user.id}" data-name="${user.name}" data-email="${user.email}">Ver perfil</a>
-                            </div>
-                        </div>`;
-                    usuariosEncontrados.innerHTML += userHTML;
-                });
-
-                // Adicionar evento de clique para cada link "Ver perfil"
-                const verPerfilLinks = document.querySelectorAll('.ver-perfil');
-                verPerfilLinks.forEach(link => {
-                    link.addEventListener('click', (event) => {
-                        event.preventDefault(); // Prevenir o comportamento padrão do link
-                        const userId = link.getAttribute('data-id');
-                        const userName = link.getAttribute('data-name');
-                        const userEmail = link.getAttribute('data-email');
-
-                        // Salvar informações do usuário em localStorage
-                        localStorage.setItem('amigoId', userId);
-                        localStorage.setItem('amigoName', userName);
-                        localStorage.setItem('amigoEmail', userEmail);
-
-                        console.log('Informações do amigo salvas no localStorage:', {
-                            id: userId,
-                            name: userName,
-                            email: userEmail
-                        });
-
-                        
-                        window.location.href = '../perfil/perfilAMIGO.html';
-                    });
-                });
-            })
-            .catch(error => {
-                console.error('Erro ao buscar usuários:', error);
-                document.getElementById('usuariosEncontrados').innerHTML = '<p>Nenhum usuário encontrado.</p>';
-            });
+            } else {
+                if (usuariosEncontradosContainer) usuariosEncontradosContainer.innerHTML = '';
+                if (usuariosOcultosContainer) usuariosOcultosContainer.style.display = 'block';
+                exibirUsuarios(allUsers, usuariosOcultosContainer);
+            }
+        });
+        carregarTodosUsuarios();
     } else {
-        document.getElementById('usuariosEncontrados').innerHTML = ''; // Limpar resultados se a pesquisa estiver vazia
+        console.warn('Elemento #searchInput não encontrado. Funcionalidade de pesquisa desabilitada.');
     }
-});
 
-//Funcionalidade para popup de notificacoes.
-document.addEventListener('DOMContentLoaded', () => {
+    const btnOcultar = document.getElementById('btnOcultar');
+    if (btnOcultar && usuariosOcultosContainer) {
+        btnOcultar.addEventListener('click', () => {
+            if (usuariosOcultosContainer.style.display === 'none') {
+                usuariosOcultosContainer.style.display = 'block';
+                btnOcultar.textContent = 'Ocultar usuários';
+            } else {
+                usuariosOcultosContainer.style.display = 'none';
+                btnOcultar.textContent = 'Mostrar mais usuários';
+            }
+        });
+    } else {
+        console.warn('Botão #btnOcultar ou contêiner #usuariosOcultos não encontrado.');
+    }
+
+    // --- 10. Funcionalidade de Notificações (Consolidada) ---
     const notificacoesButton = document.getElementById('notificacoes-button');
     const notificacoesModal = document.getElementById('notificacoes-modal');
-    const closeButton = document.querySelector('.close-button');
+    const closeButtonModal = document.querySelector('#notificacoes-modal .close-button');
     const notificacoesList = document.getElementById('notificacoes-list');
     const notificacoesCount = document.getElementById('notificacoes-count');
 
-    // Função para carregar notificações
     const carregarNotificacoes = async () => {
-        const userId = localStorage.getItem("userId"); // Obtém o ID do usuário logado
-        const response = await fetch(`/api/notificacoes/${userId}`); // Chama a API para buscar notificações
-        const notificacoes = await response.json();
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("userToken"); // Precisa do token para a rota de notificações
 
-        // Limpa a lista de notificações
-        notificacoesList.innerHTML = '';
-
-        // Adiciona cada notificação à lista
-        notificacoes.forEach(notificacao => {
-            const notificacaoItem = document.createElement('div');
-            notificacaoItem.textContent = `${notificacao.mensagem} - ${new Date(notificacao.dataCriacao.toDate()).toLocaleString()}`;
-            notificacoesList.appendChild(notificacaoItem);
-        });
-
-        // Atualiza o contador de notificações
-        notificacoesCount.textContent = notificacoes.length;
-        if (notificacoes.length > 0) {
-            notificacoesCount.classList.remove('hidden');
-        } else {
+        if (!userId || !token) {
+            console.warn("userId ou token não encontrado para carregar notificações.");
+            // Opcional: Redirecionar para login ou exibir mensagem
+            return;
+        }
+        try {
+            const response = await fetch(`/api/notificacoes/${userId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const notificacoes = await response.json();
+            notificacoesList.innerHTML = '';
+            notificacoes.forEach(notificacao => {
+                const notificacaoItem = document.createElement('div');
+                const dataFormatada = notificacao.dataCriacao && notificacao.dataCriacao._seconds ?
+                                            new Date(notificacao.dataCriacao._seconds * 1000).toLocaleString() :
+                                            new Date(notificacao.dataCriacao).toLocaleString();
+                notificacaoItem.textContent = `${notificacao.mensagem} - ${dataFormatada}`;
+                notificacoesList.appendChild(notificacaoItem);
+            });
+            notificacoesCount.textContent = notificacoes.length;
+            if (notificacoes.length > 0) {
+                notificacoesCount.classList.remove('hidden');
+            } else {
+                notificacoesCount.classList.add('hidden');
+            }
+        } catch (error) {
+            console.error('Erro ao carregar notificações:', error);
             notificacoesCount.classList.add('hidden');
         }
     };
 
-    // Abre o modal e carrega as notificações
-    notificacoesButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        carregarNotificacoes();
-        notificacoesModal.classList.remove('hidden');
-    });
+    if (notificacoesButton && notificacoesModal && closeButtonModal && notificacoesList && notificacoesCount) {
+        notificacoesButton.addEventListener('click', async (e) => {
+            e.preventDefault();
+            await carregarNotificacoes();
+            notificacoesModal.classList.remove('hidden');
+        });
 
-    // Fecha o modal
-    closeButton.addEventListener('click', () => {
-        notificacoesModal.classList.add('hidden');
-    });
-
-    // Fecha o modal ao clicar fora dele
-    window.addEventListener('click', (event) => {
-        if (event.target === notificacoesModal) {
+        closeButtonModal.addEventListener('click', () => {
             notificacoesModal.classList.add('hidden');
-        }
-    });
-});
+        });
 
-//LOGOUT
-document.addEventListener("DOMContentLoaded", function () {
-    const logoutButton = document.getElementById("logoutButton");
-
-    // Função de logout
-    function logout() {
-        // Limpa o token do armazenamento local
-        localStorage.removeItem("userToken");
-
-        // Redireciona para a página de login
-        window.location.href = "../login/login.html";
+        window.addEventListener('click', (event) => {
+            if (event.target === notificacoesModal) {
+                notificacoesModal.classList.add('hidden');
+            }
+        });
+    } else {
+        console.warn('Um ou mais elementos de notificação não encontrados. Funcionalidade de notificação desabilitada.');
     }
+}); // Fim do grande DOMContentLoaded
 
-    // Adiciona o evento de clique ao botão "Sair"
-    logoutButton.addEventListener("click", function (event) {
-        event.preventDefault(); // Impede o comportamento padrão de navegação
-        logout();
-    });
+// --- Delegate event para o botão 'toggle-comentarios-btn' ---
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('toggle-comentarios-btn')) {
+        const button = e.target;
+        const listaComentarios = button.nextElementSibling;
+
+        if (listaComentarios) {
+            if (listaComentarios.style.display === 'none') {
+                listaComentarios.style.display = 'block';
+                button.textContent = 'Ocultar Comentários';
+            } else {
+                listaComentarios.style.display = 'none';
+                button.textContent = 'Mostrar Comentários';
+            }
+        }
+    }
 });
-//RECUPERA TOKEN USUARIO
-const token = localStorage.getItem("userToken");
-
-if (!token) {
-    // Redireciona para a página de login se o token não estiver presente
-    window.location.href = "../login/login.html";
-} else {
-    // Validar o token com o backend se necessário
-    fetch('/api/validate-token', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Token inválido ou expirado.");
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Token válido:", data);
-    })
-    .catch(error => {
-        console.error("Erro ao validar token:", error);
-        alert("Sessão expirada. Faça login novamente.");
-        localStorage.removeItem("userToken");
-        window.location.href = "../login/login.html";
-    });
-}
-
-// ---------- forum.test.js----------
-export { curtirPublicacao, toggleComentarios };

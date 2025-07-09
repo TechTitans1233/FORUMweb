@@ -31,9 +31,9 @@ def carregar_modelo_mais_recente(prefixo):
     return joblib.load(arquivos[-1])
 
 # === Carregar os modelos ao iniciar o app ===
-modelo_categoria   = carregar_modelo_mais_recente("modelo_categoria")
-modelo_localizacao = carregar_modelo_mais_recente("modelo_localizacao")
-modelo_impacto     = carregar_modelo_mais_recente("modelo_impacto")
+modelo_categoria   = carregar_modelo_mais_recente("modelo_evento_final")
+modelo_localizacao = carregar_modelo_mais_recente("modelo_local_final")
+modelo_impacto     = carregar_modelo_mais_recente("modelo_impacto_final")
 
 # Se algum for None, treina imediatamente antes de aceitar requisições:
 if modelo_categoria is None or modelo_localizacao is None or modelo_impacto is None:

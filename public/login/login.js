@@ -95,13 +95,11 @@ document.getElementById("userLoginForm").addEventListener("submit", function (ev
                         localStorage.setItem("userEmail", userData.email);
                         localStorage.setItem("userName", userData.name);
                         localStorage.setItem("userId", userData.id);
-                        
-                        // Armazenar o token no localStorage
+
                         if (data.token) {
                             localStorage.setItem("userToken", data.token);  // Salva o token
                         }
 
-                        // Redirecionar para a página do fórum
                         window.location.href = "../forum/forum.html";
                     });
             } else {

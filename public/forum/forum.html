@@ -33,20 +33,16 @@
                     <a href="#" class="button" id="notificacoes-button">
                         <i class="fas fa-bell" id="notificacoes"></i>
                         <span class="icon-text"> Notificações</span>
-                        <span id="notificacoes-count" class="notification-count hidden">0</span> <!-- Contador de notificações -->
+                        <span id="notificacoes-count" class="notification-count hidden">0</span>
                     </a>
                 </li>
                 <li><a href="#" id="logoutButton" class="button"><i class="fas fa-sign-out-alt"></i><span class="icon-text"> Sair</span></a></li>
 
-                
-                <!-- Modal para exibir notificações -->
                 <div id="notificacoes-modal" class="modal hidden">
                     <div class="modal-content">
                         <span class="close-button">&times;</span>
                         <h2>Notificações</h2>
-                        <div id="notificacoes-list">
-                            <!-- As notificações serão inseridas aqui -->
-                        </div>
+                        <div id="notificacoes-list"></div>
                     </div>
                 </div>
             </ul>
@@ -85,6 +81,7 @@
                 </div>
             </div>
         </section>
+
         <div id="feed">
             <div class="feed-header">Feed</div>
             <div id="publications">
@@ -98,15 +95,8 @@
             <div class="search-container">
                 <input type="text" class="search-input" placeholder="Pesquisar usuários..." id="searchInput">
             </div>
-
-            <div id="usuariosEncontrados">
-                <!-- Usuários encontrados serão dinamicamente inseridos aqui -->
-            </div>
-    
-            <div id="usuariosOcultos" style="display: none;">
-                <!-- Usuários ocultos serão dinamicamente inseridos aqui -->
-            </div>
-    
+            <div id="usuariosEncontrados"></div>
+            <div id="usuariosOcultos" style="display: none;"></div>
             <button class="btn-ocultar" id="btnOcultar">Mostrar mais usuários</button>
         </div>
     </aside>
@@ -116,6 +106,7 @@
     </footer>
 </div>
 
-<script src="/forum/forum.js"></script>
+<!-- Seu script principal de aplicação -->
+<script type="module" src="/forum/forum.js"></script>
 </body>
 </html>

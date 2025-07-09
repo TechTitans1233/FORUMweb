@@ -9,13 +9,15 @@
     "@raruto/leaflet-elevation": "^2.5.1",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.5.0",
+    "dotenv": "^16.6.1",
     "express": "^5.1.0",
     "firebase": "^11.7.3",
-    "multer": "^1.4.5-lts.2",
     "firebase-admin": "^13.4.0",
+    "firebase-app": "^0.0.1",
+    "firebase-auth": "^0.1.2",
     "geckodriver": "^5.0.0",
     "leaflet-topography": "^0.2.1",
+    "multer": "^1.4.5-lts.2",
     "ngeohash": "^0.6.3"
   },
   "devDependencies": {
