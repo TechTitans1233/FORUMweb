@@ -1,0 +1,5 @@
+node_modules
+.venv
+tests_output
+.env
+serviceAccountKey

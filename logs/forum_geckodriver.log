@@ -1,0 +1,920 @@
+1747659935047	webdriver::server	TRACE	Build standard route for /status
+1747659935046	geckodriver	INFO	Listening on 127.0.0.1:4444
+1747659935048	webdriver::server	TRACE	Build standard route for /session
+1747659935048	webdriver::server	TRACE	Build standard route for /session/{sessionId}
+1747659935048	webdriver::server	TRACE	Build standard route for /session/{sessionId}/url
+1747659935048	webdriver::server	TRACE	Build standard route for /session/{sessionId}/url
+1747659935048	webdriver::server	TRACE	Build standard route for /session/{sessionId}/back
+1747659935048	webdriver::server	TRACE	Build standard route for /session/{sessionId}/forward
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/refresh
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/title
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/source
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/window
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/window/handles
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/window/new
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/window
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/window/size
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/window/size
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/window/position
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/window/position
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/window/rect
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/window/rect
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/window/minimize
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/window/maximize
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/window/fullscreen
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/window
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/frame
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/frame/parent
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/element
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/element/{elementId}/element
+1747659935049	webdriver::server	TRACE	Build standard route for /session/{sessionId}/elements
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/element/{elementId}/elements
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/shadow/{shadowId}/element
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/shadow/{shadowId}/elements
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/element/active
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/element/{elementId}/shadow
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/element/{elementId}/displayed
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/element/{elementId}/selected
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/element/{elementId}/attribute/{name}
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/element/{elementId}/property/{name}
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/element/{elementId}/css/{propertyName}
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/element/{elementId}/text
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/element/{elementId}/computedlabel
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/element/{elementId}/computedrole
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/element/{elementId}/name
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/element/{elementId}/rect
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/element/{elementId}/enabled
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/execute/sync
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/execute/async
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/cookie
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/cookie/{name}
+1747659935050	webdriver::server	TRACE	Build standard route for /session/{sessionId}/cookie
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/cookie
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/cookie/{name}
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/timeouts
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/timeouts
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/element/{elementId}/click
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/element/{elementId}/clear
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/element/{elementId}/value
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/alert/dismiss
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/alert/accept
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/alert/text
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/alert/text
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/screenshot
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/element/{elementId}/screenshot
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/actions
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/actions
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/permissions
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/print
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/webauthn/authenticator
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/webauthn/authenticator/{authenticatorId}
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/webauthn/authenticator/{authenticatorId}/credential
+1747659935051	webdriver::server	TRACE	Build standard route for /session/{sessionId}/webauthn/authenticator/{authenticatorId}/credentials
+1747659935052	webdriver::server	TRACE	Build standard route for /session/{sessionId}/webauthn/authenticator/{authenticatorId}/credentials/{credentialId}
+1747659935052	webdriver::server	TRACE	Build standard route for /session/{sessionId}/webauthn/authenticator/{authenticatorId}/credentials
+1747659935052	webdriver::server	TRACE	Build standard route for /session/{sessionId}/webauthn/authenticator/{authenticatorId}/uv
+1747659935052	webdriver::server	TRACE	Build vendor route for /session/{sessionId}/moz/context
+1747659935052	webdriver::server	TRACE	Build vendor route for /session/{sessionId}/moz/context
+1747659935052	webdriver::server	TRACE	Build vendor route for /session/{sessionId}/moz/addon/install
+1747659935052	webdriver::server	TRACE	Build vendor route for /session/{sessionId}/moz/addon/uninstall
+1747659935052	webdriver::server	TRACE	Build vendor route for /session/{sessionId}/moz/screenshot/full
+1747659935093	webdriver::server	DEBUG	-> GET /status 
+1747659935094	webdriver::server	DEBUG	<- 200 OK {"value":{"message":"","ready":true}}
+1747659935207	webdriver::server	DEBUG	-> POST /session {"capabilities":{"firstMatch":[{}],"alwaysMatch":{"browserName":"firefox","moz:firefoxOptions":{"prefs":{"re ... ive-protocols":3},"binary":"/Users/strangebrick/.cache/selenium/firefox/mac64/138.0.4/Firefox.app/Contents/MacOS/firefox"}}}}
+1747659935213	geckodriver::capabilities	DEBUG	Trying to read firefox version from ini files
+1747659935233	geckodriver::capabilities	DEBUG	Found version 138.0.4
+1747659935275	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" "/Users/strangebrick/.c ... "--marionette" "-foreground" "-no-remote" "-profile" "/var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl"
+1747659935278	geckodriver::marionette	DEBUG	Waiting 60s to connect to browser on 127.0.0.1
+1747659935278	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659935278	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659935386	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659935386	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659935486	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659935487	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659935588	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659935588	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659935695	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659935695	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659935810	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659935811	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659935922	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659935922	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659936023	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659936023	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659936128	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659936128	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659936240	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659936240	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659936341	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659936341	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659936449	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659936449	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659936552	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659936553	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659936662	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659936663	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659936765	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659936765	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659936867	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659936867	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659936974	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659936975	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659937078	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659937078	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659937182	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659937182	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659937288	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659937288	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659937395	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659937395	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659937544	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659937544	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659937650	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659937650	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659937762	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659937762	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659937897	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659937898	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659938004	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659938004	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659938174	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659938175	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659938282	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659938282	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659938384	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659938384	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659938493	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659938493	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659938613	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659938614	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659938740	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659938741	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659938844	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659938845	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659938945	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659938953	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659939057	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659939061	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659939162	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659939162	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659939268	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659939268	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659939393	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659939393	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659939497	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659939497	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659939621	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659939622	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659939723	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659939723	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659939828	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659939828	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659939933	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659939933	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659940035	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659940035	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659940137	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659940137	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659940238	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659940241	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659940344	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659940345	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659940476	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659940476	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659940578	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659940578	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659940707	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659940710	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659940811	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659940811	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659940913	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659940913	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659941028	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659941029	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659941137	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659941137	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659941243	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659941244	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659941349	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659941349	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659941454	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659941454	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659941560	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659941560	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659941671	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659941671	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659941782	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659941782	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659941885	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659941885	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659942007	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659942007	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659942109	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659942109	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659942211	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659942211	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659942341	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659942341	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659942476	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659942476	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659942579	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659942579	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659942684	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659942685	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659942787	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659942788	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659942892	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659942893	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659943008	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659943010	geckodriver::marionette	TRACE	Retrying in 100ms
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1747659943113	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659943114	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659943216	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659943217	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659943319	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659943319	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659943421	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659943421	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659943523	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659943523	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659943624	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659943625	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659943727	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659943727	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659943833	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659943833	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659943939	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659943939	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659944040	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659944040	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659944142	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659944143	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659944248	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659944248	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659944351	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659944351	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659944454	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659944454	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659944557	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659944558	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659944663	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659944663	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659944768	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659944768	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659944869	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659944869	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659944970	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659944970	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659945071	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659945071	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659945172	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659945172	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659945273	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659945273	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659945375	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659945376	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659945481	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659945481	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659945583	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659945583	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659945685	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659945685	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659945787	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659945787	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659945891	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659945891	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659946002	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659946003	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659946107	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659946107	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659946209	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659946209	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659946312	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659946312	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659946427	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659946428	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659946530	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659946530	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659946631	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659946631	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659946734	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659946735	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659946846	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659946846	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659946947	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659946947	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659947053	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659947053	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659947154	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659947154	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659947275	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659947277	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659947382	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659947382	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659947487	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659947487	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659947594	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659947594	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659947698	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659947698	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659947801	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659947801	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659947930	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659947930	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659948034	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659948035	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659948146	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659948147	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659948248	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659948249	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659948350	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659948351	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659948452	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659948452	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659948491	Marionette	INFO	Marionette enabled
+1747659948521	RemoteAgent	DEBUG	Setting recommended pref apz.content_response_timeout to 60000
+1747659948522	RemoteAgent	DEBUG	Setting recommended pref browser.contentblocking.introCount to 99
+1747659948522	RemoteAgent	DEBUG	Setting recommended pref browser.download.panel.shown to true
+1747659948522	RemoteAgent	DEBUG	Setting recommended pref browser.http.blank_page_with_error_response.enabled to true
+1747659948523	RemoteAgent	DEBUG	Setting recommended pref browser.newtabpage.activity-stream.discoverystream.region-weather-config to 
+1747659948523	RemoteAgent	DEBUG	Setting recommended pref browser.newtabpage.activity-stream.newtabWallpapers.enabled to false
+1747659948523	RemoteAgent	DEBUG	Setting recommended pref browser.newtabpage.activity-stream.newtabWallpapers.v2.enabled to false
+1747659948523	RemoteAgent	DEBUG	Setting recommended pref browser.newtabpage.activity-stream.showSponsoredTopSites to false
+1747659948524	RemoteAgent	DEBUG	Setting recommended pref browser.newtabpage.enabled to false
+1747659948524	RemoteAgent	DEBUG	Setting recommended pref browser.pagethumbnails.capturing_disabled to true
+1747659948526	RemoteAgent	DEBUG	Setting recommended pref browser.region.network.url to 
+1747659948526	RemoteAgent	DEBUG	Setting recommended pref browser.safebrowsing.blockedURIs.enabled to false
+1747659948527	RemoteAgent	DEBUG	Setting recommended pref browser.safebrowsing.downloads.enabled to false
+1747659948527	RemoteAgent	DEBUG	Setting recommended pref browser.safebrowsing.malware.enabled to false
+1747659948527	RemoteAgent	DEBUG	Setting recommended pref browser.safebrowsing.phishing.enabled to false
+1747659948527	RemoteAgent	DEBUG	Setting recommended pref browser.search.update to false
+1747659948527	RemoteAgent	DEBUG	Setting recommended pref browser.startup.couldRestoreSession.count to -1
+1747659948528	RemoteAgent	DEBUG	Setting recommended pref browser.tabs.remote.unloadDelayMs to 0
+1747659948532	RemoteAgent	DEBUG	Setting recommended pref browser.tabs.unloadOnLowMemory to false
+1747659948533	RemoteAgent	DEBUG	Setting recommended pref browser.tabs.warnOnClose to false
+1747659948533	RemoteAgent	DEBUG	Setting recommended pref browser.tabs.warnOnCloseOtherTabs to false
+1747659948533	RemoteAgent	DEBUG	Setting recommended pref browser.tabs.warnOnOpen to false
+1747659948536	RemoteAgent	DEBUG	Setting recommended pref browser.toolbars.bookmarks.visibility to never
+1747659948537	RemoteAgent	DEBUG	Setting recommended pref browser.topsites.contile.enabled to false
+1747659948537	RemoteAgent	DEBUG	Setting recommended pref browser.usedOnWindows10.introURL to 
+1747659948537	RemoteAgent	DEBUG	Setting recommended pref browser.urlbar.merino.endpointURL to 
+1747659948537	RemoteAgent	DEBUG	Setting recommended pref browser.urlbar.suggest.searches to false
+1747659948538	RemoteAgent	DEBUG	Setting recommended pref datareporting.policy.dataSubmissionPolicyAccepted to false
+1747659948538	RemoteAgent	DEBUG	Setting recommended pref dom.disable_open_during_load to false
+1747659948538	RemoteAgent	DEBUG	Setting recommended pref dom.file.createInChild to true
+1747659948539	RemoteAgent	DEBUG	Setting recommended pref dom.input_events.security.minNumTicks to 0
+1747659948539	RemoteAgent	DEBUG	Setting recommended pref dom.input_events.security.minTimeElapsedInMS to 0
+1747659948539	RemoteAgent	DEBUG	Setting recommended pref dom.max_chrome_script_run_time to 0
+1747659948540	RemoteAgent	DEBUG	Setting recommended pref dom.max_script_run_time to 0
+1747659948540	RemoteAgent	DEBUG	Setting recommended pref dom.navigation.navigationRateLimit.count to 0
+1747659948540	RemoteAgent	DEBUG	Setting recommended pref dom.push.connection.enabled to false
+1747659948541	RemoteAgent	DEBUG	Setting recommended pref dom.screenorientation.allow-lock to true
+1747659948541	RemoteAgent	DEBUG	Setting recommended pref dom.successive_dialog_time_limit to 0
+1747659948541	RemoteAgent	DEBUG	Setting recommended pref extensions.getAddons.cache.enabled to false
+1747659948542	RemoteAgent	DEBUG	Setting recommended pref extensions.getAddons.discovery.api_url to data:, 
+1747659948543	RemoteAgent	DEBUG	Setting recommended pref extensions.blocklist.detailsURL to http://%(server)s/extensions-dummy/blocklistDetailsURL
+1747659948543	RemoteAgent	DEBUG	Setting recommended pref extensions.blocklist.itemURL to http://%(server)s/extensions-dummy/blocklistItemURL
+1747659948543	RemoteAgent	DEBUG	Setting recommended pref extensions.hotfix.url to http://%(server)s/extensions-dummy/hotfixURL
+1747659948543	RemoteAgent	DEBUG	Setting recommended pref extensions.systemAddon.update.enabled to false
+1747659948543	RemoteAgent	DEBUG	Setting recommended pref extensions.update.background.url to http://%(server)s/extensions-dummy/updateBackgroundURL
+1747659948543	RemoteAgent	DEBUG	Setting recommended pref extensions.update.url to http://%(server)s/extensions-dummy/updateURL
+1747659948543	RemoteAgent	DEBUG	Setting recommended pref extensions.getAddons.get.url to http://%(server)s/extensions-dummy/repositoryGetURL
+1747659948544	RemoteAgent	DEBUG	Setting recommended pref extensions.getAddons.search.browseURL to http://%(server)s/extensions-dummy/repositoryBrowseURL
+1747659948544	RemoteAgent	DEBUG	Setting recommended pref geo.provider.network.url to 
+1747659948544	RemoteAgent	DEBUG	Setting recommended pref identity.fxaccounts.auth.uri to https://{server}/dummy/fxa
+1747659948544	RemoteAgent	DEBUG	Setting recommended pref network.connectivity-service.enabled to false
+1747659948545	RemoteAgent	DEBUG	Setting recommended pref network.http.phishy-userpass-length to 255
+1747659948545	RemoteAgent	DEBUG	Setting recommended pref network.http.prompt-temp-redirect to false
+1747659948545	RemoteAgent	DEBUG	Setting recommended pref privacy.trackingprotection.enabled to false
+1747659948545	RemoteAgent	DEBUG	Setting recommended pref remote.prefs.recommended.applied to true
+1747659948545	RemoteAgent	DEBUG	Setting recommended pref security.fileuri.strict_origin_policy to false
+1747659948545	RemoteAgent	DEBUG	Setting recommended pref security.notification_enable_delay to 0
+1747659948551	RemoteAgent	DEBUG	Setting recommended pref security.remote_settings.intermediates.enabled to false
+1747659948552	RemoteAgent	DEBUG	Setting recommended pref services.settings.loglevel to off
+1747659948552	RemoteAgent	DEBUG	Setting recommended pref signon.autofillForms to false
+1747659948552	RemoteAgent	DEBUG	Setting recommended pref signon.rememberSignons to false
+1747659948552	RemoteAgent	DEBUG	Setting recommended pref toolkit.telemetry.server to https://%(server)s/telemetry-dummy/
+1747659948553	RemoteAgent	DEBUG	Setting recommended pref widget.windows.window_occlusion_tracking.enabled to false
+1747659948554	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659948554	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659948657	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659948657	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659948764	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659948765	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659948867	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659948869	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659948971	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659948971	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659949077	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659949077	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659949182	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659949183	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659949350	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659949350	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659949451	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659949452	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659949553	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659949553	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659949658	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659949658	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659949763	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659949763	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659949868	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659949869	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659949971	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659949974	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659950081	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659950081	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659950187	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659950187	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659950288	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659950288	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659950399	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659950399	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659950504	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659950505	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659950609	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659950610	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659950726	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659950729	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659950830	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659950831	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659950938	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659950938	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659951040	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659951041	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659951146	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659951154	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659951256	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659951256	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659951359	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659951359	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659951455	Marionette	TRACE	Received observer notification final-ui-startup
+1747659951465	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659951465	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659951568	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659951568	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659951669	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659951669	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659951831	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659951832	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659951962	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659951963	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659952070	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659952071	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659952177	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659952177	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659952280	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659952281	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659952384	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659952384	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659952489	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659952489	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659952591	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659952591	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659952694	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659952695	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659952796	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659952796	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659952898	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659952898	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659952999	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659952999	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659953102	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659953102	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659953207	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659953207	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659953310	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659953310	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659953412	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659953412	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659953513	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659953513	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659953615	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659953616	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659953720	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659953720	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659953824	geckodriver::browser	TRACE	Failed to open /var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl/MarionetteActivePort
+1747659953825	geckodriver::marionette	TRACE	Retrying in 100ms
+1747659953888	Marionette	INFO	Listening on port 51422
+1747659953918	Marionette	DEBUG	Marionette is listening
+Read port: 51422
+2025-05-19 10:05:54.807 plugin-container[40166:458915] nil host used in call to allowsSpecificHTTPSCertificateForHost
+2025-05-19 10:05:54.811 plugin-container[40166:458915] nil host used in call to allowsAnyHTTPSCertificateForHost:
+2025-05-19 10:05:54.871 plugin-container[40166:458915] nil host used in call to allowsSpecificHTTPSCertificateForHost
+2025-05-19 10:05:54.871 plugin-container[40166:458915] nil host used in call to allowsAnyHTTPSCertificateForHost:
+2025-05-19 10:05:54.874 plugin-container[40166:458947] nil host used in call to allowsSpecificHTTPSCertificateForHost
+2025-05-19 10:05:54.875 plugin-container[40166:458947] nil host used in call to allowsAnyHTTPSCertificateForHost:
+1747659954935	geckodriver::marionette	TRACE	Retrying in 100ms
+Read port: 51422
+1747659956041	geckodriver::marionette	TRACE	Retrying in 100ms
+Read port: 51422
+1747659956222	Marionette	DEBUG	Accepted connection 0 from 127.0.0.1:51423
+1747659956262	Marionette	DEBUG	Accepted connection 1 from 127.0.0.1:51424
+1747659956365	Marionette	DEBUG	Accepted connection 2 from 127.0.0.1:51425
+1747659956367	Marionette	DEBUG	Closed connection 0
+1747659956369	Marionette	DEBUG	Closed connection 1
+1747659956382	geckodriver::marionette	DEBUG	Connection to Marionette established on 127.0.0.1:51422.
+1747659956939	Marionette	DEBUG	2 -> [0,1,"WebDriver:NewSession",{"browserName":"firefox"}]
+1747659956989	Marionette	DEBUG	Waiting for initial application window
+[GFX1-]: Calling WaitFlushedEvent::Run: is delayed: 4454
+1747659991966	Marionette	TRACE	Received observer notification browser-idle-startup-tasks-finished
+1747659992063	RemoteAgent	TRACE	[9] ProgressListener Start: expectNavigation=false resolveWhenStarted=false unloadTimeout=5000 waitForExplicitStart=false
+1747659992064	RemoteAgent	TRACE	[9] ProgressListener Setting unload timer (5000ms)
+1747659992068	RemoteAgent	TRACE	[9] Wait for initial navigation: isInitial=false, isLoadingDocument=false
+1747659992069	RemoteAgent	TRACE	[9] Document already finished loading: about:blank
+1747659992069	RemoteAgent	TRACE	[9] ProgressListener Stop: has error=false url=about:blank
+1747659992409	Marionette	DEBUG	2 <- [1,1,null,{"sessionId":"1dd6ea7d-2f25-4818-ae9a-28751a74b556","capabilities":{"acceptInsecureCerts":false,"browserName":"firefox","browserVersion":"138.0.4","platformName":"mac","unhandledPromptBehavior":"dismiss and notify","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:138.0) Gecko/20100101 Firefox/138.0","moz:buildID":"20250517143237","moz:headless":false,"moz:platformVersion":"21.6.0","moz:processID":40159,"moz:profile":"/var/folders/m0/2grp25fj0sxf1t4lx5c2n1rc0000gn/T/rust_mozprofile0CfFWl","moz:shutdownTimeout":60000,"pageLoadStrategy":"normal","timeouts":{"implicit":0,"pageLoad":300000,"script":30000},"setWindowRect":true,"strictFileInteractability":false,"moz:accessibilityChecks":false,"moz:webdriverClick":true,"moz:windowless":false,"proxy":{}}}]
+1747659992711	webdriver::server	DEBUG	<- 200 OK {"value":{"sessionId":"1dd6ea7d-2f25-4818-ae9a-28751a74b556","capabilities":{"acceptInsecureCerts":false,"browserNa ... r":"dismiss and notify","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:138.0) Gecko/20100101 Firefox/138.0"}}}
+1747659993523	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/url {"url":"http://127.0.0.1:3000/login/login.html"}
+2025-05-19 13:06:33.983 plugin-container[40187:459368] nil host used in call to allowsSpecificHTTPSCertificateForHost
+2025-05-19 13:06:33.992 plugin-container[40187:459368] nil host used in call to allowsAnyHTTPSCertificateForHost:
+2025-05-19 13:06:34.224 plugin-container[40187:459368] nil host used in call to allowsSpecificHTTPSCertificateForHost
+2025-05-19 13:06:34.225 plugin-container[40187:459368] nil host used in call to allowsAnyHTTPSCertificateForHost:
+2025-05-19 13:06:34.230 plugin-container[40187:459436] nil host used in call to allowsSpecificHTTPSCertificateForHost
+2025-05-19 13:06:34.231 plugin-container[40187:459436] nil host used in call to allowsAnyHTTPSCertificateForHost:
+1747659995005	Marionette	DEBUG	2 -> [0,2,"WebDriver:Navigate",{"url":"http://127.0.0.1:3000/login/login.html"}]
+1747659995090	Marionette	TRACE	[9] Received event beforeunload for about:blank
+1747659996176	Marionette	TRACE	Remoteness change detected. Set new top-level browsing context to 10
+1747659996547	Marionette	TRACE	[10] Received event beforeunload for about:blank
+1747659996823	Marionette	TRACE	[10] Received event pagehide for about:blank
+1747659999545	Marionette	TRACE	[10] Received event DOMContentLoaded for http://127.0.0.1:3000/login/login.html
+1747660001090	Marionette	TRACE	[10] Received event pageshow for http://127.0.0.1:3000/login/login.html
+1747660001091	Marionette	DEBUG	2 <- [1,2,null,{"value":null}]
+1747660001314	webdriver::server	DEBUG	<- 200 OK {"value":null}
+1747660001783	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"body"}
+1747660002479	Marionette	DEBUG	2 -> [0,3,"WebDriver:FindElements",{"using":"css selector","value":"body"}]
+1747660002592	RemoteAgent	TRACE	WebDriverProcessData actor created for PID 40184
+1747660002606	Marionette	TRACE	[10] MarionetteCommands actor created for window id 10737418241
+1747660002843	Marionette	DEBUG	2 <- [1,3,null,[{"element-6066-11e4-a52e-4f735466cecf":"098e4d1b-1ad1-40e0-8dd5-8978565985ee"}]]
+1747660002852	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"098e4d1b-1ad1-40e0-8dd5-8978565985ee"}]}
+1747660002888	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/execute/sync {"script":"/* isDisplayed */return (function(){return (fun ... ement-6066-11e4-a52e-4f735466cecf":"098e4d1b-1ad1-40e0-8dd5-8978565985ee","ELEMENT":"098e4d1b-1ad1-40e0-8dd5-8978565985ee"}]}
+1747660003760	Marionette	DEBUG	2 -> [0,4,"WebDriver:ExecuteScript",{"args":[{"ELEMENT":"098e4d1b-1ad1-40e0-8dd5-8978565985ee","element-6066-11e4-a52e-4f735466cecf":"098e4d1b-1ad1-40e0-8dd5-8978565985ee"}],"script":"/* isDisplayed */return (function(){return (function(){var g=this||self;\nfunction aa(a){var b=typeof a;if(\"object\"==b)if(a){i ... efined'?window.navigator:null,document:typeof window!='undefined'?window.document:null}, arguments);}).apply(null, arguments)"}]
+1747660003814	Marionette	DEBUG	2 <- [1,4,null,{"value":true}]
+1747660003820	webdriver::server	DEBUG	<- 200 OK {"value":true}
+1747660003968	webdriver::server	DEBUG	-> GET /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/title 
+1747660003978	Marionette	DEBUG	2 -> [0,5,"WebDriver:GetTitle",{}]
+1747660003979	Marionette	DEBUG	2 <- [1,5,null,{"value":"Login"}]
+1747660003981	webdriver::server	DEBUG	<- 200 OK {"value":"Login"}
+1747660004063	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"#register-toggle"}
+1747660004081	Marionette	DEBUG	2 -> [0,6,"WebDriver:FindElements",{"using":"css selector","value":"#register-toggle"}]
+1747660004117	Marionette	DEBUG	2 <- [1,6,null,[{"element-6066-11e4-a52e-4f735466cecf":"6d3011d5-3989-40f2-b676-e8e810130eb7"}]]
+1747660004137	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"6d3011d5-3989-40f2-b676-e8e810130eb7"}]}
+1747660004155	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/6d3011d5-3989-40f2-b676-e8e810130eb7/click {}
+1747660004186	Marionette	DEBUG	2 -> [0,7,"WebDriver:ElementClick",{"id":"6d3011d5-3989-40f2-b676-e8e810130eb7"}]
+1747660004667	Marionette	TRACE	Received DOM event click for http://127.0.0.1:3000/login/login.html#
+1747660005644	Marionette	TRACE	Canceled page load listener because no navigation has been detected
+1747660005645	Marionette	DEBUG	2 <- [1,7,null,{"value":null}]
+1747660005698	webdriver::server	DEBUG	<- 200 OK {"value":null}
+1747660006240	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"#registerForm"}
+1747660006281	Marionette	DEBUG	2 -> [0,8,"WebDriver:FindElements",{"using":"css selector","value":"#registerForm"}]
+1747660006307	Marionette	DEBUG	2 <- [1,8,null,[{"element-6066-11e4-a52e-4f735466cecf":"d504efe3-d820-40f3-b5af-fe244251fded"}]]
+1747660006322	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"d504efe3-d820-40f3-b5af-fe244251fded"}]}
+1747660006348	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/execute/sync {"script":"/* isDisplayed */return (function(){return (fun ... ement-6066-11e4-a52e-4f735466cecf":"d504efe3-d820-40f3-b5af-fe244251fded","ELEMENT":"d504efe3-d820-40f3-b5af-fe244251fded"}]}
+1747660006395	Marionette	DEBUG	2 -> [0,9,"WebDriver:ExecuteScript",{"args":[{"ELEMENT":"d504efe3-d820-40f3-b5af-fe244251fded","element-6066-11e4-a52e-4f735466cecf":"d504efe3-d820-40f3-b5af-fe244251fded"}],"script":"/* isDisplayed */return (function(){return (function(){var g=this||self;\nfunction aa(a){var b=typeof a;if(\"object\"==b)if(a){i ... efined'?window.navigator:null,document:typeof window!='undefined'?window.document:null}, arguments);}).apply(null, arguments)"}]
+1747660006468	Marionette	DEBUG	2 <- [1,9,null,{"value":true}]
+1747660006503	webdriver::server	DEBUG	<- 200 OK {"value":true}
+1747660006526	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"#registerName"}
+1747660006594	Marionette	DEBUG	2 -> [0,10,"WebDriver:FindElements",{"using":"css selector","value":"#registerName"}]
+1747660006631	Marionette	DEBUG	2 <- [1,10,null,[{"element-6066-11e4-a52e-4f735466cecf":"3fe312ea-0635-4e06-8f68-f962197daaf2"}]]
+1747660006642	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"3fe312ea-0635-4e06-8f68-f962197daaf2"}]}
+1747660006658	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/3fe312ea-0635-4e06-8f68-f962197daaf2/clear {}
+1747660006674	Marionette	DEBUG	2 -> [0,11,"WebDriver:ElementClear",{"id":"3fe312ea-0635-4e06-8f68-f962197daaf2"}]
+1747660007068	Marionette	DEBUG	2 <- [1,11,null,{"value":null}]
+1747660007079	webdriver::server	DEBUG	<- 200 OK {"value":null}
+1747660007091	webdriver::server	DEBUG	-> GET /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/3fe312ea-0635-4e06-8f68-f962197daaf2/property/value 
+1747660007112	Marionette	DEBUG	2 -> [0,12,"WebDriver:GetElementProperty",{"id":"3fe312ea-0635-4e06-8f68-f962197daaf2","name":"value"}]
+1747660007213	Marionette	DEBUG	2 <- [1,12,null,{"value":""}]
+1747660007220	webdriver::server	DEBUG	<- 200 OK {"value":""}
+1747660007243	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/3fe312ea-0635-4e06-8f68-f962197daaf2/value {"text":"User1747659993004","value":["U","s","e","r","1","7","4","7","6","5","9","9","9","3","0","0","4"]}
+1747660007257	Marionette	DEBUG	2 -> [0,13,"WebDriver:ElementSendKeys",{"id":"3fe312ea-0635-4e06-8f68-f962197daaf2","text":"User1747659993004","value":["U","s","e","r","1","7","4","7","6","5","9","9","9","3","0","0","4"]}]
+1747660007423	Marionette	DEBUG	2 <- [1,13,null,{"value":null}]
+1747660007457	webdriver::server	DEBUG	<- 200 OK {"value":null}
+1747660007509	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"#registerEmail"}
+1747660007613	Marionette	DEBUG	2 -> [0,14,"WebDriver:FindElements",{"using":"css selector","value":"#registerEmail"}]
+1747660007623	Marionette	DEBUG	2 <- [1,14,null,[{"element-6066-11e4-a52e-4f735466cecf":"3857bc0c-06bb-4542-b1fd-0f4fc05c0b55"}]]
+1747660007631	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"3857bc0c-06bb-4542-b1fd-0f4fc05c0b55"}]}
+1747660007662	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/3857bc0c-06bb-4542-b1fd-0f4fc05c0b55/clear {}
+1747660007684	Marionette	DEBUG	2 -> [0,15,"WebDriver:ElementClear",{"id":"3857bc0c-06bb-4542-b1fd-0f4fc05c0b55"}]
+1747660007739	Marionette	DEBUG	2 <- [1,15,null,{"value":null}]
+1747660007756	webdriver::server	DEBUG	<- 200 OK {"value":null}
+1747660007778	webdriver::server	DEBUG	-> GET /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/3857bc0c-06bb-4542-b1fd-0f4fc05c0b55/property/value 
+1747660007813	Marionette	DEBUG	2 -> [0,16,"WebDriver:GetElementProperty",{"id":"3857bc0c-06bb-4542-b1fd-0f4fc05c0b55","name":"value"}]
+1747660007849	Marionette	DEBUG	2 <- [1,16,null,{"value":""}]
+1747660007858	webdriver::server	DEBUG	<- 200 OK {"value":""}
+1747660007896	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/3857bc0c-06bb-4542-b1fd-0f4fc05c0b55/value {"text":"user1747659 ... value":["u","s","e","r","1","7","4","7","6","5","9","9","9","3","0","0","4","@","e","x","a","m","p","l","e",".","c","o","m"]}
+1747660007916	Marionette	DEBUG	2 -> [0,17,"WebDriver:ElementSendKeys",{"id":"3857bc0c-06bb-4542-b1fd-0f4fc05c0b55","text":"user1747659993004@example.com","value":["u","s","e","r","1","7","4","7","6","5","9","9","9","3","0","0","4","@","e","x","a","m","p","l","e",".","c","o","m"]}]
+1747660008128	Marionette	DEBUG	2 <- [1,17,null,{"value":null}]
+1747660008132	webdriver::server	DEBUG	<- 200 OK {"value":null}
+1747660008156	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"#registerPassword"}
+1747660008210	Marionette	DEBUG	2 -> [0,18,"WebDriver:FindElements",{"using":"css selector","value":"#registerPassword"}]
+1747660008410	Marionette	DEBUG	2 <- [1,18,null,[{"element-6066-11e4-a52e-4f735466cecf":"6e2e7aa1-c003-40cb-ad23-4dc148562a71"}]]
+1747660008421	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"6e2e7aa1-c003-40cb-ad23-4dc148562a71"}]}
+1747660008437	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/6e2e7aa1-c003-40cb-ad23-4dc148562a71/clear {}
+1747660008461	Marionette	DEBUG	2 -> [0,19,"WebDriver:ElementClear",{"id":"6e2e7aa1-c003-40cb-ad23-4dc148562a71"}]
+1747660008558	Marionette	DEBUG	2 <- [1,19,null,{"value":null}]
+1747660008583	webdriver::server	DEBUG	<- 200 OK {"value":null}
+1747660008593	webdriver::server	DEBUG	-> GET /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/6e2e7aa1-c003-40cb-ad23-4dc148562a71/property/value 
+1747660008604	Marionette	DEBUG	2 -> [0,20,"WebDriver:GetElementProperty",{"id":"6e2e7aa1-c003-40cb-ad23-4dc148562a71","name":"value"}]
+1747660008642	Marionette	DEBUG	2 <- [1,20,null,{"value":""}]
+1747660008657	webdriver::server	DEBUG	<- 200 OK {"value":""}
+1747660008673	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/6e2e7aa1-c003-40cb-ad23-4dc148562a71/value {"text":"Pass1747659993004","value":["P","a","s","s","1","7","4","7","6","5","9","9","9","3","0","0","4"]}
+1747660008687	Marionette	DEBUG	2 -> [0,21,"WebDriver:ElementSendKeys",{"id":"6e2e7aa1-c003-40cb-ad23-4dc148562a71","text":"Pass1747659993004","value":["P","a","s","s","1","7","4","7","6","5","9","9","9","3","0","0","4"]}]
+1747660008875	Marionette	DEBUG	2 <- [1,21,null,{"value":null}]
+1747660008879	webdriver::server	DEBUG	<- 200 OK {"value":null}
+1747660008896	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"#registerConfirmPassword"}
+1747660008958	Marionette	DEBUG	2 -> [0,22,"WebDriver:FindElements",{"using":"css selector","value":"#registerConfirmPassword"}]
+1747660008994	Marionette	DEBUG	2 <- [1,22,null,[{"element-6066-11e4-a52e-4f735466cecf":"b89da399-e3fc-4b3c-a485-276a8ac43fc0"}]]
+1747660009014	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"b89da399-e3fc-4b3c-a485-276a8ac43fc0"}]}
+1747660009029	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/b89da399-e3fc-4b3c-a485-276a8ac43fc0/clear {}
+1747660009086	Marionette	DEBUG	2 -> [0,23,"WebDriver:ElementClear",{"id":"b89da399-e3fc-4b3c-a485-276a8ac43fc0"}]
+1747660009186	Marionette	DEBUG	2 <- [1,23,null,{"value":null}]
+1747660009225	webdriver::server	DEBUG	<- 200 OK {"value":null}
+1747660009235	webdriver::server	DEBUG	-> GET /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/b89da399-e3fc-4b3c-a485-276a8ac43fc0/property/value 
+1747660009253	Marionette	DEBUG	2 -> [0,24,"WebDriver:GetElementProperty",{"id":"b89da399-e3fc-4b3c-a485-276a8ac43fc0","name":"value"}]
+1747660009281	Marionette	DEBUG	2 <- [1,24,null,{"value":""}]
+1747660009313	webdriver::server	DEBUG	<- 200 OK {"value":""}
+1747660009329	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/b89da399-e3fc-4b3c-a485-276a8ac43fc0/value {"text":"Pass1747659993004","value":["P","a","s","s","1","7","4","7","6","5","9","9","9","3","0","0","4"]}
+1747660009355	Marionette	DEBUG	2 -> [0,25,"WebDriver:ElementSendKeys",{"id":"b89da399-e3fc-4b3c-a485-276a8ac43fc0","text":"Pass1747659993004","value":["P","a","s","s","1","7","4","7","6","5","9","9","9","3","0","0","4"]}]
+1747660009502	Marionette	DEBUG	2 <- [1,25,null,{"value":null}]
+1747660009516	webdriver::server	DEBUG	<- 200 OK {"value":null}
+1747660009529	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"#registerFormSubmit button[type=\"submit\"]"}
+1747660009555	Marionette	DEBUG	2 -> [0,26,"WebDriver:FindElements",{"using":"css selector","value":"#registerFormSubmit button[type=\"submit\"]"}]
+1747660009592	Marionette	DEBUG	2 <- [1,26,null,[{"element-6066-11e4-a52e-4f735466cecf":"903c637a-d182-4065-8667-12bd3db3475b"}]]
+1747660009619	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"903c637a-d182-4065-8667-12bd3db3475b"}]}
+1747660009640	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/903c637a-d182-4065-8667-12bd3db3475b/click {}
+1747660009679	Marionette	DEBUG	2 -> [0,27,"WebDriver:ElementClick",{"id":"903c637a-d182-4065-8667-12bd3db3475b"}]
+1747660009771	Marionette	TRACE	Received DOM event click for [object HTMLButtonElement]
+console.warn: LoginRecipes: "Falling back to a synchronous message for: http://127.0.0.1:3000."
+1747660010118	Marionette	TRACE	Canceled page load listener because no navigation has been detected
+1747660010154	Marionette	DEBUG	2 <- [1,27,null,{"value":null}]
+1747660010167	webdriver::server	DEBUG	<- 200 OK {"value":null}
+1747660011189	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"#userLogin"}
+1747660011232	Marionette	DEBUG	2 -> [0,28,"WebDriver:FindElements",{"using":"css selector","value":"#userLogin"}]
+1747660011264	Marionette	DEBUG	2 <- [1,28,null,[{"element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]]
+1747660011266	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]}
+1747660011281	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/execute/sync {"script":"/* isDisplayed */return (function(){return (fun ... ement-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18","ELEMENT":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]}
+1747660011299	Marionette	DEBUG	2 -> [0,29,"WebDriver:ExecuteScript",{"args":[{"ELEMENT":"90e4a492-f02d-4ab4-8551-6b1d74b29a18","element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}],"script":"/* isDisplayed */return (function(){return (function(){var g=this||self;\nfunction aa(a){var b=typeof a;if(\"object\"==b)if(a){i ... efined'?window.navigator:null,document:typeof window!='undefined'?window.document:null}, arguments);}).apply(null, arguments)"}]
+1747660011347	Marionette	DEBUG	2 <- [1,29,null,{"value":false}]
+1747660011349	webdriver::server	DEBUG	<- 200 OK {"value":false}
+1747660011868	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"#userLogin"}
+1747660011887	Marionette	DEBUG	2 -> [0,30,"WebDriver:FindElements",{"using":"css selector","value":"#userLogin"}]
+1747660011914	Marionette	DEBUG	2 <- [1,30,null,[{"element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]]
+1747660011925	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]}
+1747660011940	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/execute/sync {"script":"/* isDisplayed */return (function(){return (fun ... ement-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18","ELEMENT":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]}
+1747660011945	Marionette	DEBUG	2 -> [0,31,"WebDriver:ExecuteScript",{"args":[{"ELEMENT":"90e4a492-f02d-4ab4-8551-6b1d74b29a18","element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}],"script":"/* isDisplayed */return (function(){return (function(){var g=this||self;\nfunction aa(a){var b=typeof a;if(\"object\"==b)if(a){i ... efined'?window.navigator:null,document:typeof window!='undefined'?window.document:null}, arguments);}).apply(null, arguments)"}]
+1747660011977	Marionette	DEBUG	2 <- [1,31,null,{"value":false}]
+1747660011981	webdriver::server	DEBUG	<- 200 OK {"value":false}
+1747660012504	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"#userLogin"}
+1747660012536	Marionette	DEBUG	2 -> [0,32,"WebDriver:FindElements",{"using":"css selector","value":"#userLogin"}]
+1747660012563	Marionette	DEBUG	2 <- [1,32,null,[{"element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]]
+1747660012565	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]}
+1747660012580	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/execute/sync {"script":"/* isDisplayed */return (function(){return (fun ... ement-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18","ELEMENT":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]}
+1747660012585	Marionette	DEBUG	2 -> [0,33,"WebDriver:ExecuteScript",{"args":[{"ELEMENT":"90e4a492-f02d-4ab4-8551-6b1d74b29a18","element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}],"script":"/* isDisplayed */return (function(){return (function(){var g=this||self;\nfunction aa(a){var b=typeof a;if(\"object\"==b)if(a){i ... efined'?window.navigator:null,document:typeof window!='undefined'?window.document:null}, arguments);}).apply(null, arguments)"}]
+1747660012616	Marionette	DEBUG	2 <- [1,33,null,{"value":false}]
+1747660012618	webdriver::server	DEBUG	<- 200 OK {"value":false}
+1747660013131	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"#userLogin"}
+1747660013139	Marionette	DEBUG	2 -> [0,34,"WebDriver:FindElements",{"using":"css selector","value":"#userLogin"}]
+1747660013154	Marionette	DEBUG	2 <- [1,34,null,[{"element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]]
+1747660013156	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]}
+1747660013172	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/execute/sync {"script":"/* isDisplayed */return (function(){return (fun ... ement-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18","ELEMENT":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]}
+1747660013178	Marionette	DEBUG	2 -> [0,35,"WebDriver:ExecuteScript",{"args":[{"ELEMENT":"90e4a492-f02d-4ab4-8551-6b1d74b29a18","element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}],"script":"/* isDisplayed */return (function(){return (function(){var g=this||self;\nfunction aa(a){var b=typeof a;if(\"object\"==b)if(a){i ... efined'?window.navigator:null,document:typeof window!='undefined'?window.document:null}, arguments);}).apply(null, arguments)"}]
+1747660013200	Marionette	DEBUG	2 <- [1,35,null,{"value":false}]
+1747660013203	webdriver::server	DEBUG	<- 200 OK {"value":false}
+1747660013714	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"#userLogin"}
+1747660013717	Marionette	DEBUG	2 -> [0,36,"WebDriver:FindElements",{"using":"css selector","value":"#userLogin"}]
+1747660013722	Marionette	DEBUG	2 <- [1,36,null,[{"element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]]
+1747660013724	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]}
+1747660013737	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/execute/sync {"script":"/* isDisplayed */return (function(){return (fun ... ement-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18","ELEMENT":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]}
+1747660013740	Marionette	DEBUG	2 -> [0,37,"WebDriver:ExecuteScript",{"args":[{"ELEMENT":"90e4a492-f02d-4ab4-8551-6b1d74b29a18","element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}],"script":"/* isDisplayed */return (function(){return (function(){var g=this||self;\nfunction aa(a){var b=typeof a;if(\"object\"==b)if(a){i ... efined'?window.navigator:null,document:typeof window!='undefined'?window.document:null}, arguments);}).apply(null, arguments)"}]
+1747660013765	Marionette	DEBUG	2 <- [1,37,null,{"value":false}]
+1747660013767	webdriver::server	DEBUG	<- 200 OK {"value":false}
+1747660014280	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"#userLogin"}
+1747660014282	Marionette	DEBUG	2 -> [0,38,"WebDriver:FindElements",{"using":"css selector","value":"#userLogin"}]
+1747660014288	Marionette	DEBUG	2 <- [1,38,null,[{"element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]]
+1747660014290	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]}
+1747660014304	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/execute/sync {"script":"/* isDisplayed */return (function(){return (fun ... ement-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18","ELEMENT":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]}
+1747660014309	Marionette	DEBUG	2 -> [0,39,"WebDriver:ExecuteScript",{"args":[{"ELEMENT":"90e4a492-f02d-4ab4-8551-6b1d74b29a18","element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}],"script":"/* isDisplayed */return (function(){return (function(){var g=this||self;\nfunction aa(a){var b=typeof a;if(\"object\"==b)if(a){i ... efined'?window.navigator:null,document:typeof window!='undefined'?window.document:null}, arguments);}).apply(null, arguments)"}]
+1747660014330	Marionette	DEBUG	2 <- [1,39,null,{"value":false}]
+1747660014332	webdriver::server	DEBUG	<- 200 OK {"value":false}
+1747660014845	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"#userLogin"}
+1747660014850	Marionette	DEBUG	2 -> [0,40,"WebDriver:FindElements",{"using":"css selector","value":"#userLogin"}]
+1747660014857	Marionette	DEBUG	2 <- [1,40,null,[{"element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]]
+1747660014859	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]}
+1747660014874	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/execute/sync {"script":"/* isDisplayed */return (function(){return (fun ... ement-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18","ELEMENT":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]}
+1747660014883	Marionette	DEBUG	2 -> [0,41,"WebDriver:ExecuteScript",{"args":[{"ELEMENT":"90e4a492-f02d-4ab4-8551-6b1d74b29a18","element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}],"script":"/* isDisplayed */return (function(){return (function(){var g=this||self;\nfunction aa(a){var b=typeof a;if(\"object\"==b)if(a){i ... efined'?window.navigator:null,document:typeof window!='undefined'?window.document:null}, arguments);}).apply(null, arguments)"}]
+1747660014905	Marionette	DEBUG	2 <- [1,41,null,{"value":false}]
+1747660014907	webdriver::server	DEBUG	<- 200 OK {"value":false}
+1747660015417	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"#userLogin"}
+1747660015516	Marionette	DEBUG	2 -> [0,42,"WebDriver:FindElements",{"using":"css selector","value":"#userLogin"}]
+1747660015597	Marionette	DEBUG	2 <- [1,42,null,[{"element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]]
+1747660015609	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]}
+1747660015625	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/execute/sync {"script":"/* isDisplayed */return (function(){return (fun ... ement-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18","ELEMENT":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]}
+1747660015691	Marionette	DEBUG	2 -> [0,43,"WebDriver:ExecuteScript",{"args":[{"ELEMENT":"90e4a492-f02d-4ab4-8551-6b1d74b29a18","element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}],"script":"/* isDisplayed */return (function(){return (function(){var g=this||self;\nfunction aa(a){var b=typeof a;if(\"object\"==b)if(a){i ... efined'?window.navigator:null,document:typeof window!='undefined'?window.document:null}, arguments);}).apply(null, arguments)"}]
+1747660015756	Marionette	DEBUG	2 <- [1,43,null,{"value":false}]
+1747660015768	webdriver::server	DEBUG	<- 200 OK {"value":false}
+1747660015953	RemoteAgent	TRACE	Received observer notification common-dialog-loaded
+1747660016287	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"#userLogin"}
+1747660016314	Marionette	DEBUG	2 -> [0,44,"WebDriver:FindElements",{"using":"css selector","value":"#userLogin"}]
+1747660016342	RemoteAgent	TRACE	Received event DOMModalDialogClosed
+1747660016350	Marionette	DEBUG	2 <- [1,44,{"error":"unexpected alert open","message":"Unexpected alert dialog detected. Performed handler \"dismiss\". Dialog text: Usuário cadastrado com sucesso!","stacktrace":"RemoteError@chrome://remote/content/shared/RemoteError.sys.mjs:8:8\nWebDriverError@chrome://remote/content/shared/webdriver/Er ... iver/Errors.sys.mjs:876:5\nGeckoDriver.prototype._handleUserPrompts@chrome://remote/content/marionette/driver.sys.mjs:3123:11\n","data":{"text":"Usuário cadastrado com sucesso!"}},null]
+1747660016365	webdriver::server	DEBUG	<- 500 Internal Server Error {"value":{"error":"unexpected alert open","message":"Unexpected alert dialog detected. Performed ... eUserPrompts@chrome://remote/content/marionette/driver.sys.mjs:3123:11\n","data":{"text":"Usuário cadastrado com sucesso!"}}}
+1747660017411	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"#userLogin"}
+1747660017414	Marionette	DEBUG	2 -> [0,45,"WebDriver:FindElements",{"using":"css selector","value":"#userLogin"}]
+1747660017420	Marionette	DEBUG	2 <- [1,45,null,[{"element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]]
+1747660017422	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]}
+1747660017439	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/execute/sync {"script":"/* isDisplayed */return (function(){return (fun ... ement-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18","ELEMENT":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}]}
+1747660017446	Marionette	DEBUG	2 -> [0,46,"WebDriver:ExecuteScript",{"args":[{"ELEMENT":"90e4a492-f02d-4ab4-8551-6b1d74b29a18","element-6066-11e4-a52e-4f735466cecf":"90e4a492-f02d-4ab4-8551-6b1d74b29a18"}],"script":"/* isDisplayed */return (function(){return (function(){var g=this||self;\nfunction aa(a){var b=typeof a;if(\"object\"==b)if(a){i ... efined'?window.navigator:null,document:typeof window!='undefined'?window.document:null}, arguments);}).apply(null, arguments)"}]
+1747660017478	Marionette	DEBUG	2 <- [1,46,null,{"value":true}]
+1747660017480	webdriver::server	DEBUG	<- 200 OK {"value":true}
+1747660017497	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"#userEmail"}
+1747660017530	Marionette	DEBUG	2 -> [0,47,"WebDriver:FindElements",{"using":"css selector","value":"#userEmail"}]
+1747660017538	Marionette	DEBUG	2 <- [1,47,null,[{"element-6066-11e4-a52e-4f735466cecf":"1f0910f6-8ff3-4867-83c6-e39a862971ec"}]]
+1747660017543	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"1f0910f6-8ff3-4867-83c6-e39a862971ec"}]}
+1747660017571	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/1f0910f6-8ff3-4867-83c6-e39a862971ec/clear {}
+1747660017576	Marionette	DEBUG	2 -> [0,48,"WebDriver:ElementClear",{"id":"1f0910f6-8ff3-4867-83c6-e39a862971ec"}]
+1747660017636	Marionette	DEBUG	2 <- [1,48,null,{"value":null}]
+1747660017640	webdriver::server	DEBUG	<- 200 OK {"value":null}
+1747660017650	webdriver::server	DEBUG	-> GET /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/1f0910f6-8ff3-4867-83c6-e39a862971ec/property/value 
+1747660017654	Marionette	DEBUG	2 -> [0,49,"WebDriver:GetElementProperty",{"id":"1f0910f6-8ff3-4867-83c6-e39a862971ec","name":"value"}]
+1747660017659	Marionette	DEBUG	2 <- [1,49,null,{"value":""}]
+1747660017661	webdriver::server	DEBUG	<- 200 OK {"value":""}
+1747660017672	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/1f0910f6-8ff3-4867-83c6-e39a862971ec/value {"text":"user1747659 ... value":["u","s","e","r","1","7","4","7","6","5","9","9","9","3","0","0","4","@","e","x","a","m","p","l","e",".","c","o","m"]}
+1747660017676	Marionette	DEBUG	2 -> [0,50,"WebDriver:ElementSendKeys",{"id":"1f0910f6-8ff3-4867-83c6-e39a862971ec","text":"user1747659993004@example.com","value":["u","s","e","r","1","7","4","7","6","5","9","9","9","3","0","0","4","@","e","x","a","m","p","l","e",".","c","o","m"]}]
+1747660017879	Marionette	DEBUG	2 <- [1,50,null,{"value":null}]
+1747660017881	webdriver::server	DEBUG	<- 200 OK {"value":null}
+1747660017895	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"#userPassword"}
+1747660017903	Marionette	DEBUG	2 -> [0,51,"WebDriver:FindElements",{"using":"css selector","value":"#userPassword"}]
+1747660017915	Marionette	DEBUG	2 <- [1,51,null,[{"element-6066-11e4-a52e-4f735466cecf":"6c7ed2c5-0a8f-4fc1-b554-5db69684c9f8"}]]
+1747660017918	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"6c7ed2c5-0a8f-4fc1-b554-5db69684c9f8"}]}
+1747660017939	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/6c7ed2c5-0a8f-4fc1-b554-5db69684c9f8/clear {}
+1747660017947	Marionette	DEBUG	2 -> [0,52,"WebDriver:ElementClear",{"id":"6c7ed2c5-0a8f-4fc1-b554-5db69684c9f8"}]
+1747660018075	Marionette	DEBUG	2 <- [1,52,null,{"value":null}]
+1747660018092	webdriver::server	DEBUG	<- 200 OK {"value":null}
+1747660018102	webdriver::server	DEBUG	-> GET /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/6c7ed2c5-0a8f-4fc1-b554-5db69684c9f8/property/value 
+1747660018106	Marionette	DEBUG	2 -> [0,53,"WebDriver:GetElementProperty",{"id":"6c7ed2c5-0a8f-4fc1-b554-5db69684c9f8","name":"value"}]
+1747660018123	Marionette	DEBUG	2 <- [1,53,null,{"value":""}]
+1747660018125	webdriver::server	DEBUG	<- 200 OK {"value":""}
+1747660018142	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/6c7ed2c5-0a8f-4fc1-b554-5db69684c9f8/value {"text":"Pass1747659993004","value":["P","a","s","s","1","7","4","7","6","5","9","9","9","3","0","0","4"]}
+1747660018147	Marionette	DEBUG	2 -> [0,54,"WebDriver:ElementSendKeys",{"id":"6c7ed2c5-0a8f-4fc1-b554-5db69684c9f8","text":"Pass1747659993004","value":["P","a","s","s","1","7","4","7","6","5","9","9","9","3","0","0","4"]}]
+1747660018289	Marionette	DEBUG	2 <- [1,54,null,{"value":null}]
+1747660018292	webdriver::server	DEBUG	<- 200 OK {"value":null}
+1747660018304	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"#userLoginForm button[type=\"submit\"]"}
+1747660018307	Marionette	DEBUG	2 -> [0,55,"WebDriver:FindElements",{"using":"css selector","value":"#userLoginForm button[type=\"submit\"]"}]
+1747660018315	Marionette	DEBUG	2 <- [1,55,null,[{"element-6066-11e4-a52e-4f735466cecf":"93817ffe-c86c-4489-af6d-8621ed4a5dfc"}]]
+1747660018318	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"93817ffe-c86c-4489-af6d-8621ed4a5dfc"}]}
+1747660018329	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/element/93817ffe-c86c-4489-af6d-8621ed4a5dfc/click {}
+1747660018334	Marionette	DEBUG	2 -> [0,56,"WebDriver:ElementClick",{"id":"93817ffe-c86c-4489-af6d-8621ed4a5dfc"}]
+1747660018381	Marionette	TRACE	Received DOM event click for [object HTMLButtonElement]
+console.warn: LoginRecipes: "Falling back to a synchronous message for: http://127.0.0.1:3000."
+1747660018685	Marionette	TRACE	Canceled page load listener because no navigation has been detected
+1747660018687	Marionette	DEBUG	2 <- [1,56,null,{"value":null}]
+1747660018690	webdriver::server	DEBUG	<- 200 OK {"value":null}
+1747660020202	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/url {"url":"http://127.0.0.1:3000/forum/forum.html"}
+1747660020207	Marionette	DEBUG	2 -> [0,57,"WebDriver:Navigate",{"url":"http://127.0.0.1:3000/forum/forum.html"}]
+1747660020241	Marionette	TRACE	[10] Received event beforeunload for http://127.0.0.1:3000/login/login.html
+1747660020485	RemoteAgent	TRACE	Received DOM event pagehide for [object HTMLDocument]
+1747660020766	Marionette	TRACE	[10] Received event pagehide for http://127.0.0.1:3000/login/login.html
+1747660020782	Marionette	TRACE	[10] MarionetteCommands actor destroyed for window id 10737418241
+JavaScript error: resource://gre/modules/Prompter.sys.mjs, line 1082: AbortError: Actor 'Prompt' destroyed before query 'Prompt:Open' was resolved
+1747660021268	RemoteAgent	TRACE	Received event DOMModalDialogClosed
+1747660024137	Marionette	TRACE	[10] Received event beforeunload for http://127.0.0.1:3000/forum/forum.html
+JavaScript error: http://127.0.0.1:3000/forum/forum.js, line 349: TypeError: document.getElementById(...) is null
+JavaScript error: http://127.0.0.1:3000/forum/forum.js, line 379: TypeError: document.getElementById(...) is null
+1747660024754	Marionette	WARN	Ignoring event 'DOMContentLoaded' because document has an invalid readyState of 'complete'.
+1747660025059	Marionette	TRACE	[10] Received event pagehide for http://127.0.0.1:3000/forum/forum.html
+1747660028191	Marionette	TRACE	[10] Received event DOMContentLoaded for http://127.0.0.1:3000/login/login.html
+1747660029179	Marionette	TRACE	[10] Received event pageshow for http://127.0.0.1:3000/login/login.html
+1747660029182	Marionette	DEBUG	2 <- [1,57,null,{"value":null}]
+1747660029427	webdriver::server	DEBUG	<- 200 OK {"value":null}
+1747660029453	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/elements {"using":"css selector","value":"body"}
+1747660029521	Marionette	DEBUG	2 -> [0,58,"WebDriver:FindElements",{"using":"css selector","value":"body"}]
+1747660029558	Marionette	TRACE	[10] MarionetteCommands actor created for window id 10737418243
+1747660029567	Marionette	DEBUG	2 <- [1,58,null,[{"element-6066-11e4-a52e-4f735466cecf":"2b6fc54c-cece-4610-9906-50786b186111"}]]
+1747660029569	webdriver::server	DEBUG	<- 200 OK {"value":[{"element-6066-11e4-a52e-4f735466cecf":"2b6fc54c-cece-4610-9906-50786b186111"}]}
+1747660029585	webdriver::server	DEBUG	-> POST /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/execute/sync {"script":"/* isDisplayed */return (function(){return (fun ... ement-6066-11e4-a52e-4f735466cecf":"2b6fc54c-cece-4610-9906-50786b186111","ELEMENT":"2b6fc54c-cece-4610-9906-50786b186111"}]}
+1747660029593	Marionette	DEBUG	2 -> [0,59,"WebDriver:ExecuteScript",{"args":[{"ELEMENT":"2b6fc54c-cece-4610-9906-50786b186111","element-6066-11e4-a52e-4f735466cecf":"2b6fc54c-cece-4610-9906-50786b186111"}],"script":"/* isDisplayed */return (function(){return (function(){var g=this||self;\nfunction aa(a){var b=typeof a;if(\"object\"==b)if(a){i ... efined'?window.navigator:null,document:typeof window!='undefined'?window.document:null}, arguments);}).apply(null, arguments)"}]
+1747660029637	Marionette	DEBUG	2 <- [1,59,null,{"value":true}]
+1747660029639	webdriver::server	DEBUG	<- 200 OK {"value":true}
+1747660029705	webdriver::server	DEBUG	-> GET /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/url 
+1747660029711	Marionette	DEBUG	2 -> [0,60,"WebDriver:GetCurrentURL",{}]
+1747660029718	Marionette	DEBUG	2 <- [1,60,null,{"value":"http://127.0.0.1:3000/login/login.html"}]
+1747660029726	webdriver::server	DEBUG	<- 200 OK {"value":"http://127.0.0.1:3000/login/login.html"}
+1747660030244	webdriver::server	DEBUG	-> GET /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/url 
+1747660030246	Marionette	DEBUG	2 -> [0,61,"WebDriver:GetCurrentURL",{}]
+1747660030247	Marionette	DEBUG	2 <- [1,61,null,{"value":"http://127.0.0.1:3000/login/login.html"}]
+1747660030248	webdriver::server	DEBUG	<- 200 OK {"value":"http://127.0.0.1:3000/login/login.html"}
+1747660030760	webdriver::server	DEBUG	-> GET /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/url 
+1747660030762	Marionette	DEBUG	2 -> [0,62,"WebDriver:GetCurrentURL",{}]
+1747660030764	Marionette	DEBUG	2 <- [1,62,null,{"value":"http://127.0.0.1:3000/login/login.html"}]
+1747660030765	webdriver::server	DEBUG	<- 200 OK {"value":"http://127.0.0.1:3000/login/login.html"}
+1747660031275	webdriver::server	DEBUG	-> GET /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/url 
+1747660031277	Marionette	DEBUG	2 -> [0,63,"WebDriver:GetCurrentURL",{}]
+1747660031278	Marionette	DEBUG	2 <- [1,63,null,{"value":"http://127.0.0.1:3000/login/login.html"}]
+1747660031279	webdriver::server	DEBUG	<- 200 OK {"value":"http://127.0.0.1:3000/login/login.html"}
+1747660031789	webdriver::server	DEBUG	-> GET /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/url 
+1747660031791	Marionette	DEBUG	2 -> [0,64,"WebDriver:GetCurrentURL",{}]
+1747660031792	Marionette	DEBUG	2 <- [1,64,null,{"value":"http://127.0.0.1:3000/login/login.html"}]
+1747660031793	webdriver::server	DEBUG	<- 200 OK {"value":"http://127.0.0.1:3000/login/login.html"}
+1747660032303	webdriver::server	DEBUG	-> GET /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/url 
+1747660032306	Marionette	DEBUG	2 -> [0,65,"WebDriver:GetCurrentURL",{}]
+1747660032307	Marionette	DEBUG	2 <- [1,65,null,{"value":"http://127.0.0.1:3000/login/login.html"}]
+1747660032309	webdriver::server	DEBUG	<- 200 OK {"value":"http://127.0.0.1:3000/login/login.html"}
+1747660032819	webdriver::server	DEBUG	-> GET /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/url 
+1747660032821	Marionette	DEBUG	2 -> [0,66,"WebDriver:GetCurrentURL",{}]
+1747660032823	Marionette	DEBUG	2 <- [1,66,null,{"value":"http://127.0.0.1:3000/login/login.html"}]
+1747660032824	webdriver::server	DEBUG	<- 200 OK {"value":"http://127.0.0.1:3000/login/login.html"}
+1747660033334	webdriver::server	DEBUG	-> GET /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/url 
+1747660033338	Marionette	DEBUG	2 -> [0,67,"WebDriver:GetCurrentURL",{}]
+1747660033340	Marionette	DEBUG	2 <- [1,67,null,{"value":"http://127.0.0.1:3000/login/login.html"}]
+1747660033342	webdriver::server	DEBUG	<- 200 OK {"value":"http://127.0.0.1:3000/login/login.html"}
+1747660033853	webdriver::server	DEBUG	-> GET /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/url 
+1747660033855	Marionette	DEBUG	2 -> [0,68,"WebDriver:GetCurrentURL",{}]
+1747660033856	Marionette	DEBUG	2 <- [1,68,null,{"value":"http://127.0.0.1:3000/login/login.html"}]
+1747660033857	webdriver::server	DEBUG	<- 200 OK {"value":"http://127.0.0.1:3000/login/login.html"}
+1747660034367	webdriver::server	DEBUG	-> GET /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/url 
+1747660034368	Marionette	DEBUG	2 -> [0,69,"WebDriver:GetCurrentURL",{}]
+1747660034369	Marionette	DEBUG	2 <- [1,69,null,{"value":"http://127.0.0.1:3000/login/login.html"}]
+1747660034373	webdriver::server	DEBUG	<- 200 OK {"value":"http://127.0.0.1:3000/login/login.html"}
+1747660034881	webdriver::server	DEBUG	-> GET /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556/url 
+1747660034882	Marionette	DEBUG	2 -> [0,70,"WebDriver:GetCurrentURL",{}]
+1747660034883	Marionette	DEBUG	2 <- [1,70,null,{"value":"http://127.0.0.1:3000/login/login.html"}]
+1747660034885	webdriver::server	DEBUG	<- 200 OK {"value":"http://127.0.0.1:3000/login/login.html"}
+1747660035076	webdriver::server	DEBUG	-> DELETE /session/1dd6ea7d-2f25-4818-ae9a-28751a74b556 
+1747660035089	Marionette	DEBUG	2 -> [0,71,"Marionette:Quit",{"flags":["eForceQuit"]}]
+1747660035094	Marionette	INFO	Stopped listening on port 51422
+1747660035130	Marionette	TRACE	[10] MarionetteCommands actor destroyed for window id 10737418243
+1747660039619	Marionette	TRACE	Received observer notification quit-application
+1747660039635	Marionette	TRACE	Received observer notification quit-application
+1747660039636	RemoteAgent	DEBUG	Resetting recommended pref apz.content_response_timeout
+1747660039638	RemoteAgent	DEBUG	Resetting recommended pref browser.contentblocking.introCount
+1747660039639	RemoteAgent	DEBUG	Resetting recommended pref browser.download.panel.shown
+1747660039642	RemoteAgent	DEBUG	Resetting recommended pref browser.http.blank_page_with_error_response.enabled
+1747660039644	RemoteAgent	DEBUG	Resetting recommended pref browser.newtabpage.activity-stream.discoverystream.region-weather-config
+1747660039646	RemoteAgent	DEBUG	Resetting recommended pref browser.newtabpage.activity-stream.newtabWallpapers.enabled
+1747660039650	RemoteAgent	DEBUG	Resetting recommended pref browser.newtabpage.activity-stream.newtabWallpapers.v2.enabled
+1747660039651	RemoteAgent	DEBUG	Resetting recommended pref browser.newtabpage.activity-stream.showSponsoredTopSites
+1747660039653	RemoteAgent	DEBUG	Resetting recommended pref browser.newtabpage.enabled
+1747660039662	RemoteAgent	DEBUG	Resetting recommended pref browser.pagethumbnails.capturing_disabled
+1747660039664	RemoteAgent	DEBUG	Resetting recommended pref browser.region.network.url
+1747660039667	RemoteAgent	DEBUG	Resetting recommended pref browser.safebrowsing.blockedURIs.enabled
+1747660039721	RemoteAgent	DEBUG	Resetting recommended pref browser.safebrowsing.downloads.enabled
+1747660039742	RemoteAgent	DEBUG	Resetting recommended pref browser.safebrowsing.malware.enabled
+1747660039759	RemoteAgent	DEBUG	Resetting recommended pref browser.safebrowsing.phishing.enabled
+1747660039776	RemoteAgent	DEBUG	Resetting recommended pref browser.search.update
+1747660039779	RemoteAgent	DEBUG	Resetting recommended pref browser.startup.couldRestoreSession.count
+1747660039782	RemoteAgent	DEBUG	Resetting recommended pref browser.tabs.remote.unloadDelayMs
+1747660039784	RemoteAgent	DEBUG	Resetting recommended pref browser.tabs.unloadOnLowMemory
+1747660039787	RemoteAgent	DEBUG	Resetting recommended pref browser.tabs.warnOnClose
+1747660039788	RemoteAgent	DEBUG	Resetting recommended pref browser.tabs.warnOnCloseOtherTabs
+1747660039791	RemoteAgent	DEBUG	Resetting recommended pref browser.tabs.warnOnOpen
+1747660039794	RemoteAgent	DEBUG	Resetting recommended pref browser.toolbars.bookmarks.visibility
+1747660039797	RemoteAgent	DEBUG	Resetting recommended pref browser.topsites.contile.enabled
+1747660039800	RemoteAgent	DEBUG	Resetting recommended pref browser.usedOnWindows10.introURL
+1747660039803	RemoteAgent	DEBUG	Resetting recommended pref browser.urlbar.merino.endpointURL
+1747660039816	RemoteAgent	DEBUG	Resetting recommended pref browser.urlbar.suggest.searches
+1747660039820	RemoteAgent	DEBUG	Resetting recommended pref datareporting.policy.dataSubmissionPolicyAccepted
+1747660039821	RemoteAgent	DEBUG	Resetting recommended pref dom.disable_open_during_load
+1747660039822	RemoteAgent	DEBUG	Resetting recommended pref dom.file.createInChild
+1747660039822	RemoteAgent	DEBUG	Resetting recommended pref dom.input_events.security.minNumTicks
+1747660039823	RemoteAgent	DEBUG	Resetting recommended pref dom.input_events.security.minTimeElapsedInMS
+1747660039823	RemoteAgent	DEBUG	Resetting recommended pref dom.max_chrome_script_run_time
+1747660039823	RemoteAgent	DEBUG	Resetting recommended pref dom.max_script_run_time
+1747660039825	RemoteAgent	DEBUG	Resetting recommended pref dom.navigation.navigationRateLimit.count
+1747660039826	RemoteAgent	DEBUG	Resetting recommended pref dom.push.connection.enabled
+1747660039826	RemoteAgent	DEBUG	Resetting recommended pref dom.screenorientation.allow-lock
+1747660039827	RemoteAgent	DEBUG	Resetting recommended pref dom.successive_dialog_time_limit
+1747660039827	RemoteAgent	DEBUG	Resetting recommended pref extensions.getAddons.cache.enabled
+1747660039828	RemoteAgent	DEBUG	Resetting recommended pref extensions.getAddons.discovery.api_url
+1747660039829	RemoteAgent	DEBUG	Resetting recommended pref extensions.blocklist.detailsURL
+1747660039830	RemoteAgent	DEBUG	Resetting recommended pref extensions.blocklist.itemURL
+1747660039830	RemoteAgent	DEBUG	Resetting recommended pref extensions.hotfix.url
+1747660039831	RemoteAgent	DEBUG	Resetting recommended pref extensions.systemAddon.update.enabled
+1747660039831	RemoteAgent	DEBUG	Resetting recommended pref extensions.update.background.url
+1747660039834	RemoteAgent	DEBUG	Resetting recommended pref extensions.update.url
+1747660039836	RemoteAgent	DEBUG	Resetting recommended pref extensions.getAddons.get.url
+1747660039837	RemoteAgent	DEBUG	Resetting recommended pref extensions.getAddons.search.browseURL
+1747660039837	RemoteAgent	DEBUG	Resetting recommended pref geo.provider.network.url
+1747660039838	RemoteAgent	DEBUG	Resetting recommended pref identity.fxaccounts.auth.uri
+1747660039838	RemoteAgent	DEBUG	Resetting recommended pref network.connectivity-service.enabled
+1747660039839	RemoteAgent	DEBUG	Resetting recommended pref network.http.phishy-userpass-length
+1747660039839	RemoteAgent	DEBUG	Resetting recommended pref network.http.prompt-temp-redirect
+1747660039839	RemoteAgent	DEBUG	Resetting recommended pref privacy.trackingprotection.enabled
+1747660039840	RemoteAgent	DEBUG	Resetting recommended pref remote.prefs.recommended.applied
+1747660039840	RemoteAgent	DEBUG	Resetting recommended pref security.fileuri.strict_origin_policy
+1747660039841	RemoteAgent	DEBUG	Resetting recommended pref security.notification_enable_delay
+1747660039841	RemoteAgent	DEBUG	Resetting recommended pref security.remote_settings.intermediates.enabled
+1747660039842	RemoteAgent	DEBUG	Resetting recommended pref services.settings.loglevel
+1747660039843	RemoteAgent	DEBUG	Resetting recommended pref signon.autofillForms
+1747660039846	RemoteAgent	DEBUG	Resetting recommended pref signon.rememberSignons
+1747660039849	RemoteAgent	DEBUG	Resetting recommended pref toolkit.telemetry.server
+1747660039850	RemoteAgent	DEBUG	Resetting recommended pref widget.windows.window_occlusion_tracking.enabled
+1747660039856	Marionette	DEBUG	Marionette stopped listening
+1747660039866	Marionette	DEBUG	2 <- [1,71,null,{"cause":"shutdown","forced":false,"in_app":true}]
+1747660040108	webdriver::server	DEBUG	Teardown session
+1747660040108	geckodriver::marionette	DEBUG	To store minidump files of Firefox crashes the MINIDUMP_SAVE_PATH environment variable needs to be set.
+1747660040200	Marionette	DEBUG	Closed connection 2
+1747660041494	geckodriver::browser	DEBUG	Browser process stopped: exit status: 0
+1747660042961	webdriver::server	DEBUG	<- 200 OK {"value":null}

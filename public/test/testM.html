@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Leaflet com Firestore (JSON string)</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+
+  <style>
+    body { margin: 0; font-family: sans-serif; }
+    .map-container { width: 100%; height: 400px; max-width: 800px; margin: 20px auto; }
+    button { display: block; margin: 10px auto; padding: 10px 20px; }
+  </style>
+</head>
+<body>
+
+  <h2 style="text-align:center;">Desenhar Polígono</h2>
+  <div id="draw-map" class="map-container"></div>
+  <button id="save-polygon">Salvar Polígono</button>
+
+  <h2 style="text-align:center;">Visualizar Polígonos</h2>
+  <div id="view-map" class="map-container"></div>
+  <button id="load-polygons">Carregar Polígonos</button>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+  <script>
+    // Firebase config e inicialização
+    const firebaseConfig = {
+      apiKey: "AIzaSyBwTvr1wk7WDz7aZPUA0tcM381YQ2ugfig",
+      authDomain: "projeto-pi2.firebaseapp.com",
+      projectId: "projeto-pi2",
+      storageBucket: "projeto-pi2.appspot.com",
+      messagingSenderId: "112085181246",
+      appId: "1:112085181246:web:c9e471bde7fb2f96f0826f"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Mapa para desenhar
+    const drawMap = L.map('draw-map').setView([-15.78, -47.93], 4);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(drawMap);
+    const drawnItems = new L.FeatureGroup();
+    drawMap.addLayer(drawnItems);
+
+    const drawControl = new L.Control.Draw({
+      draw: { polygon: true, marker: false, polyline: false, rectangle: false, circle: false, circlemarker: false },
+      edit: { featureGroup: drawnItems }
+    });
+    drawMap.addControl(drawControl);
+
+    let currentPolygon = null;
+    drawMap.on(L.Draw.Event.CREATED, e => {
+      const layer = e.layer;
+      drawnItems.addLayer(layer);
+      currentPolygon = {
+        type: "Feature",
+        geometry: layer.toGeoJSON().geometry,
+        properties: {}
+      };
+      console.log("Polígono desenhado:", currentPolygon);
+    });
+
+    document.getElementById('save-polygon').addEventListener('click', () => {
+      if (!currentPolygon) return alert("Desenhe um polígono antes de salvar.");
+
+      // Salvar como string JSON
+      db.collection('polygons').add({
+        geojson: JSON.stringify(currentPolygon)
+      })
+      .then(() => {
+        alert("Polígono salvo com sucesso!");
+        drawnItems.clearLayers();
+        currentPolygon = null;
+      })
+      .catch(err => alert("Erro ao salvar: " + err.message));
+    });
+
+    // Mapa para visualização
+    const viewMap = L.map('view-map').setView([-15.78, -47.93], 4);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(viewMap);
+    const loadedPolygons = new L.FeatureGroup();
+    viewMap.addLayer(loadedPolygons);
+
+    document.getElementById('load-polygons').addEventListener('click', () => {
+      loadedPolygons.clearLayers();
+
+      db.collection('polygons').get()
+      .then(snapshot => {
+        if (snapshot.empty) {
+          alert("Nenhum polígono encontrado.");
+          return;
+        }
+
+        snapshot.forEach(doc => {
+          try {
+            const geojson = JSON.parse(doc.data().geojson);
+            L.geoJSON(geojson, {
+              style: { color: 'blue', fillOpacity: 0.3 }
+            }).addTo(loadedPolygons);
+          } catch(e) {
+            console.error("Erro ao interpretar GeoJSON:", e);
+          }
+        });
+
+        alert(`Polígonos carregados: ${snapshot.size}`);
+      })
+      .catch(err => alert("Erro ao carregar: " + err.message));
+    });
+  </script>
+
+</body>
+</html>

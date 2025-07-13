@@ -1,0 +1,786 @@
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #0056b3;
+    --background-color: #f5f5f5;
+    --text-color: #333;
+    --highlight-color: #e0f7fa; /* Cor para o bloco com a imagem, nome e botão */
+    --info-block-color: #f4f7fc; /* Cor para o bloco de informações pessoais */
+}
+
+/* Reset básico para todos os elementos */
+body, h1, h2, h3, p, ul, li, a, input, textarea, button {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+/* Layout principal */
+#app {
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+        "header header header"
+        "user-menu-amigo main-content-amigo community-amigo"
+        "footer footer footer";
+    gap: 15px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+/* Estilos comuns para blocos */
+.block, #user-menu-amigo, #main-content-amigo, #community-amigo {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+header {
+    grid-area: header;
+    background: var(--primary-color);
+    color: white;
+    padding: 40px 0;
+    text-align: center;
+    border-radius: 8px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+header a {
+    text-decoration: none;
+    color: white;
+}
+
+/* Bloco de amigos */
+.community-header-amigo {
+    margin-bottom: 20px;
+    font-size: 1.6em;
+    font-weight: bold;
+    text-align: center;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 10px;
+}
+
+.user-list-amigo {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.user-item-amigo {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease; /* Adicionando transição para a cor de fundo */
+}
+
+.user-item-amigo:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: var(--highlight-color); /* Mudando a cor de fundo ao passar o mouse */
+}
+
+.user-item-amigo .user-photo-amigo {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 2px solid var(--primary-color);
+}
+
+.user-item-amigo .user-name-amigo p {
+    margin: 0;
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Bloco de usuário */
+.user-header-amigo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+    background-color: var(--highlight-color); /* Cor para o bloco com a imagem, nome e botão */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.user-photo-container-amigo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-photo-amigo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;  /* Tornando a imagem circular */
+    border: 4px solid var(--primary-color);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-photo-amigo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Botões */
+button {
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.3s; /* Adicionando transição para o botão */
+}
+
+button:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px); /* Levanta o botão ao passar o mouse */
+}
+
+.user-name-amigo p {
+    font-size: 1.2em;
+    font-weight: 500;
+    color: var(--primary-color);
+}
+
+/* Bloco de informações pessoais */
+.user-details-amigo {
+    background-color: var(--info-block-color);  /* Cor para o bloco de informações pessoais */
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px; /* Margem entre a imagem e as informações */
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    #app {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "header"
+            "user-menu-amigo"
+            "main-content-amigo"
+            "community-amigo"
+            "footer";
+    }
+
+    .user-photo-container-amigo {
+        align-items: center;
+ }
+
+    .user-photo-amigo {
+        width: 120px;
+        height: 120px;
+    }
+
+    .user-photo-amigo img {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+/* Bloco de editar perfil */
+#profile-form-amigo {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+#profile-form-amigo h2 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+/* Estilos para o formulário de edição */
+.form-group-amigo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.form-group-amigo label {
+    font-size: 16px;
+    color: #555;
+    font-weight: bold;
+}
+
+.form-group-amigo input {
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border 0.3s ease, background-color 0.3s ease;
+}
+
+.form-group-amigo input:focus {
+    border-color: var(--primary-color);
+    background-color: #f0f8ff;
+    outline: none;
+}
+
+button[type="submit-amigo"] {
+    padding: 15px 25px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button[type="submit-amigo"]:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-3px);
+}
+
+/* Estilos gerais para a seção de informações do usuário */
+.user-info-amigo {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para os títulos das seções */
+.user-info-amigo h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* Estilo para os parágrafos */
+.user-info-amigo p, .user-info-amigo ul {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+/* Estilo para os itens da lista */
+.user-info-amigo ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.user-info-amigo li {
+    margin-bottom: 10px;
+}
+
+/* Estilo para o strong (títulos internos) */
+.user-info-amigo strong {
+    color: #333;
+}
+
+/* Estilo para os spans que exibem valores dinâmicos */
+.user-info-amigo span {
+    font-weight: normal;
+    color: #007bff;
+}
+
+/* Responsividade: ajusta o tamanho do conteúdo em telas menores */
+@media (max-width: 768px) {
+    .user-info-amigo {
+        padding: 15px;
+    }
+
+    .user-info-amigo h3 {
+        font-size: 1.3rem;
+    }
+
+    .user-info-amigo p, .user-info-amigo ul {
+        font-size: 0.9rem;
+    }
+}
+
+/* Estilos para a busca de usuário */
+#community-amigo .search-user-amigo {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#search-user-input-amigo {
+    width: 80%;
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+    margin-top: 10px;
+}
+
+/* Estilos para a lista de usuários */
+.user-list-amigo {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.publication-wrapper-amigo {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    max-width: 800px;
+    min-width: 5px;
+    overflow: visible;
+    padding: 10%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espaço entre blocos */
+}
+
+/* Conteúdo principal */
+.publication-content-amigo {
+    display: flex;
+
+}
+
+/* Bloco de usuário */
+.user-section-amigo {
+    display: flex;
+    flex-direction: column; /* Para dispositivos menores */
+    gap: 20px;
+}
+
+@media (min-width: 600px) {
+    .user-section-amigo {
+        flex-direction: row; /* Lado a lado para telas maiores */
+    }
+}
+
+.user-avatar-amigo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex-shrink: 0; /* Evita que o bloco da imagem seja reduzido */
+}
+
+.user-avatar-amigo img {
+    border-radius: 50%;
+    height: 80px;
+    width: 80px;
+    object-fit: cover;
+    border: 3px solid #007bff;
+}
+
+.user-avatar-amigo p {
+    margin-top: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+.user-details-container-amigo {
+    flex: 1; /* Garante que este bloco ocupe o espaço restante */
+}
+
+.publication-metadata-amigo p {
+    margin: 5px 0;
+}
+
+.publication-metadata-amigo p b {
+    color: #007bff;
+}
+
+/* Informações */
+.info-content-amigo h3 {
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+.info-content-amigo h2 {
+    margin: 10px 0;
+    font-size: 24px;
+    color: #333;
+}
+
+.info-content-amigo p {
+    margin: 5px 0;
+    color: #666;
+    word-wrap: break-word; /* Garante quebra de linha em textos longos */
+    overflow-wrap: break-word;
+}
+
+/* Bloco do mapa */
+.location-section-amigo {
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}
+
+.location-section-amigo h3 {
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+.map-box-amigo {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    height: 200px; /* Altura definida */
+    width: 100%; /* Largura total */
+}
+
+/* Estilos para as publicações do feed */
+#publications-amigo {
+    padding: 8px;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 500%;
+    overflow-y: visible;
+}
+
+/* Adicionando o CSS da página anterior */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+    display: flex; /* Para alinhar a sidebar e o conteúdo */
+}
+
+/* Estilos da Sidebar */
+#user-menu-amigo {
+    width: 200px; /* Largura da sidebar */
+    margin-right: 20px; /* Espaço entre a sidebar e o conteúdo */
+}
+
+.sidebar-amigo {
+    background-color: #f8f9fa; /* Cor de fundo da sidebar */
+    color: #343a40; /* Cor do texto */
+    border-radius: 10px;
+    padding: 15px; /* Aumenta o padding para mais espaço interno */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    width: 85px; /* Largura mínima da sidebar */
+    transition: width 0.3s, background-color 0.3s; /* Transição suave */
+}
+
+.sidebar-amigo ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar-amigo ul li {
+    padding: 12px 15px; /* Aumenta o padding para mais espaço */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-radius: 5px; /* Bordas arredondadas nos itens */
+    transition: background-color 0.3s, transform 0.2s; /* Transição suave */
+}
+
+.sidebar-amigo ul li:hover {
+    background-color: #e9ecef; /* Cor ao passar o mouse */
+    transform: scale(1.02); /* Leve aumento ao passar o mouse */
+}
+
+.icon-text-amigo {
+    color: #495057; /* Cor do texto */
+    margin-left: 10px; /* Espaço entre o ícone e o texto */
+    opacity: 0; /* Inicialmente invisível */
+    transition: opacity 0.3s; /* Transição suave para o texto */
+}
+
+/* Aumenta o tamanho dos ícones */
+.sidebar-amigo ul li i {
+    font-size: 24px; /* Ajuste o tamanho do ícone aqui */
+    transition: transform 0.3s; /* Transição suave para o ícone */
+}
+
+.sidebar-amigo:hover {
+    width: 175px; /* Largura da sidebar ao passar o mouse */
+    background-color: #ffffff; /* Muda a cor de fundo ao passar o mouse */
+}
+
+.sidebar-amigo:hover .icon-text-amigo {
+    opacity: 1; /* Torna o texto visível ao passar o mouse */
+}
+
+/* Estilos do Conteúdo Principal */
+.container-amigo {
+    max-width: 800px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    flex-grow: 1; /* Para ocupar o espaço restante */
+}
+
+.perfil-amigo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.foto-perfil-amigo {
+    width: 100px; /* Tamanho da foto de perfil do usuário atual */
+    height: 100px; /* Tamanho da foto de perfil do usuário atual */
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.info-perfil-amigo {
+    flex-grow: 1;
+}
+
+.nome-amigo {
+    margin: 0;
+    font-size: 24px; /* Tamanho do texto do nome do usuário */
+}
+
+.email-amigo {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.estatisticas-amigo {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.titulo-posts-amigo {
+    margin-top: 20px;
+    font-size: 20px;
+}
+
+.posts-container-amigo {
+    margin-top: 10px;
+}
+
+.btn-ocultar-amigo {
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-ocultar-amigo:hover {
+    background-color: #0056b3;
+}
+
+/* Estilos para a seção Comunidade */
+.search-container-amigo {
+    margin-bottom: 20px;
+}
+
+.search-input-amigo {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.ver-perfil-amigo {
+    margin-left: auto; /* Empurra o link para a direita */
+    font-size: 14px;
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.ver-perfil-amigo:hover {
+    text-decoration: underline;
+}
+
+.publicacao-amigo {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    padding: 15px;
+}
+
+.cabecalho-amigo {
+    display: flex;
+    align-items: center;
+}
+
+.foto-usuario-amigo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.info-usuario-amigo {
+    display: flex;
+    flex-direction: column;
+}
+
+.nome-usuario-amigo {
+    font-weight: bold;
+}
+
+.tempo-postagem-amigo {
+    font-size: 12px;
+    color: #888;
+}
+
+.titulo-publicacao-amigo {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.imagem-publicacao-amigo img {
+    width: 100%;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.acoes-amigo {
+    margin-top: 10px;
+}
+
+.acoes-amigo button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.acoes-amigo button:hover {
+    background-color: #0056b3;
+}
+
+.comentarios-amigo {
+    margin-top: 15px;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+}
+
+.comentarios-amigo input {
+    width: calc(100% - 22px);
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.comentarios-amigo button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.comentarios-amigo button:hover {
+    background-color: #218838;
+}
+
+.lista-comentarios-amigo {
+    margin-top: 15px;
+    display: none; /* Inicialmente oculto */
+}
+
+.comentario-amigo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.comentario-amigo img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.info-comentario-amigo {
+    display: flex;
+    flex-direction: column;
+}
+
+.tempo-comentario-amigo {
+    font-size: 12px;
+    color: #888;
+}
+
+.acao-comentario-amigo {
+    margin-top: 5px;
+}
+
+.acao-comentario-amigo button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.acao-comentario-amigo button:hover {
+    background-color: #0056b3;
+}
+
+.texto-comentario-amigo {
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+.toggle-comentarios-amigo {
+    margin-top: 10px;
+    cursor: pointer;
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.btn-follow {
+    background-color: #ff0011;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px; /* Espaçamento acima do botão */
+}
+
+.btn-follow:hover {
+    background-color: #0056b3; /* Cor ao passar o mouse */
+}

@@ -1,0 +1,16 @@
+services:
+  web:
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: ["npm", "run", "dev"]  # usar nodemon se disponível
+    
+  python-app:
+    volumes:
+      - ./LEARNING_MODELS:/app
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    command: ["python", "-u", "app.py"]  # -u para unbuffered output
