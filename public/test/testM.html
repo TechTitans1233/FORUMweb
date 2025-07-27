@@ -1,119 +1,918 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Leaflet com Firestore (JSON string)</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disaster Warning System – Classificador e Mapa</title>
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css">
 
-  <style>
-    body { margin: 0; font-family: sans-serif; }
-    .map-container { width: 100%; height: 400px; max-width: 800px; margin: 20px auto; }
-    button { display: block; margin: 10px auto; padding: 10px 20px; }
-  </style>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e2f;
+            color: #fff;
+            padding: 2rem;
+            margin: 0;
+        }
+        #app {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: none;
+            resize: vertical;
+        }
+        button {
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #map {
+            height: 600px;
+            width: 100%;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+        .info, .resultado, .publicacoes-section, .avaliacoes-section {
+            background-color: #2c2c3e;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        .info h4, .resultado h3, .publicacoes-section h3, .avaliacoes-section h3 {
+            margin: 0 0 0.5rem;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+        .info p, .resultado p, .publicacao-item p, .avaliacao-item p {
+            margin: 0.2rem 0;
+            font-size: 1rem;
+        }
+        .info a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .info a:hover {
+            text-decoration: underline;
+        }
+        #loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            display: none;
+        }
+        .publicacao-item, .avaliacao-item {
+            border-bottom: 1px solid #444;
+            padding: 1rem 0;
+        }
+        .publicacao-item:last-child, .avaliacao-item:last-child {
+            border-bottom: none;
+        }
+        .classificacao, .avaliacao-details {
+            margin-top: 0.5rem;
+            background-color: #3a3a4e;
+            padding: 0.5rem;
+            border-radius: 6px;
+        }
+        .area-estimada {
+            font-style: italic;
+            font-size: 0.9em;
+            color: #ccc;
+        }
+        .avaliacao-item.accepted {
+            border-left: 4px solid #28a745;
+        }
+        .avaliacao-item.rejected {
+            border-left: 4px solid #dc3545;
+        }
+        .reasons {
+            color: #dc3545;
+            font-style: italic;
+        }
+        .sidebar {
+            background-color: #2c2c3e;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar li {
+            margin-bottom: 0.5rem;
+        }
+        .sidebar a {
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            border-radius: 5px;
+        }
+        .sidebar a:hover {
+            background-color: #3a3a4e;
+        }
+        .sidebar .icon-text {
+            margin-left: 0.5rem;
+        }
+    </style>
 </head>
 <body>
+    <div id="app">
+        <header>
+            <h1>Disaster Warning System</h1>
+        </header>
 
-  <h2 style="text-align:center;">Desenhar Polígono</h2>
-  <div id="draw-map" class="map-container"></div>
-  <button id="save-polygon">Salvar Polígono</button>
+        <aside id="user-menu">
+            <div class="sidebar" id="sidebar">
+                <ul>
+                    <li><a href="../forum/forum.html" class="button"><i class="fas fa-home"></i><span class="icon-text"> Início</span></a></li>
+                    <li><a href="../perfil/perfil.html" class="button"><i class="fas fa-user"></i><span class="icon-text"> Perfil</span></a></li>
+                    <li><a href="configuracoes.html" class="button"><i class="fas fa-cog"></i><span class="icon-text"> Configurações</span></a></li>
+                    <li><a href="notificacoes.html" class="button"><i class="fas fa-bell" id="notificacoes"></i><span class="icon-text"> Notificações</span></a></li>
+                    <li><a href="sair.html" class="button"><i class="fas fa-sign-out-alt"></i><span class="icon-text"> Sair</span></a></li>
+                </ul>
+            </div>
+        </aside>
 
-  <h2 style="text-align:center;">Visualizar Polígonos</h2>
-  <div id="view-map" class="map-container"></div>
-  <button id="load-polygons">Carregar Polígonos</button>
+        <main id="main-content">
+            <textarea id="mensagem" placeholder="Digite uma mensagem para classificar..."></textarea>
+            <br>
+            <button onclick="classificar()">Classificar</button>
+            <button id="btnCarregarPublicacoes">Carregar Publicações</button>
+            <button id="btnCarregarPublicacoesValidadas" onclick="loadValidatedPosts()">Carregar Publicações Validadas</button>
+            <button id="btnCarregarAvaliacoes" onclick="loadEvaluatedPosts()">Carregar Avaliações</button>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+            <div class="resultado" id="resultado" style="display:none;">
+                <h3>Resultado da Classificação:</h3>
+                <p><strong>Categoria:</strong> <span id="cat"></span></p>
+                <p><strong>Cidade:</strong> <span id="loc"></span></p>
+                <p><strong>Impacto:</strong> <span id="imp"></span></p>
+            </div>
 
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+            <div id="map"></div>
+            <div id="loading">Carregando dados...</div>
 
-  <script>
-    // Firebase config e inicialização
-    const firebaseConfig = {
-      apiKey: "AIzaSyBwTvr1wk7WDz7aZPUA0tcM381YQ2ugfig",
-      authDomain: "projeto-pi2.firebaseapp.com",
-      projectId: "projeto-pi2",
-      storageBucket: "projeto-pi2.appspot.com",
-      messagingSenderId: "112085181246",
-      appId: "1:112085181246:web:c9e471bde7fb2f96f0826f"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+            <div class="info" id="info">
+                <p>Passe o cursor sobre um evento para ver detalhes.</p>
+            </div>
 
-    // Mapa para desenhar
-    const drawMap = L.map('draw-map').setView([-15.78, -47.93], 4);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(drawMap);
-    const drawnItems = new L.FeatureGroup();
-    drawMap.addLayer(drawnItems);
+            <div class="publicacoes-section" id="publicacoesSection" style="display:none;">
+                <h3>Publicações Carregadas:</h3>
+                <div id="listaPublicacoes"></div>
+            </div>
 
-    const drawControl = new L.Control.Draw({
-      draw: { polygon: true, marker: false, polyline: false, rectangle: false, circle: false, circlemarker: false },
-      edit: { featureGroup: drawnItems }
-    });
-    drawMap.addControl(drawControl);
+            <div class="avaliacoes-section" id="avaliacoesSection" style="display:none;">
+                <h3>Avaliações das Publicações:</h3>
+                <div id="listaAvaliacoes"></div>
+            </div>
+        </main>
 
-    let currentPolygon = null;
-    drawMap.on(L.Draw.Event.CREATED, e => {
-      const layer = e.layer;
-      drawnItems.addLayer(layer);
-      currentPolygon = {
-        type: "Feature",
-        geometry: layer.toGeoJSON().geometry,
-        properties: {}
-      };
-      console.log("Polígono desenhado:", currentPolygon);
-    });
+        <footer>
+            <p>© 2025 Minha Rede Social. Todos os direitos reservados.</p>
+        </footer>
+    </div>
 
-    document.getElementById('save-polygon').addEventListener('click', () => {
-      if (!currentPolygon) return alert("Desenhe um polígono antes de salvar.");
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBwTvr1wk7WDz7aZPUA0tcM381YQ2ugfig",
+            authDomain: "projeto-pi2.firebaseapp.com",
+            projectId: "projeto-pi2",
+            storageBucket: "projeto-pi2.appspot.com",
+            messagingSenderId: "112085181246",
+            appId: "1:112085181246:web:c9e471bde7fb2f96f0826f"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-      // Salvar como string JSON
-      db.collection('polygons').add({
-        geojson: JSON.stringify(currentPolygon)
-      })
-      .then(() => {
-        alert("Polígono salvo com sucesso!");
-        drawnItems.clearLayers();
-        currentPolygon = null;
-      })
-      .catch(err => alert("Erro ao salvar: " + err.message));
-    });
+        // Mapeamento de ícones com base na categoria e impacto
+        const iconMap = {
+            'queimada': {
+                'alto impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/FL.png',
+                'alto impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/FL.png',
+                'alto impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/FL.png',
+                'moderado impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/FL.png',
+                'moderado impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/FL.png',
+                'moderado impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/FL.png',
+                'baixo impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/FL.png',
+                'baixo impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/FL.png',
+                'baixo impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/FL.png',
+                'indefinido': 'https://www.gdacs.org/images/gdacs_icons/maps/Gray/FL.png'
+            },
+            'desastre_hidrico': {
+                'alto impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/FL.png',
+                'alto impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/FL.png',
+                'alto impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/FL.png',
+                'moderado impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/FL.png',
+                'moderado impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/FL.png',
+                'moderado impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/FL.png',
+                'baixo impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/FL.png',
+                'baixo impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/FL.png',
+                'baixo impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/FL.png',
+                'indefinido': 'https://www.gdacs.org/images/gdacs_icons/maps/Gray/FL.png'
+            },
+            'ciclone': {
+                'alto impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/TC.png',
+                'alto impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/TC.png',
+                'alto impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/TC.png',
+                'moderado impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/TC.png',
+                'moderado impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/TC.png',
+                'moderado impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/TC.png',
+                'baixo impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/TC.png',
+                'baixo impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/TC.png',
+                'baixo impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/TC.png',
+                'indefinido': 'https://www.gdacs.org/images/gdacs_icons/maps/Gray/TC.png'
+            },
+            'terremoto': {
+                'alto impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/EQ.png',
+                'alto impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/EQ.png',
+                'alto impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/EQ.png',
+                'moderado impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/EQ.png',
+                'moderado impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/EQ.png',
+                'moderado impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/EQ.png',
+                'baixo impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/EQ.png',
+                'baixo impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/EQ.png',
+                'baixo impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/EQ.png',
+                'indefinido': 'https://www.gdacs.org/images/gdacs_icons/maps/Gray/EQ.png'
+            },
+            'deslizamento': {
+                'alto impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/LS.png',
+                'alto impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/LS.png',
+                'alto impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/LS.png',
+                'moderado impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/LS.png',
+                'moderado impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/LS.png',
+                'moderado impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/LS.png',
+                'baixo impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/LS.png',
+                'baixo impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/LS.png',
+                'baixo impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/LS.png',
+                'indefinido': 'https://www.gdacs.org/images/gdacs_icons/maps/Gray/LS.png'
+            },
+            'tempestade': {
+                'alto impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/ST.png',
+                'alto impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/ST.png',
+                'alto impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/ST.png',
+                'moderado impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/ST.png',
+                'moderado impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/ST.png',
+                'moderado impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/ST.png',
+                'baixo impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/ST.png',
+                'baixo impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/ST.png',
+                'baixo impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/ST.png',
+                'indefinido': 'https://www.gdacs.org/images/gdacs_icons/maps/Gray/ST.png'
+            },
+            'seca': {
+                'alto impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/DR.png',
+                'alto impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/DR.png',
+                'alto impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/DR.png',
+                'moderado impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/DR.png',
+                'moderado impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/DR.png',
+                'moderado impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/DR.png',
+                'baixo impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/DR.png',
+                'baixo impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/DR.png',
+                'baixo impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/DR.png',
+                'indefinido': 'https://www.gdacs.org/images/gdacs_icons/maps/Gray/DR.png'
+            },
+            'vulcao': {
+                'alto impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/VO.png',
+                'alto impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/VO.png',
+                'alto impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/VO.png',
+                'moderado impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/VO.png',
+                'moderado impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/VO.png',
+                'moderado impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/VO.png',
+                'baixo impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/VO.png',
+                'baixo impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/VO.png',
+                'baixo impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/VO.png',
+                'indefinido': 'https://www.gdacs.org/images/gdacs_icons/maps/Gray/VO.png'
+            },
+            'nao_classificado': {
+                'indefinido': 'https://via.placeholder.com/32'
+            }
+        };
+        const defaultIconUrl = 'https://via.placeholder.com/32';
 
-    // Mapa para visualização
-    const viewMap = L.map('view-map').setView([-15.78, -47.93], 4);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(viewMap);
-    const loadedPolygons = new L.FeatureGroup();
-    viewMap.addLayer(loadedPolygons);
-
-    document.getElementById('load-polygons').addEventListener('click', () => {
-      loadedPolygons.clearLayers();
-
-      db.collection('polygons').get()
-      .then(snapshot => {
-        if (snapshot.empty) {
-          alert("Nenhum polígono encontrado.");
-          return;
+        // Função para obter o ícone dinâmico
+        function getDynamicIcon(categoria, impacto) {
+            const iconUrl = iconMap[categoria]?.[impacto] || defaultIconUrl;
+            return L.icon({
+                iconUrl: iconUrl,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16],
+                popupAnchor: [0, -16]
+            });
         }
 
-        snapshot.forEach(doc => {
-          try {
-            const geojson = JSON.parse(doc.data().geojson);
-            L.geoJSON(geojson, {
-              style: { color: 'blue', fillOpacity: 0.3 }
-            }).addTo(loadedPolygons);
-          } catch(e) {
-            console.error("Erro ao interpretar GeoJSON:", e);
-          }
+        // Inicializa o mapa
+        const map = L.map('map').setView([-14.2350, -51.9253], 4); // Centro do Brasil
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        const infoDiv = document.getElementById('info');
+        const loadingDiv = document.getElementById('loading');
+        let markers = []; // Para rastrear marcadores e limpar o mapa
+
+        // Função para atualizar a div de detalhes no hover
+        function updateInfo(props) {
+            if (props) {
+                infoDiv.innerHTML = `
+                    <h4>${props.eventname || "Evento sem nome"}</h4>
+                    <p><strong>Categoria:</strong> ${props.eventtype || "Não disponível"}</p>
+                    <p><strong>Descrição:</strong> ${props.description || "Sem descrição"}</p>
+                    <p><strong>Impacto:</strong> ${props.alertlevel || "Não informado"}</p>
+                    <p><strong>Cidade:</strong> ${props.cidade || "—"}</p>
+                    <p><strong>Data:</strong> ${props.fromdate ? props.fromdate.split('T')[0] : "Não disponível"} 
+                        a ${props.todate ? props.todate.split('T')[0] : "Não disponível"}</p>
+                    <p><a href="${props.url?.report || '#'}" target="_blank">Mais detalhes</a></p>
+                `;
+            } else {
+                infoDiv.innerHTML = '<p>Passe o cursor sobre um evento para ver detalhes.</p>';
+            }
+        }
+
+        // pointToLayer para marcadores estáticos
+        function pointToLayerStatic(feature, latlng) {
+            const icon = L.icon({
+                iconUrl: feature.properties.iconoverall || defaultIconUrl,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16],
+                popupAnchor: [0, -16]
+            });
+            return L.marker(latlng, { icon: icon });
+        }
+
+        // onEachFeature para comportamento de hover
+        function onEachFeature(feature, layer) {
+            layer.on({
+                mouseover: () => updateInfo(feature.properties),
+                mouseout: () => updateInfo()
+            });
+        }
+
+        // Carrega GeoJSON estático
+        async function carregarGeoJSONEstatico() {
+            loadingDiv.style.display = 'block';
+            try {
+                const response = await fetch('result-3.geojson');
+                if (!response.ok) throw new Error('Erro ao carregar o arquivo GeoJSON');
+                const data = await response.json();
+                L.geoJSON(data, {
+                    pointToLayer: pointToLayerStatic,
+                    onEachFeature: onEachFeature
+                }).addTo(map);
+            } catch (error) {
+                console.error('Erro ao carregar GeoJSON estático:', error);
+                infoDiv.innerHTML = '<p>Erro ao carregar os dados estáticos.</p>';
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        }
+
+        // Função para buscar publicações
+        async function buscarPublicacoes() {
+            try {
+                const response = await fetch('http://localhost:3000/api/publicacoes', {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar publicações');
+                }
+                const publicacoes = await response.json();
+                console.log(`[DEBUG] Veio(n) ${publicacoes.length} publicação(ões) do /api/publicacoes`);
+                return publicacoes.map(p => ({
+                    id: p.id,
+                    titulo: p.titulo,
+                    conteudo: p.conteudo,
+                    lat: p.lat,
+                    lon: p.lon,
+                    endereco: p.endereco,
+                    marcacao: p.marcacao
+                }));
+            } catch (error) {
+                console.error('buscarPublicacoes:', error);
+                return [];
+            }
+        }
+
+        // Função para classificar mensagem
+        async function classificarMensagem({ titulo, conteudo, lat, lon, marcacao }) {
+            try {
+                let areaDemarcada = 'N/A';
+                if (marcacao) {
+                    try {
+                        const marcacaoGeoJSON = JSON.parse(marcacao);
+                        if (marcacaoGeoJSON?.type === 'Feature' && marcacaoGeoJSON.geometry?.type === 'Polygon') {
+                            const areaSqMeters = turf.area(marcacaoGeoJSON);
+                            areaDemarcada = (areaSqMeters / 1_000_000).toFixed(2);
+                        }
+                    } catch (error) {
+                        console.error('Erro ao calcular área demarcada:', error);
+                    }
+                }
+
+                const response = await fetch("http://localhost:5000/predict", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        titulo: titulo || '',
+                        conteudo: conteudo || '',
+                        lat: lat || null,
+                        lon: lon || null,
+                        areaDemarcada: areaDemarcada
+                    }),
+                    mode: 'cors'
+                });
+
+                if (!response.ok) {
+                    const erro = await response.json();
+                    throw new Error(erro.erro || "Erro na requisição");
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('classificarMensagem:', error);
+                return { categoria: '—', cidade: '—', impacto: '—' };
+            }
+        }
+
+        // Função para carregar e exibir publicações
+        async function carregarPublicacoesEmapas() {
+            loadingDiv.style.display = 'block';
+            const publicacoes = await buscarPublicacoes();
+            const container = document.getElementById('listaPublicacoes');
+            container.innerHTML = '';
+            markers.forEach(marker => map.removeLayer(marker)); // Limpar marcadores
+            markers = [];
+
+            if (publicacoes.length === 0) {
+                container.innerHTML = '<p>Nenhuma publicação encontrada ou ocorreu um erro. Certifique-se de que o endpoint /api/publicacoes esteja funcionando.</p>';
+                document.getElementById('publicacoesSection').style.display = 'block';
+                loadingDiv.style.display = 'none';
+                return;
+            }
+
+            const latLngArray = [];
+
+            for (const post of publicacoes) {
+                const item = document.createElement('div');
+                item.classList.add('publicacao-item');
+                item.innerHTML = `
+                    <p><strong>Título:</strong> ${post.titulo}</p>
+                    <p><strong>Conteúdo:</strong> ${post.conteudo}</p>
+                    <p><strong>Latitude:</strong> ${post.lat || 'N/A'} | <strong>Longitude:</strong> ${post.lon || 'N/A'}</p>
+                    <div class="classificacao" id="classificacao-${post.id}">
+                        <p><em>Classificando...</em></p>
+                    </div>
+                    <p class="area-estimada" id="area-${post.id}"></p>`;
+                container.appendChild(item);
+
+                (async () => {
+                    const resultado = await classificarMensagem({
+                        titulo: post.titulo,
+                        conteudo: post.conteudo,
+                        lat: post.lat,
+                        lon: post.lon,
+                        marcacao: post.marcacao
+                    });
+                    const divClassif = document.getElementById(`classificacao-${post.id}`);
+                    divClassif.innerHTML = `
+                        <p><strong>Categoria:</strong> ${resultado.categoria}</p>
+                        <p><strong>Cidade:</strong> ${resultado.cidade}</p>
+                        <p><strong>Impacto:</strong> ${resultado.impacto}</p>
+                    `;
+
+                    const latNum = parseFloat(post.lat);
+                    const lonNum = parseFloat(post.lon);
+                    if (!isNaN(latNum) && !isNaN(lonNum)) {
+                        latLngArray.push([latNum, lonNum]);
+                        const markerIcon = getDynamicIcon(resultado.categoria, resultado.impacto);
+                        const marker = L.marker([latNum, lonNum], { icon: markerIcon }).addTo(map);
+                        const props = {
+                            eventname: post.titulo,
+                            eventtype: resultado.categoria,
+                            description: post.conteudo,
+                            cidade: resultado.cidade,
+                            alertlevel: resultado.impacto,
+                            fromdate: null,
+                            todate: null,
+                            url: { report: '#' },
+                            iconoverall: iconMap[resultado.categoria]?.[resultado.impacto] || defaultIconUrl
+                        };
+                        marker.on('mouseover', () => updateInfo(props));
+                        marker.on('mouseout', () => updateInfo());
+                        markers.push(marker);
+                        console.log(`[DEBUG] Marcador para post ID=${post.id} adicionado com ícone: ${markerIcon.options.iconUrl}`);
+                    }
+
+                    const areaDisplayElement = document.getElementById(`area-${post.id}`);
+                    if (post.marcacao) {
+                        try {
+                            const marcacaoGeoJSON = JSON.parse(post.marcacao);
+                            const marcacaoProps = {
+                                eventname: post.titulo || "Área Demarcada",
+                                eventtype: resultado.categoria,
+                                description: post.conteudo || "Demarcação de área",
+                                cidade: resultado.cidade,
+                                alertlevel: resultado.impacto,
+                                fromdate: null,
+                                todate: null,
+                                url: { report: '#' },
+                                iconoverall: iconMap[resultado.categoria]?.[resultado.impacto] || defaultIconUrl
+                            };
+
+                            if (marcacaoGeoJSON && marcacaoGeoJSON.geometry) {
+                                if (marcacaoGeoJSON.type === "Feature" && marcacaoGeoJSON.geometry.type === "Polygon") {
+                                    const latLngs = marcacaoGeoJSON.geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
+                                    const polygonLayer = L.polygon(latLngs, {
+                                        color: 'green',
+                                        weight: 3,
+                                        opacity: 0.7,
+                                        fillColor: 'yellow',
+                                        fillOpacity: 0.3
+                                    }).addTo(map);
+                                    polygonLayer.on('mouseover', () => updateInfo(marcacaoProps));
+                                    polygonLayer.on('mouseout', () => updateInfo());
+                                    polygonLayer.on('click', () => map.fitBounds(polygonLayer.getBounds()));
+                                    if (polygonLayer.getBounds().isValid()) {
+                                        latLngArray.push(polygonLayer.getBounds().getNorthEast());
+                                        latLngArray.push(polygonLayer.getBounds().getSouthWest());
+                                    }
+                                    const areaSqMeters = turf.area(marcacaoGeoJSON);
+                                    const areaSqKm = (areaSqMeters / 1_000_000).toFixed(2);
+                                    areaDisplayElement.textContent = `Área demarcada: ${areaSqKm} km²`;
+                                    console.log(`[DEBUG] Polígono para post ID=${post.id} adicionado.`);
+                                } else if (marcacaoGeoJSON.type === "Feature" && marcacaoGeoJSON.geometry.type === "Point") {
+                                    const [lon, lat] = marcacaoGeoJSON.geometry.coordinates;
+                                    latLngArray.push([lat, lon]);
+                                    const pointIcon = getDynamicIcon(resultado.categoria, resultado.impacto);
+                                    const pointMarker = L.marker([lat, lon], { icon: pointIcon }).addTo(map);
+                                    pointMarker.on('mouseover', () => updateInfo(marcacaoProps));
+                                    pointMarker.on('mouseout', () => updateInfo());
+                                    areaDisplayElement.textContent = `Área: Não aplicável para pontos.`;
+                                    console.log(`[DEBUG] Ponto GeoJSON para post ID=${post.id} adicionado.`);
+                                } else {
+                                    const geoJsonLayer = L.geoJSON(marcacaoGeoJSON, {
+                                        style: {
+                                            color: 'blue',
+                                            weight: 3,
+                                            opacity: 0.7,
+                                            fillColor: 'cyan',
+                                            fillOpacity: 0.3
+                                        },
+                                        onEachFeature: (feature, layer) => {
+                                            layer.on('mouseover', () => updateInfo(marcacaoProps));
+                                            layer.on('mouseout', () => updateInfo());
+                                            if (layer.getBounds && layer.getBounds().isValid()) {
+                                                layer.on('click', () => map.fitBounds(layer.getBounds()));
+                                            }
+                                        }
+                                    }).addTo(map);
+                                    if (geoJsonLayer.getBounds().isValid()) {
+                                        latLngArray.push(geoJsonLayer.getBounds().getNorthEast());
+                                        latLngArray.push(geoJsonLayer.getBounds().getSouthWest());
+                                    }
+                                    areaDisplayElement.textContent = `Área: Não aplicável para este tipo de demarcação.`;
+                                    console.log(`[DEBUG] GeoJSON (não polígono/punto) para post ID=${post.id} adicionado.`);
+                                }
+                            } else {
+                                areaDisplayElement.textContent = `Área: Demarcação inválida ou sem geometria.`;
+                            }
+                        } catch (error) {
+                            console.error(`Erro ao analisar a marcação GeoJSON para a publicação ${post.id}:`, error);
+                            areaDisplayElement.textContent = `Área: Erro ao carregar demarcação.`;
+                        }
+                    } else {
+                        areaDisplayElement.textContent = `Área: Nenhuma demarcação disponível.`;
+                    }
+                })();
+            }
+
+            if (latLngArray.length > 0) {
+                try {
+                    const bounds = L.latLngBounds(latLngArray);
+                    if (bounds.isValid()) {
+                        map.fitBounds(bounds.pad(0.2));
+                    } else {
+                        console.warn('[DEBUG] Limites calculados inválidos.');
+                    }
+                } catch (e) {
+                    console.error('[DEBUG] Erro ao ajustar o mapa:', e);
+                }
+            }
+
+            document.getElementById('publicacoesSection').style.display = 'block';
+            loadingDiv.style.display = 'none';
+        }
+
+        // Função para classificar mensagem manual
+        async function classificar() {
+            const mensagem = document.getElementById("mensagem").value.trim();
+            const resultadoDiv = document.getElementById("resultado");
+            if (!mensagem) {
+                alert("Digite uma mensagem!");
+                return;
+            }
+
+            try {
+                const resultado = await classificarMensagem({
+                    titulo: '',
+                    conteudo: mensagem,
+                    lat: null,
+                    lon: null,
+                    marcacao: null
+                });
+                document.getElementById("cat").innerText = resultado.categoria;
+                document.getElementById("loc").innerText = resultado.cidade;
+                document.getElementById("imp").innerText = resultado.impacto;
+                resultadoDiv.style.display = "block";
+            } catch (error) {
+                alert("Erro: " + error.message);
+                resultadoDiv.style.display = "none";
+            }
+        }
+
+        // Função para enviar uma publicação ao servidor 5000
+        async function enviarPublicacaoParaValidacao(post) {
+            try {
+                const response = await fetch('http://localhost:5000/publicar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        titulo: post.titulo,
+                        conteudo: post.conteudo,
+                        lat: post.lat,
+                        lon: post.lon,
+                        marcacao: post.marcacao
+                    }),
+                    mode: 'cors'
+                });
+                const result = await response.json();
+                if (result.status === 'success' || result.status === 'ignored') {
+                    console.log(`[DEBUG] Publicação ID=${post.id} enviada: ${result.message}`);
+                    return true;
+                } else {
+                    console.error(`[DEBUG] Erro ao enviar publicação ID=${post.id}: ${result.message}`);
+                    return false;
+                }
+            } catch (error) {
+                console.error(`[DEBUG] Erro ao enviar publicação ID=${post.id}:`, error);
+                return false;
+            }
+        }
+
+        // Função para carregar publicações validadas
+        async function loadValidatedPosts() {
+            loadingDiv.style.display = 'block';
+            try {
+                // Passo 1: Buscar publicações do servidor 3000
+                const publicacoes = await buscarPublicacoes();
+                if (publicacoes.length === 0) {
+                    alert('Nenhuma publicação encontrada para validar. Verifique o endpoint /api/publicacoes.');
+                    document.getElementById('publicacoesSection').style.display = 'block';
+                    loadingDiv.style.display = 'none';
+                    return;
+                }
+
+                // Passo 2: Enviar publicações para o servidor 5000 (/publicar)
+                let successCount = 0;
+                for (const post of publicacoes) {
+                    const success = await enviarPublicacaoParaValidacao(post);
+                    if (success) successCount++;
+                }
+                console.log(`[DEBUG] ${successCount} de ${publicacoes.length} publicações enviadas com sucesso para validação.`);
+
+                // Passo 3: Chamar /gerar_dataset_real para processar as publicações
+                const response = await fetch('http://localhost:5000/gerar_dataset_real', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({}), // Corpo vazio, pois as publicações já estão em real_posts.json
+                    mode: 'cors'
+                });
+
+                const result = await response.json();
+                if (result.status === 'success') {
+                    alert(result.message);
+                    // Passo 4: Buscar publicações validadas
+                    await fetchValidatedPosts();
+                } else {
+                    alert('Erro ao validar publicações: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Erro ao chamar /gerar_dataset_real:', error);
+                alert('Erro ao conectar com o servidor. Verifique se o CORS está configurado corretamente no servidor Python.');
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        }
+
+        // Função para carregar e exibir as publicações do dataset validado
+        async function fetchValidatedPosts() {
+            try {
+                const response = await fetch('http://localhost:5000/api/dataset_real', {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar dataset validado');
+                }
+                const csvText = await response.text();
+                const rows = csvText.split('\n').slice(1); // Ignorar cabeçalho
+                const container = document.getElementById('listaPublicacoes');
+                container.innerHTML = ''; // Limpar lista
+                markers.forEach(marker => map.removeLayer(marker)); // Limpar marcadores
+                markers = [];
+
+                const latLngArray = [];
+                rows.forEach((row, index) => {
+                    if (!row.trim()) return;
+                    const cols = row.split(',').map(col => col.replace(/^"|"$/g, '')); // Remover aspas
+                    if (cols.length < 15) return; // Verificar se a linha tem todas as colunas
+                    const [titulo, conteudo, categoria, , , , , estado, cidade, latitude, longitude, impacto_nivel, , impacto_area_km2, , real_cidade] = cols;
+
+                    const item = document.createElement('div');
+                    item.classList.add('publicacao-item');
+                    item.innerHTML = `
+                        <p><strong>Título:</strong> ${titulo}</p>
+                        <p><strong>Conteúdo:</strong> ${conteudo}</p>
+                        <div class="classificacao" id="classificacao-validated-${index}">
+                            <p><strong>Categoria:</strong> ${categoria}</p>
+                            <p><strong>Cidade:</strong> ${cidade}</p>
+                            <p><strong>Impacto:</strong> ${impacto_nivel}</p>
+                        </div>
+                        <p class="area-estimada">Área: ${impacto_area_km2 || 'N/A'} km²</p>
+                        <p><strong>Latitude:</strong> ${latitude || 'N/A'} | <strong>Longitude:</strong> ${longitude || 'N/A'}</p>`;
+                    container.appendChild(item);
+
+                    const latNum = parseFloat(latitude);
+                    const lonNum = parseFloat(longitude);
+                    if (!isNaN(latNum) && !isNaN(lonNum)) {
+                        latLngArray.push([latNum, lonNum]);
+                        const markerIcon = getDynamicIcon(categoria, impacto_nivel);
+                        const marker = L.marker([latNum, lonNum], { icon: markerIcon }).addTo(map);
+                        const props = {
+                            eventname: titulo,
+                            eventtype: categoria,
+                            description: conteudo,
+                            cidade: cidade,
+                            alertlevel: impacto_nivel,
+                            fromdate: null,
+                            todate: null,
+                            url: { report: '#' },
+                            iconoverall: iconMap[categoria]?.[impacto_nivel] || defaultIconUrl
+                        };
+                        marker.on('mouseover', () => updateInfo(props));
+                        marker.on('mouseout', () => updateInfo());
+                        markers.push(marker);
+                    }
+                });
+
+                if (latLngArray.length > 0) {
+                    try {
+                        const bounds = L.latLngBounds(latLngArray);
+                        if (bounds.isValid()) {
+                            map.fitBounds(bounds.pad(0.2));
+                        }
+                    } catch (e) {
+                        console.error('Erro ao ajustar o mapa:', e);
+                    }
+                }
+
+                document.getElementById('publicacoesSection').style.display = 'block';
+            } catch (error) {
+                console.error('Erro ao carregar dataset validado:', error);
+                alert('Erro ao carregar o dataset validado. Verifique se o endpoint /api/dataset_real está acessível e se o CORS está configurado.');
+            }
+        }
+
+        // Função para carregar e exibir avaliações das publicações
+        async function loadEvaluatedPosts() {
+            loadingDiv.style.display = 'block';
+            try {
+                const response = await fetch('http://localhost:5000/avaliar_publicacoes', {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar avaliações');
+                }
+                const result = await response.json();
+                if (result.status !== 'success') {
+                    throw new Error(result.message || 'Erro ao processar avaliações');
+                }
+
+                const container = document.getElementById('listaAvaliacoes');
+                container.innerHTML = ''; // Limpar lista
+                markers.forEach(marker => map.removeLayer(marker)); // Limpar marcadores
+                markers = [];
+
+                const latLngArray = [];
+                result.evaluations.forEach((avaliacao, index) => {
+                    const item = document.createElement('div');
+                    item.classList.add('avaliacao-item', avaliacao.status);
+                    item.innerHTML = `
+                        <p><strong>Título:</strong> ${avaliacao.titulo}</p>
+                        <p><strong>Conteúdo:</strong> ${avaliacao.conteudo}</p>
+                        <p><strong>Status:</strong> ${avaliacao.status === 'accepted' ? 'Aceita' : 'Rejeitada'}</p>
+                        ${avaliacao.reasons.length > 0 ? `<p class="reasons"><strong>Motivos de Rejeição:</strong> ${avaliacao.reasons.join('; ')}</p>` : ''}
+                        <div class="avaliacao-details" id="avaliacao-details-${index}">
+                            <p><strong>Categoria Prevista:</strong> ${avaliacao.details.predicted_category || 'N/A'}</p>
+                            <p><strong>Cidade Prevista:</strong> ${avaliacao.details.predicted_city || 'N/A'}</p>
+                            <p><strong>Impacto:</strong> ${avaliacao.details.impact_level || 'N/A'}</p>
+                            <p><strong>Área:</strong> ${avaliacao.details.area_km2 || 'N/A'} km²</p>
+                            <p><strong>Confiança do Modelo:</strong> ${avaliacao.details.model_confidence || 'N/A'}</p>
+                            <p><strong>Cidade Real:</strong> ${avaliacao.details.real_cidade || 'N/A'}</p>
+                            <p><strong>Timestamp:</strong> ${avaliacao.details.timestamp || 'N/A'}</p>
+                        </div>`;
+                    container.appendChild(item);
+
+                    const latNum = parseFloat(avaliacao.lat);
+                    const lonNum = parseFloat(avaliacao.lon);
+                    if (avaliacao.status === 'accepted' && !isNaN(latNum) && !isNaN(lonNum)) {
+                        latLngArray.push([latNum, lonNum]);
+                        const markerIcon = getDynamicIcon(avaliacao.details.predicted_category, avaliacao.details.impact_level);
+                        const marker = L.marker([latNum, lonNum], { icon: markerIcon }).addTo(map);
+                        const props = {
+                            eventname: avaliacao.titulo,
+                            eventtype: avaliacao.details.predicted_category,
+                            description: avaliacao.conteudo,
+                            cidade: avaliacao.details.predicted_city,
+                            alertlevel: avaliacao.details.impact_level,
+                            fromdate: avaliacao.details.timestamp ? avaliacao.details.timestamp.split('T')[0] : null,
+                            todate: null,
+                            url: { report: '#' },
+                            iconoverall: iconMap[avaliacao.details.predicted_category]?.[avaliacao.details.impact_level] || defaultIconUrl
+                        };
+                        marker.on('mouseover', () => updateInfo(props));
+                        marker.on('mouseout', () => updateInfo());
+                        markers.push(marker);
+                    }
+                });
+
+                if (latLngArray.length > 0) {
+                    try {
+                        const bounds = L.latLngBounds(latLngArray);
+                        if (bounds.isValid()) {
+                            map.fitBounds(bounds.pad(0.2));
+                        }
+                    } catch (e) {
+                        console.error('Erro ao ajustar o mapa:', e);
+                    }
+                }
+
+                document.getElementById('avaliacoesSection').style.display = 'block';
+                alert(`Avaliações carregadas: ${result.total_accepted} aceitas, ${result.total_rejected} rejeitadas.`);
+            } catch (error) {
+                console.error('Erro ao carregar avaliações:', error);
+                alert('Erro ao carregar avaliações. Verifique se o endpoint /avaliar_publicacoes está acessível e se o CORS está configurado.');
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnCarregar = document.getElementById('btnCarregarPublicacoes');
+            if (btnCarregar) {
+                btnCarregar.addEventListener('click', carregarPublicacoesEmapas);
+            }
+            carregarGeoJSONEstatico();
         });
-
-        alert(`Polígonos carregados: ${snapshot.size}`);
-      })
-      .catch(err => alert("Erro ao carregar: " + err.message));
-    });
-  </script>
-
+    </script>
 </body>
 </html>
