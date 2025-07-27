@@ -165,6 +165,34 @@
 
       // ╔═ PARTE B: Rotina EXTRA para buscar posts, classificar e adicionar marcadores/polígonos ══╗
 
+      // Mapeamento de ícones com base na categoria e impacto
+      const iconMap = {
+        'VO': {
+          'Orange': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/VO.png',
+        },
+        'EQ': {
+          'Red': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/EQ.png',
+        },
+        'TC': {
+          'Green': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/TC.png',
+          'Red': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/TC.png'
+        }
+      };
+
+      // Ícone padrão para casos não mapeados
+      const defaultIconUrl = 'https://via.placeholder.com/32';
+
+      // Função para obter o ícone com base na categoria e impacto
+      function getDynamicIcon(categoria, impacto) {
+        const iconUrl = iconMap[categoria]?.[impacto] || defaultIconUrl;
+        return L.icon({
+          iconUrl: iconUrl,
+          iconSize: [32, 32],
+          iconAnchor: [16, 16],
+          popupAnchor: [0, -16]
+        });
+      }
+
       async function buscarPublicacoes() {
         try {
           const response = await fetch('/api/publicacoes'); // Ajuste este endpoint conforme necessário
@@ -187,7 +215,7 @@
 
       async function classificarMensagem(mensagem) {
         try {
-          const response = await fetch("http://localhost:5000/predict", { // Ajuste para o seu endpoint de classificação
+          const response = await fetch("http://localhost:5000/predict", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ mensagem }),
@@ -203,17 +231,6 @@
         }
       }
 
-      // Ícone dinâmico: mesmo ícone de 32×32 com borda verde
-      const dynamicIcon = L.divIcon({
-        className: '',
-        html: `<img 
-                  src="https://via.placeholder.com/32" 
-                  style="width:32px; height:32px; border:2px solid green; border-radius:16px;">`,
-        iconSize: [36, 36],
-        iconAnchor: [18, 18]
-      });
-
-      // Função que monta e adiciona marcadores e polígonos dinâmicos ao mapa
       async function carregarEventosDinamicos() {
         loadingDiv.style.display = 'block';
         const publicacoes = await buscarPublicacoes();
@@ -241,7 +258,9 @@
 
           if (!isNaN(latNum) && !isNaN(lonNum)) {
             latLngArray.push([latNum, lonNum]);
-            const marker = L.marker([latNum, lonNum], { icon: dynamicIcon });
+            // Usa o ícone correspondente à categoria e impacto
+            const markerIcon = getDynamicIcon(resultado.categoria, resultado.impacto);
+            const marker = L.marker([latNum, lonNum], { icon: markerIcon });
             const props = {
               eventname: post.titulo,
               eventtype: resultado.categoria,
@@ -251,12 +270,12 @@
               fromdate: null,
               todate: null,
               url: { report: '#' },
-              iconoverall: null
+              iconoverall: iconMap[resultado.categoria]?.[resultado.impacto] || defaultIconUrl
             };
             marker.on('mouseover', () => updateInfo(props));
             marker.on('mouseout', () => updateInfo());
             marker.addTo(map);
-            console.log(`[DEBUG] Marcador para post ID=${post.id} adicionado.`);
+            console.log(`[DEBUG] Marcador para post ID=${post.id} adicionado com ícone: ${markerIcon.options.iconUrl}`);
           } else {
             console.warn(`[DEBUG] Coordenadas inválidas ou ausentes para post ID=${post.id}: lat='${post.lat}', lon='${post.lon}'`);
           }
@@ -276,18 +295,18 @@
                 fromdate: null,
                 todate: null,
                 url: { report: '#' },
-                iconoverall: null
+                iconoverall: iconMap[resultado.categoria]?.[resultado.impacto] || defaultIconUrl
               };
 
               if (marcacaoGeoJSON && marcacaoGeoJSON.geometry && marcacaoGeoJSON.geometry.coordinates) {
                 if (marcacaoGeoJSON.type === "Feature" && marcacaoGeoJSON.geometry.type === "Polygon") {
-                  // Lógica específica para polígonos, como no seu exemplo
+                  // Lógica específica para polígonos
                   const latLngs = marcacaoGeoJSON.geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
                   const polygonLayer = L.polygon(latLngs, {
-                    color: 'green',       // Cor da borda
+                    color: 'green',
                     weight: 3,
                     opacity: 0.8,
-                    fillColor: 'yellow',  // Cor de preenchimento
+                    fillColor: 'yellow',
                     fillOpacity: 0.2
                   }).addTo(map);
 
@@ -295,18 +314,26 @@
                   polygonLayer.on('mouseout', () => updateInfo());
                   polygonLayer.on('click', () => map.fitBounds(polygonLayer.getBounds()));
 
-                  // Adiciona os limites do polígono para o fitBounds geral
                   if (polygonLayer.getBounds().isValid()) {
                     latLngArray.push(polygonLayer.getBounds().getNorthEast());
                     latLngArray.push(polygonLayer.getBounds().getSouthWest());
                   }
                   console.log(`[DEBUG] Polígono para post ID=${post.id} adicionado.`);
 
+                } else if (marcacaoGeoJSON.type === "Feature" && marcacaoGeoJSON.geometry.type === "Point") {
+                  // Lógica para pontos em 'marcacao'
+                  const [lon, lat] = marcacaoGeoJSON.geometry.coordinates;
+                  latLngArray.push([lat, lon]);
+                  const pointIcon = getDynamicIcon(resultado.categoria, resultado.impacto);
+                  const pointMarker = L.marker([lat, lon], { icon: pointIcon }).addTo(map);
+                  pointMarker.on('mouseover', () => updateInfo(marcacaoProps));
+                  pointMarker.on('mouseout', () => updateInfo());
+                  console.log(`[DEBUG] Ponto GeoJSON para post ID=${post.id} adicionado com ícone: ${pointIcon.options.iconUrl}`);
                 } else {
-                  // Lógica para outras geometrias GeoJSON (Point, LineString, MultiPolygon, etc.)
+                  // Lógica para outras geometrias GeoJSON (LineString, MultiPolygon, etc.)
                   const geoJsonLayer = L.geoJSON(marcacaoGeoJSON, {
                     style: {
-                      color: 'blue',        // Cor padrão para outras geometrias
+                      color: 'blue',
                       weight: 3,
                       opacity: 0.7,
                       fillColor: 'cyan',
@@ -316,17 +343,16 @@
                       layer.on('mouseover', () => updateInfo(marcacaoProps));
                       layer.on('mouseout', () => updateInfo());
                       if (layer.getBounds && layer.getBounds().isValid()) {
-                         layer.on('click', () => map.fitBounds(layer.getBounds()));
+                        layer.on('click', () => map.fitBounds(layer.getBounds()));
                       }
                     }
                   }).addTo(map);
 
-                  // Adiciona os limites de outras geometrias para o fitBounds geral
                   if (geoJsonLayer.getBounds().isValid()) {
                     latLngArray.push(geoJsonLayer.getBounds().getNorthEast());
                     latLngArray.push(geoJsonLayer.getBounds().getSouthWest());
                   }
-                  console.log(`[DEBUG] GeoJSON (não polígono) para post ID=${post.id} adicionado.`);
+                  console.log(`[DEBUG] GeoJSON (não polígono/punto) para post ID=${post.id} adicionado.`);
                 }
               } else {
                 console.warn(`[DEBUG] GeoJSON inválido ou incompleto para post ID=${post.id}:`, marcacaoGeoJSON);
@@ -345,9 +371,9 @@
           try {
             const bounds = L.latLngBounds(latLngArray);
             if (bounds.isValid()) {
-                map.fitBounds(bounds.pad(0.2));
+              map.fitBounds(bounds.pad(0.2));
             } else {
-                console.warn('[DEBUG] Limites calculados inválidos, não foi possível ajustar o mapa.');
+              console.warn('[DEBUG] Limites calculados inválidos, não foi possível ajustar o mapa.');
             }
           } catch (e) {
             console.error('[DEBUG] Erro ao ajustar o mapa para os limites:', e);
