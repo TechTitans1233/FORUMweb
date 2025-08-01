@@ -29,8 +29,7 @@ module.exports = {
       .setValue('#userEmail', randomEmail)
       .setValue('#userPassword', randomPassword)
       .click('#userLoginForm button[type="submit"]')
-      .pause(1500)
-      .acceptAlert()
+      .pause(1000)
       // Observação: como o front está usando alert() em caso de erro, não conseguimos capturar facilmente o texto do alert.
       // Basta pausar para que a requisição seja enviada, mas não temos uma asserção URL, pois deve ficar na mesma página.
 
@@ -46,11 +45,10 @@ module.exports = {
       .assert.visible('#adminPassword')
       .setValue('#adminPassword', randomAdminPwd)
       .click('#adminLoginForm button[type="submit"]')
-      .acceptAlert()
-      .pause(1500)
+      .pause(1000)
       // Mesma observação: um alert() deve aparecer via front em caso de senha errada.
       // Só pausamos e seguimos.
-      
+
       // ----------- TESTE 3: CRIAR NOVO USUÁRIO -----------
       // 7. VOLTA PARA O FORM DE USUÁRIO (clicando em “Voltar ao login de usuário? Clique aqui”)
       .click('#user-toggle')
@@ -76,9 +74,7 @@ module.exports = {
       .setValue('#registerPassword', randomPassword)
       .setValue('#registerConfirmPassword', randomPassword)
       .click('#registerFormSubmit button[type="submit"]')
-      .pause(1500)
-      .acceptAlert()
-
+      .pause(1000)
       // O front exibe alert("Cadastro realizado com sucesso!") e chama showUserLogin() em seguida.
       
       // ----------- TESTE 4: LOGIN COM O NOVO USUÁRIO -----------
@@ -86,14 +82,15 @@ module.exports = {
       .assert.visible('#userLogin')
       .assert.hidden('#adminLogin')
       .assert.hidden('#registerForm')
+
       // 11. PREENCHA COM O MESMO EMAIL/SENHA QUE ACABAMOS DE CADASTRAR
       .clearValue('#userEmail')      // limpa qualquer texto remanescente
       .clearValue('#userPassword')
       .setValue('#userEmail', randomEmail)
       .setValue('#userPassword', randomPassword)
       .click('#userLoginForm button[type="submit"]')
-      .acceptAlert()
       .pause(1500)
+
       // 12. FINALIZA O TESTE
       .end();
   }
