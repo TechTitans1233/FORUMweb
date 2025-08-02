@@ -28,7 +28,7 @@
 > ```shell
 > sudo apt update && sudo apt upgrade && sudo apt install build-essential
 > npm install
-> npm install nightwatch
+> npm install -g nightwatch jest
 >```
 
 | Pacote        | Função                                     |
@@ -36,7 +36,7 @@
 | `make`        |  Executar/criar o container/volume docker  |
 | `docker`      |  Disponibilizar o uso da plataforma Hórus  |
 | `nightwatch`  |           Executa testes E2E               |
-|               |                                            |
+|    `jest`     |        Executa testes INT e UNIT           |
 
 ---
 
@@ -58,13 +58,13 @@ nightwatch --config .\nightwatch.conf.cjs
 2. Testes INT:
 
 ```bash
-
+jest --config=jest.int.config.js
 ```
 
 3. Testes UNIT:
 
 ```bash
-
+jest --config=jest.unit.config.js
 ```
 
 ---
