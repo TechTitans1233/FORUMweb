@@ -1,3 +1,4 @@
+
 ---
 
 ## 🛰️ Hórus - Disaster Warning System
@@ -13,9 +14,11 @@
 
 ## ✨ Features
 
-- Conversão de texto para código Morse
+- Publicação de alertas em tempo real por usuários e autoridades locais
+- Sistema de categorização por tipo de desastre (enchentes, incêndios, terremotos etc.)
 - Interface simples e direta
-- Compatível com ambientes Wayland (testado no Hyprland)
+- Geolocalização integrada para exibir alertas próximos ao usuário
+- Fórum colaborativo com comentários, curtidas, publicação de imagens dos enventos por parte dos usuários
 
 ---
 
