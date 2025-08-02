@@ -686,6 +686,181 @@ def get_real_dataset():
     except Exception as e:
         print(f"Erro no endpoint /api/dataset_real: {str(e)}")
         return jsonify({"erro": str(e)}), 500
+    
+@app.route('/avaliar_publicacoes', methods=['GET'])
+def evaluate_posts():
+    global loaded_posts_list
+    if not loaded_posts_list:
+        return jsonify({"status": "error", "message": "Nenhuma publicação encontrada em real_posts.json."}), 400
+    if not (modelo_categoria and modelo_localizacao and modelo_impacto):
+        return jsonify({"status": "error", "message": "Um ou mais modelos não foram carregados."}), 500
+    
+    print(f"\nIniciando avaliação de {len(loaded_posts_list)} publicações para o front-end...")
+    evaluation_results = []
+    
+    for post in loaded_posts_list:
+        evaluation = {
+            "id_hash": post.get('id_hash'),
+            "titulo": post.get('titulo', ''),
+            "conteudo": post.get('conteudo', ''),
+            "status": "accepted",
+            "reasons": [],
+            "details": {
+                "predicted_category": None,
+                "predicted_city": None,
+                "impact_level": None,
+                "area_km2": 0,
+                "model_confidence": None,
+                "real_cidade": post.get('REALcidade'),
+                "timestamp": post.get('timestamp')
+            }
+        }
+        
+        titulo = post.get('titulo', '')
+        conteudo = post.get('conteudo', '')
+        lat = post.get('lat')
+        lon = post.get('lon')
+        marcacao = post.get('marcacao')
+        real_cidade = post.get('REALcidade')
+        timestamp = post.get('timestamp')
+        text_input = f"{titulo} {conteudo}".strip()
+        
+        # Verifica duplicação
+        message_hash = hashlib.sha256(f"{titulo}{conteudo}".encode('utf-8')).hexdigest()
+        if message_hash in loaded_posts_set and message_hash != post.get('id_hash'):
+            evaluation["status"] = "rejected"
+            evaluation["reasons"].append("Publicação duplicada")
+            evaluation_results.append(evaluation)
+            continue
+        
+        # Validação de qualidade do texto
+        is_valid_text, text_reason = validate_text_quality(text_input)
+        if not is_valid_text:
+            evaluation["status"] = "rejected"
+            evaluation["reasons"].append(f"Texto inválido: {text_reason}")
+            evaluation_results.append(evaluation)
+            continue
+        
+        # Validação de timestamp
+        is_valid_timestamp, timestamp_reason = validate_timestamp(timestamp)
+        if not is_valid_timestamp:
+            evaluation["status"] = "rejected"
+            evaluation["reasons"].append(f"Timestamp inválido: {timestamp_reason}")
+            evaluation_results.append(evaluation)
+            continue
+        
+        # Inferência dos modelos
+        try:
+            predicted_category = modelo_categoria.predict([text_input])[0]
+            predicted_impact_level = modelo_impacto.predict([text_input])[0]
+            predicted_city = modelo_localizacao.predict([text_input])[0]
+            evaluation["details"]["predicted_category"] = predicted_category
+            evaluation["details"]["predicted_city"] = predicted_city
+            evaluation["details"]["impact_level"] = predicted_impact_level
+        except Exception as e:
+            evaluation["status"] = "rejected"
+            evaluation["reasons"].append(f"Erro na inferência dos modelos: {str(e)}")
+            evaluation_results.append(evaluation)
+            continue
+        
+        # Validação da categoria
+        is_valid_category, category_reason = validate_category(text_input, predicted_category)
+        if not is_valid_category:
+            evaluation["status"] = "rejected"
+            evaluation["reasons"].append(f"Categoria inválida: {category_reason}")
+            evaluation_results.append(evaluation)
+            continue
+        
+        # Validação de confiança do modelo
+        is_valid_confidence, confidence_reason = validate_model_confidence(modelo_categoria, text_input, predicted_category)
+        evaluation["details"]["model_confidence"] = confidence_reason
+        if not is_valid_confidence:
+            evaluation["status"] = "rejected"
+            evaluation["reasons"].append(f"Confiança do modelo: {confidence_reason}")
+            evaluation_results.append(evaluation)
+            continue
+        
+        # Cálculo da área
+        predicted_area = 0
+        try:
+            if marcacao:
+                marcacao_geojson = json.loads(marcacao)
+                if marcacao_geojson.get('type') == 'Feature' and marcacao_geojson.get('geometry', {}).get('type') == 'Polygon':
+                    predicted_area = area(Feature(geometry=marcacao_geojson['geometry'])) / 1_000_000
+                    predicted_area = round(predicted_area, 2)
+            evaluation["details"]["area_km2"] = predicted_area
+        except Exception as e:
+            evaluation["status"] = "rejected"
+            evaluation["reasons"].append(f"Erro ao calcular área: {str(e)}")
+            evaluation_results.append(evaluation)
+            continue
+        
+        # Determinar nível de impacto com área
+        impact_level = determine_impact_level_with_area(predicted_impact_level, predicted_area)
+        evaluation["details"]["impact_level"] = impact_level
+        
+        # Validação do impacto
+        is_valid_impact, impact_reason = validate_impact(text_input, impact_level)
+        if not is_valid_impact:
+            evaluation["status"] = "rejected"
+            evaluation["reasons"].append(f"Impacto inválido: {impact_reason}")
+            evaluation_results.append(evaluation)
+            continue
+        
+        # Validação de consistência de cidade
+        if real_cidade and predicted_city:
+            normalized_real_cidade = normalize_text(real_cidade)
+            normalized_predicted_city = normalize_text(predicted_city)
+            if normalized_real_cidade != normalized_predicted_city:
+                evaluation["status"] = "rejected"
+                evaluation["reasons"].append(f"Conflito de cidade: REALcidade ({real_cidade}) != cidade predita ({predicted_city})")
+                evaluation_results.append(evaluation)
+                continue
+        elif not real_cidade or not predicted_city:
+            evaluation["status"] = "rejected"
+            evaluation["reasons"].append("REALcidade ou cidade predita ausente")
+            evaluation_results.append(evaluation)
+            continue
+        
+        # Validação de proximidade geográfica
+        is_valid_geo, geo_reason = validate_geographic_proximity(lat, lon, predicted_city)
+        if not is_valid_geo:
+            evaluation["status"] = "rejected"
+            evaluation["reasons"].append(f"Proximidade geográfica: {geo_reason}")
+            evaluation_results.append(evaluation)
+            continue
+        
+        # Validação de consistência de área
+        if marcacao:
+            is_valid_area, area_reason = validate_area_consistency(predicted_area, impact_level)
+            if not is_valid_area:
+                evaluation["status"] = "rejected"
+                evaluation["reasons"].append(f"Área inconsistente: {area_reason}")
+                evaluation_results.append(evaluation)
+                continue
+        
+        # Validação de contexto regional
+        is_valid_context, context_reason = validate_regional_context(predicted_category, real_cidade)
+        if not is_valid_context:
+            evaluation["status"] = "rejected"
+            evaluation["reasons"].append(f"Contexto regional: {context_reason}")
+            evaluation_results.append(evaluation)
+            continue
+        
+        # Se chegou até aqui, a publicação é válida
+        evaluation_results.append(evaluation)
+    
+    print(f"✅ Avaliação concluída: {len([e for e in evaluation_results if e['status'] == 'accepted'])} publicações aceitas, "
+          f"{len([e for e in evaluation_results if e['status'] == 'rejected'])} rejeitadas.")
+    
+    return jsonify({
+        "status": "success",
+        "message": "Avaliação das publicações concluída.",
+        "evaluations": evaluation_results,
+        "total_evaluated": len(evaluation_results),
+        "total_accepted": len([e for e in evaluation_results if e['status'] == 'accepted']),
+        "total_rejected": len([e for e in evaluation_results if e['status'] == 'rejected'])
+    }), 200
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)

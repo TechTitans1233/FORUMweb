@@ -15,7 +15,7 @@ module.exports = {
       browser
         // 1) Abre a página de login
         .url(loginUrl)
-        .waitForElementVisible('body', 5000)
+        .waitForElementVisible('body', 1000)
         .assert.titleEquals('Login')
   
         // 2) Exibe o formulário de cadastro
@@ -29,13 +29,11 @@ module.exports = {
         .setValue('#registerPassword', randomPassword)
         .setValue('#registerConfirmPassword', randomPassword)
         .click('#registerFormSubmit button[type="submit"]')
-        .acceptAlert()
-        .pause(1500)
+        .pause(1000)
   
         // 4) Volta manualmente ao formulário de login
-        .url(loginUrl)
-        .waitForElementVisible('body', 1500)
-        .assert.titleEquals('Login')
+        .click('#login-toggle')
+        .pause(500)
         .assert.visible('#userLogin')
   
         // 5) Faz login com o usuário recém-criado
@@ -46,7 +44,7 @@ module.exports = {
   
         // 6) Navega para a página do fórum
         .url(forumUrl)
-        .waitForElementVisible('body', 1500)
+        .waitForElementVisible('body', 1000)
         .assert.urlContains('/forum/forum.html')
   
         // 7) Verifica que o botão “Perfil” está visível no menu lateral
@@ -71,7 +69,7 @@ module.exports = {
   
         // Verifica presença dos botões “Editar Perfil” e “Deletar Conta”
         .assert.visible('#editProfileButton')
-        .assert.visible('#deleteUserButton') // escape do espaço no id
+        .assert.visible('#deleteUser\\.\\ Button') // escape do espaço no id
   
         // 11) Encerra o teste
         .end();

@@ -9,7 +9,7 @@ module.exports = {
       browser
         // 1) Abre a página de login
         .url(loginUrl)
-        .waitForElementVisible('body', 5000)
+        .waitForElementVisible('body', 1000)
         .assert.titleEquals('Login')
   
         // 2) Verifica estado inicial (apenas form de usuário)
@@ -27,7 +27,6 @@ module.exports = {
         // 4) Preenche a senha administrativa e envia
         .setValue('#adminPassword', adminPassword)
         .click('#adminLoginForm button[type="submit"]')
-        .acceptAlert()
         .pause(1500)
   
         // 5) Verifica que houve redirecionamento para a página de administração
@@ -60,7 +59,7 @@ module.exports = {
         .assert.visible('section:nth-of-type(1) .action-buttons button:nth-child(2)')
         .assert.containsText('section:nth-of-type(1) .action-buttons button:nth-child(2)', 'Excluir Selecionado')
         .assert.visible('section:nth-of-type(1) button[onclick*="selectAllRows(\'users-table\')"]')
-        .assert.containsText('section:nth-of-type(1) button[onclick*="selectAllRows(\'users-table\')"]', 'Selecionar Tudo')
+        .assert.containsText('section:nth-of-type(1) button[onclick*="selectAllRows(\'users-table\')"]', 'Selecionar Todos (Usuários)')
   
         // (c) Seção “Gerenciar Publicações”
         .assert.visible('section:nth-of-type(2) h2')
@@ -82,7 +81,7 @@ module.exports = {
         .assert.visible('section:nth-of-type(2) .action-buttons button:nth-child(2)')
         .assert.containsText('section:nth-of-type(2) .action-buttons button:nth-child(2)', 'Excluir Selecionado')
         .assert.visible('section:nth-of-type(2) button[onclick*="selectAllRows(\'posts-table\')"]')
-        .assert.containsText('section:nth-of-type(2) button[onclick*="selectAllRows(\'posts-table\')"]', 'Selecionar Tudo')
+        .assert.containsText('section:nth-of-type(2) button[onclick*="selectAllRows(\'posts-table\')"]', 'Selecionar Todos (Publicações)')
   
         // 7) Finaliza o teste
         .end();

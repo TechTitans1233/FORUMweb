@@ -125,16 +125,15 @@ app.get('/land', async (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'land/landPAGE.html'));
 });
 
-app.get('/test/test', async (req, res) => {
+/*app.get('/test/test', async (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'test/test.html'));
-});
+});*/
 
 app.get('/test/ia', async (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'test/testM.html'));
 });
 
 app.get("/logout", async (req, res) => {
-  //console.log(req.cookies);
   res.clearCookie("token", {
     httpOnly: true,
     secure: true,
@@ -146,11 +145,8 @@ app.get("/logout", async (req, res) => {
     sameSite: "None",
   });
   req.session.destroy();
-  //res.json({ message: "Logout realizado com sucesso" });
   return res.redirect('/login');
 });
-
-
 
 app.use('/api/admin', adminRoutes);
 app.use('/api/users', userRoutes);

@@ -55,18 +55,18 @@
             border-radius: 8px;
             border: 1px solid #444;
         }
-        .info, .resultado, .publicacoes-section {
+        .info, .resultado, .publicacoes-section, .avaliacoes-section {
             background-color: #2c2c3e;
             padding: 1rem;
             border-radius: 8px;
             margin-bottom: 2rem;
         }
-        .info h4, .resultado h3, .publicacoes-section h3 {
+        .info h4, .resultado h3, .publicacoes-section h3, .avaliacoes-section h3 {
             margin: 0 0 0.5rem;
             font-size: 1.2rem;
             color: #fff;
         }
-        .info p, .resultado p, .publicacao-item p {
+        .info p, .resultado p, .publicacao-item p, .avaliacao-item p {
             margin: 0.2rem 0;
             font-size: 1rem;
         }
@@ -89,14 +89,14 @@
             z-index: 1001;
             display: none;
         }
-        .publicacao-item {
+        .publicacao-item, .avaliacao-item {
             border-bottom: 1px solid #444;
             padding: 1rem 0;
         }
-        .publicacao-item:last-child {
+        .publicacao-item:last-child, .avaliacao-item:last-child {
             border-bottom: none;
         }
-        .classificacao {
+        .classificacao, .avaliacao-details {
             margin-top: 0.5rem;
             background-color: #3a3a4e;
             padding: 0.5rem;
@@ -106,6 +106,16 @@
             font-style: italic;
             font-size: 0.9em;
             color: #ccc;
+        }
+        .avaliacao-item.accepted {
+            border-left: 4px solid #28a745;
+        }
+        .avaliacao-item.rejected {
+            border-left: 4px solid #dc3545;
+        }
+        .reasons {
+            color: #dc3545;
+            font-style: italic;
         }
         .sidebar {
             background-color: #2c2c3e;
@@ -161,6 +171,7 @@
             <button onclick="classificar()">Classificar</button>
             <button id="btnCarregarPublicacoes">Carregar Publicações</button>
             <button id="btnCarregarPublicacoesValidadas" onclick="loadValidatedPosts()">Carregar Publicações Validadas</button>
+            <button id="btnCarregarAvaliacoes" onclick="loadEvaluatedPosts()">Carregar Avaliações</button>
 
             <div class="resultado" id="resultado" style="display:none;">
                 <h3>Resultado da Classificação:</h3>
@@ -179,6 +190,11 @@
             <div class="publicacoes-section" id="publicacoesSection" style="display:none;">
                 <h3>Publicações Carregadas:</h3>
                 <div id="listaPublicacoes"></div>
+            </div>
+
+            <div class="avaliacoes-section" id="avaliacoesSection" style="display:none;">
+                <h3>Avaliações das Publicações:</h3>
+                <div id="listaAvaliacoes"></div>
             </div>
         </main>
 
@@ -801,6 +817,91 @@
             } catch (error) {
                 console.error('Erro ao carregar dataset validado:', error);
                 alert('Erro ao carregar o dataset validado. Verifique se o endpoint /api/dataset_real está acessível e se o CORS está configurado.');
+            }
+        }
+
+        // Função para carregar e exibir avaliações das publicações
+        async function loadEvaluatedPosts() {
+            loadingDiv.style.display = 'block';
+            try {
+                const response = await fetch('http://localhost:5000/avaliar_publicacoes', {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar avaliações');
+                }
+                const result = await response.json();
+                if (result.status !== 'success') {
+                    throw new Error(result.message || 'Erro ao processar avaliações');
+                }
+
+                const container = document.getElementById('listaAvaliacoes');
+                container.innerHTML = ''; // Limpar lista
+                markers.forEach(marker => map.removeLayer(marker)); // Limpar marcadores
+                markers = [];
+
+                const latLngArray = [];
+                result.evaluations.forEach((avaliacao, index) => {
+                    const item = document.createElement('div');
+                    item.classList.add('avaliacao-item', avaliacao.status);
+                    item.innerHTML = `
+                        <p><strong>Título:</strong> ${avaliacao.titulo}</p>
+                        <p><strong>Conteúdo:</strong> ${avaliacao.conteudo}</p>
+                        <p><strong>Status:</strong> ${avaliacao.status === 'accepted' ? 'Aceita' : 'Rejeitada'}</p>
+                        ${avaliacao.reasons.length > 0 ? `<p class="reasons"><strong>Motivos de Rejeição:</strong> ${avaliacao.reasons.join('; ')}</p>` : ''}
+                        <div class="avaliacao-details" id="avaliacao-details-${index}">
+                            <p><strong>Categoria Prevista:</strong> ${avaliacao.details.predicted_category || 'N/A'}</p>
+                            <p><strong>Cidade Prevista:</strong> ${avaliacao.details.predicted_city || 'N/A'}</p>
+                            <p><strong>Impacto:</strong> ${avaliacao.details.impact_level || 'N/A'}</p>
+                            <p><strong>Área:</strong> ${avaliacao.details.area_km2 || 'N/A'} km²</p>
+                            <p><strong>Confiança do Modelo:</strong> ${avaliacao.details.model_confidence || 'N/A'}</p>
+                            <p><strong>Cidade Real:</strong> ${avaliacao.details.real_cidade || 'N/A'}</p>
+                            <p><strong>Timestamp:</strong> ${avaliacao.details.timestamp || 'N/A'}</p>
+                        </div>`;
+                    container.appendChild(item);
+
+                    const latNum = parseFloat(avaliacao.lat);
+                    const lonNum = parseFloat(avaliacao.lon);
+                    if (avaliacao.status === 'accepted' && !isNaN(latNum) && !isNaN(lonNum)) {
+                        latLngArray.push([latNum, lonNum]);
+                        const markerIcon = getDynamicIcon(avaliacao.details.predicted_category, avaliacao.details.impact_level);
+                        const marker = L.marker([latNum, lonNum], { icon: markerIcon }).addTo(map);
+                        const props = {
+                            eventname: avaliacao.titulo,
+                            eventtype: avaliacao.details.predicted_category,
+                            description: avaliacao.conteudo,
+                            cidade: avaliacao.details.predicted_city,
+                            alertlevel: avaliacao.details.impact_level,
+                            fromdate: avaliacao.details.timestamp ? avaliacao.details.timestamp.split('T')[0] : null,
+                            todate: null,
+                            url: { report: '#' },
+                            iconoverall: iconMap[avaliacao.details.predicted_category]?.[avaliacao.details.impact_level] || defaultIconUrl
+                        };
+                        marker.on('mouseover', () => updateInfo(props));
+                        marker.on('mouseout', () => updateInfo());
+                        markers.push(marker);
+                    }
+                });
+
+                if (latLngArray.length > 0) {
+                    try {
+                        const bounds = L.latLngBounds(latLngArray);
+                        if (bounds.isValid()) {
+                            map.fitBounds(bounds.pad(0.2));
+                        }
+                    } catch (e) {
+                        console.error('Erro ao ajustar o mapa:', e);
+                    }
+                }
+
+                document.getElementById('avaliacoesSection').style.display = 'block';
+                alert(`Avaliações carregadas: ${result.total_accepted} aceitas, ${result.total_rejected} rejeitadas.`);
+            } catch (error) {
+                console.error('Erro ao carregar avaliações:', error);
+                alert('Erro ao carregar avaliações. Verifique se o endpoint /avaliar_publicacoes está acessível e se o CORS está configurado.');
+            } finally {
+                loadingDiv.style.display = 'none';
             }
         }
 
