@@ -1,7 +1,7 @@
 // tests/E2E/login.cjs
 module.exports = {
   'Fluxo: login inválido, login admin inválido, criar usuário e login válido': function (browser) {
-    const urlLogin = 'http://127.0.0.1:3000/login/login.html'; // ajuste conforme necessário
+    const urlLogin = 'https://127.0.0.1:3000/login/'; // ajuste conforme necessário
 
     // --- 1. GERAÇÃO DE DADOS ALEATÓRIOS ---
     // usamos timestamp para garantir unicidade
@@ -14,7 +14,7 @@ module.exports = {
     browser
       // 2. ABRE A PÁGINA DE LOGIN E VERIFICA TÍTULO
       .url(urlLogin)
-      .waitForElementVisible('body', 1000)
+      .waitForElementVisible('body', 5000)
       .assert.titleEquals('Login')
 
       // 3. ESTADO INICIAL: FORMULÁRIO DE USUÁRIO VISÍVEL, OS OUTROS OCULTOS

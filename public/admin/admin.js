@@ -31,6 +31,8 @@ function fetchPosts() {
                     <td>${post.id}</td>
                     <td>${post.titulo}</td>
                     <td>${post.conteudo}</td>
+                    <td>${post.curtidas}</td>
+                    <td>${post.dataCriacao}</td>
                 `;
             });
         })
@@ -46,11 +48,15 @@ function deleteUser(userId) {
     }
 }
 
-function deletePost(postId) {
+async function deletePost(postId) {
     if (confirm('Tem certeza de que deseja excluir esta publicação?')) {
-        fetch(`/api/publicacoes/${postId}`, { method: 'DELETE' })
-            .then(() => fetchPosts()) // Recarrega a lista de publicações
-            .catch(error => console.error('Erro ao excluir publicação:', error));
+        await fetch(`/api/publicacoes`, { 
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ids: [postId] }),
+         })
+        .then(() => fetchPosts()) // Recarrega a lista de publicações
+        .catch(error => console.error('Erro ao excluir publicação:', error));
     }
 }
 
@@ -218,7 +224,7 @@ function editPost(postId,newTitulo, newComentario) {
 
 function editUser(userId, oldName, oldEmail, newName, newEmail, newPassword) {
     const data = { oldName, oldEmail, newName, newEmail, newPassword };
-    fetch(`/admin/usuarios/${userId}`, {
+    fetch(`/api/admin/usuarios/${userId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -236,51 +242,3 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchUsers();
     fetchPosts();
 });
-
-// TOKEN
-// RECUPERA TOKEN E VALIDA
-document.addEventListener("DOMContentLoaded", function () {
-    const token = localStorage.getItem("adminToken");
-
-    if (!token) {
-        alert("Acesso não autorizado. Faça login como administrador.");
-        window.location.href = "../login/login.html";
-        return;
-    }
-
-    // Valida o token no backend
-    fetch("/api/admin/validate-token", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Token inválido ou expirado.");
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Token válido:", data);
-    })
-    .catch(error => {
-        console.error("Erro ao validar token:", error);
-        alert("Sessão expirada. Faça login novamente.");
-        localStorage.removeItem("adminToken");
-        window.location.href = "../login/login.html";
-    });
-});
-
-export {
-  selectedRows,
-  fetchUsers,
-  fetchPosts,
-  deleteUser,
-  deletePost,
-  selectAllRows,
-  deleteSelected,
-  searchUsers,
-  searchPosts,
-};

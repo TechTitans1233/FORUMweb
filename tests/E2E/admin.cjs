@@ -1,15 +1,15 @@
 // tests/E2E/admin-with-dashboard.cjs
 module.exports = {
     'Login administrativo e validação da página de administração': function (browser) {
-      const loginUrl      = 'http://127.0.0.1:3000/login/login.html';
+      const loginUrl      = 'https://127.0.0.1:3000/login/';
       const adminPassword = 'suaSenhaAdministrativa';
       // Supondo que o HTML de admin esteja em:
-      const adminUrlPart  = 'http://127.0.0.1:3000/admin/admin.html';
+      const adminUrlPart  = 'https://127.0.0.1:3000/admin/';
   
       browser
         // 1) Abre a página de login
         .url(loginUrl)
-        .waitForElementVisible('body', 1000)
+        .waitForElementVisible('body', 5000)
         .assert.titleEquals('Login')
   
         // 2) Verifica estado inicial (apenas form de usuário)
@@ -60,7 +60,7 @@ module.exports = {
         .assert.visible('section:nth-of-type(1) .action-buttons button:nth-child(2)')
         .assert.containsText('section:nth-of-type(1) .action-buttons button:nth-child(2)', 'Excluir Selecionado')
         .assert.visible('section:nth-of-type(1) button[onclick*="selectAllRows(\'users-table\')"]')
-        .assert.containsText('section:nth-of-type(1) button[onclick*="selectAllRows(\'users-table\')"]', 'Selecionar Todos (Usuários)')
+        .assert.containsText('section:nth-of-type(1) button[onclick*="selectAllRows(\'users-table\')"]', 'Selecionar Tudo')
   
         // (c) Seção “Gerenciar Publicações”
         .assert.visible('section:nth-of-type(2) h2')
@@ -82,7 +82,7 @@ module.exports = {
         .assert.visible('section:nth-of-type(2) .action-buttons button:nth-child(2)')
         .assert.containsText('section:nth-of-type(2) .action-buttons button:nth-child(2)', 'Excluir Selecionado')
         .assert.visible('section:nth-of-type(2) button[onclick*="selectAllRows(\'posts-table\')"]')
-        .assert.containsText('section:nth-of-type(2) button[onclick*="selectAllRows(\'posts-table\')"]', 'Selecionar Todos (Publicações)')
+        .assert.containsText('section:nth-of-type(2) button[onclick*="selectAllRows(\'posts-table\')"]', 'Selecionar Tudo')
   
         // 7) Finaliza o teste
         .end();

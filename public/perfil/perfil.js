@@ -1,511 +1,568 @@
-// perfil.js
+const userName = document.getElementById("userNameDisplay");
+const userEmail = document.getElementById("userEMAIL");
+const postCount = document.getElementById("postCount");
+const followerCount = document.getElementById("followerCount");
+const followingCount = document.getElementById("followingCount");
+const imageElement = document.getElementById("foto-perfil");
+const fileInput = document.getElementById("upload-foto");
 
-document.addEventListener('DOMContentLoaded', async () => {
-    // Inicialização de variáveis do usuário logado
-    const userName = localStorage.getItem("userName") || "Nome do Usuário";
-    const userEmail = localStorage.getItem("userEmail") || "usuario@email.com";
-    const userId = localStorage.getItem("userId");
+// Quando clicar na imagem, abre o seletor de arquivos
+imageElement.addEventListener("click", () => {
+  fileInput.click();
+});
 
-    // Verifica se o ID do usuário está presente
-    if (!userId) {
-        console.error("ID do usuário não encontrado no localStorage. Certifique-se de que o usuário está logado.");
-        alert("Parece que você não está logado. Por favor, faça o login novamente.");
-        window.location.href = '/login.html'; // Redireciona para a página de login
-        return;
+// Quando escolher um arquivo, atualiza a imagem
+fileInput.addEventListener("change", async function () {
+  const file = this.files[0];
+  if (!file) return;
+
+  // Atualiza visual da imagem localmente
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    imageElement.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+
+  // Envia para o backend
+  const formData = new FormData();
+  formData.append("image", file);
+
+  try {
+    const response = await fetch("/api/images/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      console.error("Erro no upload:", result);
+      return;
     }
 
-    // Atualiza as informações básicas do perfil
-    document.getElementById("userNameDisplay").innerText = userName;
-    document.getElementById("userEMAIL").innerText = userEmail;
-    document.getElementById("postCount").innerText = 0;
-    document.getElementById("followerCount").innerText = 0;
-    document.getElementById("followingCount").innerText = 0;
+    const firebaseImageUrl = await fetch('/api/users/img', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(
+        { imageUrl: result.signedUrl }
+    )});
+    if (!firebaseImageUrl.ok) {
+      const errorData = await firebaseImageUrl.json();
+      console.error("Erro ao atualizar imagem no Firebase:", errorData);
+      return;
+    }
+  } catch (err) {
+    console.error("Erro ao enviar imagem:", err);
+  }
+});
 
-    // --- Funções de Carregamento e Manipulação ---
 
-    /**
-     * Carrega as contagens de seguidores e seguindo para o usuário.
-     * @param {string} id O ID do usuário.
-     */
-    async function loadFollowCounts(id) {
-        try {
-            const [followersResponse, followingResponse] = await Promise.all([
-                fetch(`/api/users/${id}/seguidores`),
-                fetch(`/api/users/${id}/seguindo`)
-            ]);
-
-            if (!followersResponse.ok) throw new Error('Erro ao carregar seguidores.');
-            if (!followingResponse.ok) throw new Error('Erro ao carregar seguindo.');
-
-            const followersData = await followersResponse.json();
-            const followingData = await followingResponse.json();
-
-            document.getElementById("followerCount").innerText = followersData.quantidadeSeguidores;
-            document.getElementById("followingCount").innerText = followingData.quantidadeSeguindo;
-
-        } catch (error) {
-            console.error('Erro ao carregar contagens de seguidores/seguindo:', error);
-            document.getElementById("followerCount").innerText = 'Erro';
-            document.getElementById("followingCount").innerText = 'Erro';
+async function loadCurrentUserData() {
+    try {
+        const response = await fetch('/api/users/me', {
+            credentials: 'include'
+        });
+        if (!response.ok) {
+            throw new Error('Erro ao carregar dados do usuário atual');
         }
-    }
+        const userData = await response.json();
+        const cUserName = userData.name || "Usuário Desconhecido";
+        const cUserEmail = userData.email || "Email Desconhecido";
+        const cUserId = userData.uid || "ID Desconhecido";
 
-    /**
-     * Carrega e renderiza as publicações do usuário.
-     */
-    async function loadUserPublications() {
-        try {
-            const response = await fetch(`/api/users/${userId}/publications`);
-            if (!response.ok) {
-                throw new Error('Erro ao carregar publicações do usuário.');
-            }
-            const data = await response.json();
-            const publicacoes = data.publications;
-            const publicationsContainer = document.getElementById('publications');
-            publicationsContainer.innerHTML = ''; // Limpa o conteúdo anterior
-            document.getElementById("postCount").innerText = publicacoes.length;
-
-            if (publicacoes.length === 0) {
-                publicationsContainer.innerHTML = '<p>Nenhuma publicação encontrada.</p>';
-                return;
-            }
-
-            for (const post of publicacoes) {
-                const publicationHTML = document.createElement('div');
-                publicationHTML.classList.add('publicacao');
-                publicationHTML.dataset.userId = post.userId; // Útil para verificar a autoria
-
-                // Certifique-se de que post.dataCriacao é um objeto Date
-                const dataCriacao = post.dataCriacao instanceof Date ? post.dataCriacao : new Date(post.dataCriacao);
-
-                publicationHTML.innerHTML = `
-                    <div class="cabecalho">
-                        <img src="foto_usuario.jpg" alt="Foto do Usuário" class="foto-usuario">
-                        <div class="info-usuario">
-                            <span class="nome-usuario">${post.usuario || 'Nome Desconhecido'}</span>
-                            <span class="tempo-postagem">${dataCriacao.toLocaleString()}</span>
-                        </div>
-                    </div>
-                    <div class="titulo-publicacao">${post.titulo}</div>
-                    <div class="location-section">
-                        <div id="map-${post.id}" class="map-box" style="height: 200px;"></div>
-                    </div>
-                    <div class="acoes">
-                        <button class="curtir" data-id="${post.id}">Curtir <span class="curtidas-count">${post.curtidas || 0}</span></button>
-                        <div class="comentarios-section">
-                            <input type="text" placeholder="Escreva um comentário..." class="comentario-input">
-                            <button class="enviar-comentario" data-id="${post.id}">Comentar</button>
-                        </div>
-                    </div>
-                    <div class="toggle-comentarios" onclick="toggleComentarios(this)">Mostrar Comentários</div>
-                    <div class="lista-comentarios" style="display: none;"></div>`;
-
-                publicationsContainer.appendChild(publicationHTML);
-
-                // Inicializa o mapa Leaflet
-                if (typeof L !== 'undefined' && post.lat && post.lon) {
-                    const newMap = L.map(`map-${post.id}`).setView([post.lat, post.lon], 13);
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: '&copy; OpenStreetMap contributors'
-                    }).addTo(newMap);
-                    L.marker([post.lat, post.lon]).addTo(newMap)
-                        .bindPopup(`<b>${post.titulo}</b><br>${post.endereco}`).openPopup();
-                } else {
-                    console.warn("Leaflet (L) não está carregado ou coordenadas inválidas. O mapa não será exibido para o post:", post.id);
-                    publicationHTML.querySelector(`#map-${post.id}`).style.display = 'none';
-                }
-
-                // Configura o botão de curtir
-                const curtirButton = publicationHTML.querySelector('.curtir');
-                const hasLiked = post.usersWhoLiked && post.usersWhoLiked.includes(userId);
-                if (hasLiked) {
-                    curtirButton.disabled = true;
-                    curtirButton.innerHTML = `Você curtiu (${post.curtidas || 0})`;
-                }
-                curtirButton.addEventListener('click', () => {
-                    curtirPublicacao(post.id, curtirButton);
-                });
-
-                // Carrega os comentários para a publicação
-                await loadCommentsForPublication(post.id, publicationHTML.querySelector('.lista-comentarios'));
-            }
-        } catch (error) {
-            console.error('Erro ao carregar publicações:', error);
-            document.getElementById("publications").innerHTML = '<p>Erro ao carregar publicações.</p>';
-            document.getElementById("postCount").innerText = 'Erro';
+        const getImageUrl = await fetch(`/api/users/img/${cUserId}`);
+        if (!getImageUrl.ok) {
+            throw new Error('Erro ao carregar imagem do usuário atual');
         }
-    }
+        const imageData = await getImageUrl.json();
 
-    /**
-     * Carrega os comentários para uma publicação específica.
-     * @param {string} postId O ID da publicação.
-     * @param {HTMLElement} commentsListElement O elemento HTML onde os comentários serão listados.
-     */
-    async function loadCommentsForPublication(postId, commentsListElement) {
-        try {
-            const response = await fetch(`/api/publicacoes/${postId}/comentarios`);
-            if (!response.ok) {
-                throw new Error('Erro ao carregar comentários.');
-            }
-            const comentarios = await response.json();
-            commentsListElement.innerHTML = '';
-            comentarios.forEach(comentario => {
-                const dataComentario = comentario.dataCriacao instanceof Date ? comentario.dataCriacao : new Date(comentario.dataCriacao);
-                const comentarioHTML = `
-                    <div class="comentario">
-                        <img src="foto_usuario.jpg" alt="Foto do Usuário" class="foto-usuario">
-                        <div class="info-comentario">
-                            <span class="nome-usuario">${comentario.usuario || 'Nome Desconhecido'}</span>
-                            <span class="tempo-comentario">${dataComentario.toLocaleString()}</span>
-                            <div class="texto-comentario">${comentario.comentario}</div>
-                        </div>
-                    </div>`;
-                commentsListElement.innerHTML += comentarioHTML;
-            });
-        } catch (error) {
-            console.error('Erro ao carregar comentários:', error);
+        const cUserImage = imageData.imageUrl || "https://www.gravatar.com/avatar/?d=mp&s=128"; // URL padrão se não houver imagem
+
+        return {
+            cUserName,
+            cUserEmail,
+            cUserId,
+            cUserImage
+        };
+    } catch (error) {
+        console.error('Erro ao carregar dados do usuário atual:', error);
+        alert('Erro ao carregar dados do usuário atual. Por favor, tente novamente mais tarde.');
+    }
+}
+
+async function loadUserData(id) {
+    try {
+        const response = await fetch(`/api/users/${id}`);
+        if (!response.ok) {
+            throw new Error('Erro ao carregar dados do usuário');
         }
-    }
+        const cUserData = await response.json();
+        const aUserName = cUserData.name || "Usuário Desconhecido";
+        const aUserEmail = cUserData.email || "Email Desconhecido";
+        const aUserId = cUserData.id || "ID Desconhecido";
 
-    /**
-     * Envia uma curtida para uma publicação.
-     * @param {string} postId O ID da publicação.
-     * @param {HTMLElement} button O botão de curtir clicado.
-     */
-    async function curtirPublicacao(postId, button) {
-        if (!userId) {
-            alert("Você precisa estar logado para curtir uma publicação.");
+        const getImageUrl = await fetch(`/api/users/img/${aUserId}`);
+        if (!getImageUrl.ok) {
+            throw new Error('Erro ao carregar imagem do usuário atual');
+        }
+        const imageData = await getImageUrl.json();
+
+        const aUserImage = imageData.imageUrl || "https://www.gravatar.com/avatar/?d=mp&s=128"; // URL padrão se não houver imagem
+
+        return {
+            aUserName,
+            aUserEmail,
+            aUserId,
+            aUserImage
+        };
+    } catch (error) {
+        console.error('Erro ao carregar dados do usuário:', error);
+        alert('Erro ao carregar dados do usuário. Por favor, tente novamente mais tarde.');
+    }
+}
+
+async function loadFollowCounts(id) {
+    try {
+        const [followersResponse, followingResponse] = await Promise.all([
+            fetch(`/api/users/${id}/seguidores`),
+            fetch(`/api/users/${id}/seguindo`)
+        ]);
+
+        if (!followersResponse.ok) throw new Error('Erro ao carregar seguidores.');
+        if (!followingResponse.ok) throw new Error('Erro ao carregar seguindo.');
+
+        const followersData = await followersResponse.json();
+        const followingData = await followingResponse.json();
+
+        return ({
+            followers: followersData.quantidadeSeguidores,
+            following: followingData.quantidadeSeguindo
+        });
+    } catch (error) {
+        console.error('Erro ao carregar contagens de seguidores/seguindo:', error);
+        document.getElementById("followerCount").innerText = 'Erro';
+        document.getElementById("followingCount").innerText = 'Erro';
+    }
+}
+
+ async function curtirPublicacao(postId, button) {
+    const { userId } = loadCurrentUserData();
+    try {
+        const response = await fetch(`/api/publicacoes/${postId}/curtir`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Erro ao curtir a publicação');
+        }
+
+        const data = await response.json();
+        console.log(data.message);
+
+        const curtidasCountSpan = button.querySelector('.curtidas-count');
+        curtidasCountSpan.innerText = parseInt(curtidasCountSpan.innerText) + 1;
+        button.disabled = true;
+        button.innerHTML = `Você curtiu (${curtidasCountSpan.innerText})`;
+    } catch (error) {
+        console.error(error.message);
+        alert(error.message);
+    }
+}
+
+async function loadCommentsForPublication(postId, commentsListElement) {
+    try {
+        const response = await fetch(`/api/publicacoes/${postId}/comentarios`);
+        if (!response.ok) {
+            throw new Error('Erro ao carregar comentários.');
+        }
+        const comentarios = await response.json();
+        commentsListElement.innerHTML = '';
+        comentarios.forEach(comentario => {
+            const dataComentario = comentario.dataCriacao instanceof Date ? comentario.dataCriacao : new Date(comentario.dataCriacao);
+            const comentarioHTML = `
+                <div class="comentario">
+                    <img src="https://www.gravatar.com/avatar/?d=mp&s=128" alt="Usuário Desconhecido" class="foto-usuario">
+                    <div class="info-comentario">
+                        <span class="nome-usuario">${comentario.usuario || 'Nome Desconhecido'}</span>
+                        <span class="tempo-comentario">${dataComentario.toLocaleString()}</span>
+                        <div class="texto-comentario">${comentario.comentario}</div>
+                    </div>
+                </div>`;
+            commentsListElement.innerHTML += comentarioHTML;
+        });
+    } catch (error) {
+        console.error('Erro ao carregar comentários:', error);
+    }
+}
+
+async function loadUserPublications(userId) {
+    try {
+        const response = await fetch(`/api/users/${userId}/publications`);
+        if (!response.ok) {
+            throw new Error('Erro ao carregar publicações do usuário.');
+        }
+        const data = await response.json();
+        const publicacoes = data.publications;
+        const publicationsContainer = document.getElementById('publications');
+        publicationsContainer.innerHTML = ''; // Limpa o conteúdo anterior
+        postCount.innerText = publicacoes.length;
+
+        if (publicacoes.length === 0) {
+            publicationsContainer.innerHTML = '<p>Nenhuma publicação encontrada.</p>';
             return;
         }
-        try {
-            const response = await fetch(`/api/publicacoes/${postId}/curtir`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId }),
-            });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Erro ao curtir a publicação');
+        for (const post of publicacoes) {
+            const publicationHTML = document.createElement('div');
+            publicationHTML.classList.add('publicacao');
+            publicationHTML.dataset.userId = post.userId; // Útil para verificar a autoria
+
+            // Certifique-se de que post.dataCriacao é um objeto Date
+            const dataCriacao = post.dataCriacao instanceof Date ? post.dataCriacao : new Date(post.dataCriacao);
+
+            publicationHTML.innerHTML = `
+                <div class="cabecalho">
+                    <img src="https://www.gravatar.com/avatar/?d=mp&s=128" alt="Usuário Desconhecido" class="foto-usuario">
+                    <div class="info-usuario">
+                        <span class="nome-usuario">${post.usuario || 'Nome Desconhecido'}</span>
+                        <span class="tempo-postagem">${dataCriacao.toLocaleString()}</span>
+                    </div>
+                </div>
+                <div class="titulo-publicacao">${post.titulo}</div>
+                <div class="location-section">
+                    <div id="map-${post.id}" class="map-box" style="height: 200px;"></div>
+                </div>
+                <div class="acoes">
+                    <button class="curtir" data-id="${post.id}">Curtir <span class="curtidas-count">${post.curtidas || 0}</span></button>
+                    <div class="comentarios-section">
+                        <input type="text" placeholder="Escreva um comentário..." class="comentario-input">
+                        <button class="enviar-comentario" data-id="${post.id}">Comentar</button>
+                    </div>
+                </div>
+                <div class="toggle-comentarios-btn" onclick="toggleComentarios(this)">Mostrar Comentários</div>
+                <div class="lista-comentarios" style="display: none;"></div>`;
+
+            publicationsContainer.appendChild(publicationHTML);
+
+            // Inicializa o mapa Leaflet
+            if (typeof L !== 'undefined' && post.lat && post.lon) {
+                const newMap = L.map(`map-${post.id}`).setView([post.lat, post.lon], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(newMap);
+                L.marker([post.lat, post.lon]).addTo(newMap)
+                    .bindPopup(`<b>${post.titulo}</b><br>${post.endereco}`).openPopup();
+            } else {
+                console.warn("Leaflet (L) não está carregado ou coordenadas inválidas. O mapa não será exibido para o post:", post.id);
+                publicationHTML.querySelector(`#map-${post.id}`).style.display = 'none';
             }
 
-            const data = await response.json();
-            console.log(data.message);
+            // Configura o botão de curtir
+            const curtirButton = publicationHTML.querySelector('.curtir');
+            const hasLiked = post.usersWhoLiked && post.usersWhoLiked.includes(userId);
+            if (hasLiked) {
+                curtirButton.disabled = true;
+                curtirButton.innerHTML = `Você curtiu (${post.curtidas || 0})`;
+            }
+            curtirButton.addEventListener('click', async () => {
+                await curtirPublicacao(post.id, curtirButton);
+            });
 
-            const curtidasCountSpan = button.querySelector('.curtidas-count');
-            curtidasCountSpan.textContent = parseInt(curtidasCountSpan.textContent) + 1;
-            button.disabled = true;
-            button.innerHTML = `Você curtiu (${curtidasCountSpan.textContent})`;
-        } catch (error) {
-            console.error(error.message);
-            alert(error.message);
+            // Carrega os comentários para a publicação
+            await loadCommentsForPublication(post.id, publicationHTML.querySelector('.lista-comentarios'));
         }
+    } catch (error) {
+        console.error('Erro ao carregar publicações:', error);
+        document.getElementById("publications").innerHTML = '<p>Erro ao carregar publicações.</p>';
+        document.getElementById("postCount").innerText = 'Erro';
     }
+}
 
-    /**
-     * Atualiza os dados do usuário no backend.
-     * @param {string} id O ID do usuário.
-     * @param {string} newName O novo nome do usuário.
-     * @param {string} newEmail O novo email do usuário.
-     * @param {string} password A senha para autenticação.
-     * @returns {Promise<boolean>} True se a atualização for bem-sucedida, false caso contrário.
-     */
-    const updateUser = async (id, newName, newEmail, password) => {
+async function checkIfFollowingAndSetButton(amigoId, button) {
+    try {
+        const response = await fetch(`/api/amigos/check/${amigoId}`, {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            button.classList.add('btn-follow');
+            if (result.existe) {
+                button.innerText = 'Deixar de Seguir';
+                button.dataset.status = 'seguindo';
+                button.classList.add('active'); // Estilo para quem já está seguindo
+                button.classList.remove('inactive');
+            } else {
+                button.innerText = 'Seguir';
+                button.dataset.status = 'naoSeguindo';
+                button.classList.remove('active');
+                button.classList.add('inactive'); 
+            }
+            button.disabled = false;
+        } else {
+            button.innerText = 'Erro';
+            button.disabled = true;
+            console.warn('Erro ao verificar status de amizade:', result.message);
+        }
+    } catch (error) {
+        console.error('Erro ao verificar amizade:', error);
+        button.innerText = 'Erro';
+        button.disabled = true;
+    }
+}
+
+function createEditProfileModal(userData) {
+    // Remove modal anterior, se existir
+    const existingModal = document.querySelector('.edit-profile-form');
+    if (existingModal) existingModal.remove();
+
+    // Cria o fundo escurecido
+    const overlay = document.createElement('div');
+    overlay.classList.add('modal-overlay');
+
+    // Cria o modal
+    const modal = document.createElement('div');
+    modal.classList.add('edit-profile-form'); // Usa sua classe CSS
+
+    // Título
+    const title = document.createElement('h2');
+    title.innerText = 'Editar Perfil';
+
+    // Botão de fechar
+    const closeBtn = document.createElement('span');
+    closeBtn.innerText = '×';
+    closeBtn.classList.add('close-btn');
+    closeBtn.onclick = () => overlay.remove();
+
+    // Formulário
+    const form = document.createElement('form');
+
+    // Nome
+    const nameLabel = document.createElement('label');
+    nameLabel.innerText = 'Nome:';
+    const nameInput = document.createElement('input');
+    nameInput.type = 'text';
+    nameInput.name = 'newName';
+    nameInput.required = true;
+    nameInput.value = userData.name || '';
+
+    // Email
+    const emailLabel = document.createElement('label');
+    emailLabel.innerText = 'Email:';
+    const emailInput = document.createElement('input');
+    emailInput.type = 'email';
+    emailInput.name = 'newEmail';
+    emailInput.required = true;
+    emailInput.value = userData.email || '';
+
+    // Senha
+    const passwordLabel = document.createElement('label');
+    passwordLabel.innerText = 'Senha atual:';
+    const passwordInput = document.createElement('input');
+    passwordInput.type = 'password';
+    passwordInput.name = 'password';
+    passwordInput.required = true;
+
+    // Botão de envio
+    const submitBtn = document.createElement('button');
+    submitBtn.type = 'submit';
+    submitBtn.innerText = 'Salvar';
+
+    // Evento de envio
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const newName = nameInput.value;
+        const newEmail = emailInput.value;
+        const password = passwordInput.value;
+
         try {
-            const response = await fetch(`/admin/usuarios/${id}`, {
+            const response = await fetch('/api/users/me', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({ newName, newEmail, password })
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Erro ao atualizar os dados no banco de dados');
+            const result = await response.json();
+
+            if (response.ok) {
+                alert('Perfil atualizado com sucesso!');
+                overlay.remove();
+                window.location.reload();
+            } else {
+                alert(`Erro: ${result.message}`);
             }
-            return true;
         } catch (error) {
-            console.error('Erro:', error);
-            alert(error.message);
-            return false;
-        }
-    };
-
-    /**
-     * Deleta a conta do usuário.
-     * @param {string} userIdToDelete O ID do usuário a ser deletado.
-     */
-    const deleteUser = async (userIdToDelete) => {
-        try {
-            const response = await fetch(`/admin/usuarios/${userIdToDelete}`, {
-                method: 'DELETE'
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Erro ao deletar a conta');
-            }
-
-            alert('Conta deletada com sucesso.');
-            localStorage.clear();
-            window.location.href = '/login.html';
-        } catch (error) {
-            console.error('Erro:', error);
-            alert('Erro ao deletar a conta: ' + error.message);
-        }
-    };
-
-    /**
-     * Atualiza o nome do usuário nas publicações já renderizadas na página.
-     * @param {string} newName O novo nome a ser exibido.
-     */
-    const updatePublicationsUserName = (newName) => {
-        const publications = document.querySelectorAll('.publicacao[data-user-id="' + userId + '"] .nome-usuario');
-        publications.forEach(userNameElement => {
-            userNameElement.innerText = newName;
-        });
-    };
-
-    // --- Funções Auxiliares para Event Listeners ---
-
-    // Define os manipuladores de evento para serem reutilizados e removidos/adicionados
-    const searchInputHandler = async (e) => {
-        const query = e.target.value.trim();
-        const usuariosEncontrados = document.getElementById('usuariosEncontrados');
-        if (query.length > 0) {
-            try {
-                const response = await fetch(`/api/users/name/${encodeURIComponent(query)}`);
-                if (!response.ok) {
-                    if (response.status === 404) {
-                        usuariosEncontrados.innerHTML = '<p>Nenhum usuário encontrado.</p>';
-                        return;
-                    }
-                    throw new Error('Erro na busca de usuários.');
-                }
-                const users = await response.json();
-                usuariosEncontrados.innerHTML = '';
-                if (users.length === 0) {
-                    usuariosEncontrados.innerHTML = '<p>Nenhum usuário encontrado.</p>';
-                    return;
-                }
-                users.forEach(user => {
-                    // Evita mostrar o próprio usuário logado nos resultados da busca
-                    if (user.id === userId) {
-                        return;
-                    }
-                    const userHTML = `
-                        <div class="perfil">
-                            <img src="foto_usuario.jpg" alt="Foto de ${user.name}" class="foto-perfil">
-                            <div class="info-perfil">
-                                <h1 class="nome">${user.name}</h1>
-                                <a href="#" class="ver-perfil" data-id="${user.id}" data-name="${user.name}" data-email="${user.email}">Ver perfil</a>
-                            </div>
-                        </div>`;
-                    usuariosEncontrados.innerHTML += userHTML;
-                });
-
-                // Anexa listeners aos links "Ver perfil" recém-criados
-                document.querySelectorAll('.ver-perfil').forEach(link => {
-                    link.addEventListener('click', (event) => {
-                        event.preventDefault();
-                        localStorage.setItem('amigoId', link.dataset.id);
-                        localStorage.setItem('amigoName', link.dataset.name);
-                        localStorage.setItem('amigoEmail', link.dataset.email);
-                        window.location.href = '../perfil/perfilAMIGO.html';
-                    });
-                });
-            } catch (error) {
-                console.error('Erro ao buscar usuários:', error);
-                usuariosEncontrados.innerHTML = '<p>Erro ao buscar usuários.</p>';
-            }
-        } else {
-            usuariosEncontrados.innerHTML = '';
-        }
-    };
-
-    const btnOcultarHandler = () => {
-        const usuariosOcultos = document.getElementById('usuariosOcultos');
-        const btnOcultar = document.getElementById('btnOcultar');
-        if (usuariosOcultos.style.display === 'none' || usuariosOcultos.style.display === '') {
-            usuariosOcultos.style.display = 'block';
-            btnOcultar.innerText = 'Ocultar usuários';
-        } else {
-            usuariosOcultos.style.display = 'none';
-            btnOcultar.innerText = 'Mostrar mais usuários';
-        }
-    };
-
-    const deleteUserButtonHandler = async function () {
-        if (confirm('Tem certeza que deseja deletar sua conta? Esta ação é irreversível.')) {
-            await deleteUser(userId);
-        }
-    };
-
-    // --- Gerenciamento da Edição de Perfil ---
-
-    let originalContent; // Armazenará o HTML original do main
-
-    const createEditProfileForm = (nome, email) => {
-        return `
-            <h2>Editar Perfil</h2>
-            <section class="user-header">
-                <div class="user-photo-container">
-                    <div class="user-photo">
-                        <img src="sua-foto.jpg" alt="Foto do Usuário">
-                    </div>
-                    <div class="user-name">
-                        <p id="userNameDisplayEdit">${nome}</p>
-                    </div>
-                    <button id="substituirFotoBtn">Substituir Imagem</button>
-                </div>
-            </section>
-            <section class="edit-profile-form">
-                <form id="profile-form">
-                    <div class="form-group">
-                        <label for="nome">Nome:</label>
-                        <input type="text" id="nome" placeholder="Novo Nome" value="${nome}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email:</label>
-                        <input type="email" id="email" placeholder="Novo Email" value="${email}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="senha">Senha:</label>
-                        <input type="password" id="senha" placeholder="Senha para confirmar" required>
-                    </div>
-                    <button type="submit" class="save-btn">Salvar Alterações</button>
-                    <button type="button" id="cancelEditBtn" class="cancel-btn">Cancelar</button>
-                </form>
-            </section>
-        `;
-    };
-
-    const editarPerfilBtn = document.getElementById("editProfileButton");
-
-    if (editarPerfilBtn) {
-        editarPerfilBtn.addEventListener("click", () => {
-            originalContent = document.querySelector('main').innerHTML; // Salva o conteúdo original
-            document.querySelector('main').innerHTML = createEditProfileForm(userName, userEmail);
-
-            // Anexa listeners aos botões do formulário de edição (que foram recém-criados)
-            document.getElementById("cancelEditBtn").addEventListener("click", () => {
-                document.querySelector('main').innerHTML = originalContent; // Restaura o conteúdo original
-                setupInitialListeners(); // Re-anexa todos os listeners iniciais
-            });
-
-            document.getElementById("profile-form").addEventListener("submit", async function (event) {
-                event.preventDefault();
-                const newName = document.getElementById("nome").value;
-                const newEmail = document.getElementById("email").value;
-                const password = document.getElementById("senha").value;
-
-                const result = await updateUser(userId, newName, newEmail, password);
-                if (result) {
-                    localStorage.setItem('userName', newName);
-                    localStorage.setItem('userEmail', newEmail);
-                    document.getElementById('userNameDisplay').innerText = newName;
-                    document.getElementById('userEMAIL').innerText = newEmail;
-                    updatePublicationsUserName(newName); // Atualiza o nome nas publicações existentes
-                    document.querySelector('main').innerHTML = originalContent; // Restaura o conteúdo original
-                    alert('Perfil atualizado com sucesso!');
-                    setupInitialListeners(); // Re-anexa todos os listeners iniciais e recarrega dados
-                } else {
-                    alert('Erro ao atualizar os dados. Tente novamente.');
-                }
-            });
-        });
-    }
-
-    // --- Event Listeners Globais ---
-    // Estes listeners são anexados uma vez e delegam os eventos para elementos dinâmicos
-    document.addEventListener('click', async (e) => {
-        if (e.target.classList.contains('enviar-comentario')) {
-            const publicacaoId = e.target.dataset.id;
-            const comentarioInput = e.target.closest('.publicacao').querySelector('.comentario-input');
-            const comentario = comentarioInput.value.trim();
-
-            if (!comentario) {
-                alert("Por favor, escreva um comentário.");
-                return;
-            }
-            if (!userId || !userName) {
-                alert("Você precisa estar logado para comentar.");
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/comentarios', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ publicacaoId, comentario, usuario: userName, usuarioId: userId })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Erro ao enviar comentário.');
-                }
-                const data = await response.json();
-                console.log('Comentário adicionado:', data);
-
-                const listaComentarios = e.target.closest('.publicacao').querySelector('.lista-comentarios');
-                const novoComentarioHTML = `
-                    <div class="comentario">
-                        <img src="foto_usuario.jpg" alt="Foto do Usuário" class="foto-usuario">
-                        <div class="info-comentario">
-                            <span class="nome-usuario">${data.usuario || 'Nome Desconhecido'}</span>
-                            <span class="tempo-comentario">${new Date(data.dataCriacao).toLocaleString()}</span>
-                            <div class="texto-comentario">${data.comentario}</div>
-                        </div>
-                    </div>`;
-                listaComentarios.innerHTML += novoComentarioHTML;
-                listaComentarios.style.display = 'block';
-                comentarioInput.value = '';
-            } catch (error) {
-                console.error("Erro ao enviar comentário:", error);
-                alert("Erro ao enviar comentário: " + error.message);
-            }
+            console.error('Erro ao atualizar perfil:', error);
+            alert('Erro inesperado. Tente novamente.');
         }
     });
 
-    // Função global para alternar a exibição de comentários
-    window.toggleComentarios = (button) => {
-        const listaComentarios = button.closest('.publicacao').querySelector('.lista-comentarios');
-        if (listaComentarios.style.display === 'none' || listaComentarios.style.display === '') {
-            listaComentarios.style.display = 'block';
-            button.textContent = 'Ocultar Comentários';
+    // Monta o formulário
+    form.appendChild(nameLabel);
+    form.appendChild(nameInput);
+    form.appendChild(emailLabel);
+    form.appendChild(emailInput);
+    form.appendChild(passwordLabel);
+    form.appendChild(passwordInput);
+    form.appendChild(submitBtn);
+
+    // Monta o modal
+    modal.appendChild(closeBtn);
+    modal.appendChild(title);
+    modal.appendChild(form);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+}
+
+async function openEditProfileModal() {
+    try {
+        const response = await fetch('/api/users/me', {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        const userData = await response.json();
+
+        if (response.ok) {
+            createEditProfileModal(userData);
         } else {
-            listaComentarios.style.display = 'none';
-            button.textContent = 'Mostrar Comentários';
+            alert('Erro ao carregar dados do perfil.');
+        }
+    } catch (error) {
+        console.error('Erro ao buscar dados do usuário:', error);
+        alert('Erro inesperado ao carregar perfil.');
+    }
+}
+
+function createEditProfileButtons(container) {
+    const editBtn = document.createElement('button');
+    editBtn.innerText = 'Editar Perfil';
+    editBtn.classList.add('btn-edit');
+    editBtn.onclick = () => {
+        openEditProfileModal();
+    };
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.innerText = 'Deletar Perfil';
+    deleteBtn.classList.add('btn-delete');
+    deleteBtn.onclick = async () => {
+        const confirmacao = confirm('Tem certeza que deseja deletar seu perfil? Essa ação é irreversível.');
+        if (!confirmacao) return;
+
+        try {
+            const response = await fetch('/api/users/me', {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                alert('Conta deletada com sucesso!');
+                window.location.href = '/logout';
+            } else {
+                const errorData = await response.json();
+                alert(`Erro ao deletar conta: ${errorData.message}`);
+            }
+        } catch (error) {
+            console.error('Erro ao deletar conta:', error);
+            alert('Erro inesperado ao deletar conta. Tente novamente mais tarde.');
         }
     };
 
-    // --- Configuração Inicial e Re-configuração (para quando o DOM é alterado) ---
+    container.appendChild(editBtn);
+    container.appendChild(deleteBtn);
+}
 
-    // Esta função será responsável por re-anexar os listeners após a edição do perfil
-    function setupInitialListeners() {
-        loadFollowCounts(userId); // Recarrega as contagens (elas não são afetadas pela alteração do 'main' em si)
-        loadUserPublications();   // Recarrega as publicações (pois o container foi limpo e recriado)
+function createFollowButton(container, amigoId) {
+    const button = document.createElement('button');
+    button.innerText = 'Carregando...';
+    button.disabled = true;
 
-        // Re-anexa listeners para elementos que podem ter sido removidos/re-criados
-        // É importante re-selecionar os elementos após a restauração do 'originalContent'
-        const currentSearchInput = document.getElementById('searchInput');
-        if (currentSearchInput) {
-            // Remove o listener anterior para evitar duplicações se já existia um
-            currentSearchInput.removeEventListener('input', searchInputHandler);
-            currentSearchInput.addEventListener('input', searchInputHandler);
+    button.addEventListener('click', async () => {
+        const status = button.dataset.status;
+
+        const endpoint = status === 'seguindo' ? '/api/amigos/unfollow' : '/api/amigos';
+        const method = status === 'seguindo' ? 'DELETE' : 'POST';
+
+        try {
+            const response = await fetch(endpoint, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({ amigoId })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // Atualiza o botão com base no novo estado
+                await checkIfFollowingAndSetButton(amigoId, button);
+            } else {
+                alert(`Erro: ${result.message}`);
+            }
+        } catch (error) {
+            console.error('Erro ao seguir/deixar de seguir:', error);
+            alert('Erro inesperado. Tente novamente.');
         }
+    });
 
-        const currentBtnOcultar = document.getElementById('btnOcultar');
-        if (currentBtnOcultar) {
-            currentBtnOcultar.removeEventListener('click', btnOcultarHandler);
-            currentBtnOcultar.addEventListener('click', btnOcultarHandler);
-        }
+    container.appendChild(button);
+    return button;
+}
 
-        const currentDeleteUserButton = document.getElementById('deleteUserButton');
-        if (currentDeleteUserButton) {
-            currentDeleteUserButton.removeEventListener('click', deleteUserButtonHandler);
-            currentDeleteUserButton.addEventListener('click', deleteUserButtonHandler);
-        }
+document.addEventListener('DOMContentLoaded', async () => {
+
+    const pathParts = window.location.pathname.split('perfil/');
+    const amigoId = pathParts[pathParts.length - 1].trim();
+    console.log("Amigo ID:", amigoId);
+
+    const { cUserName, cUserEmail, cUserId, cUserImage } = await loadCurrentUserData();
+    const { aUserName, aUserEmail, aUserId, aUserImage } = await loadUserData(amigoId);
+    const actionContainer = document.getElementById('info-perfil');
+    console.log("Current User ID:", cUserId);
+    console.log("Amigo User ID:", aUserId);
+    if (cUserId == aUserId) {
+        userName.innerText = cUserName;
+        userEmail.innerText = cUserEmail;
+        imageElement.src = cUserImage; // Atualiza a imagem do perfil
+        //imageElement.alt = cUserName || "Foto de Perfil";
+        const { followers, following } = await loadFollowCounts(cUserId);
+        postCount.innerText = '0';
+        followerCount.innerText = followers || '0';
+        followingCount.innerText = following || '0';
+        await loadUserPublications(cUserId).then(() => {
+            console.log("Publicações carregadas para o usuário atual.");
+        }).catch(error => {
+            console.error("Erro ao carregar publicações do usuário atual:", error);
+        });
+        createEditProfileButtons(actionContainer);
+        return;
+    } else {
+        // Se não for o mesmo, exibe os dados do outro usuário
+        userName.innerText = aUserName;
+        userEmail.innerText = aUserEmail;
+        imageElement.src = aUserImage; // Atualiza a imagem do perfil
+        //imageElement.alt = aUserName || "Foto de Perfil";
+        const { followers, following } = await loadFollowCounts(amigoId);
+        postCount.innerText = '0';
+        followerCount.innerText = followers || '0';
+        followingCount.innerText = following || '0';
+        await loadUserPublications(amigoId).then(() => {
+            console.log("Publicações carregadas para o amigo.");
+        }).catch(error => {
+            console.error("Erro ao carregar publicações do amigo:", error);
+        });
+        const followButton = createFollowButton(actionContainer, amigoId);
+        await checkIfFollowingAndSetButton(amigoId, followButton);
     }
-
-    // Chama a configuração inicial quando a página carrega
-    setupInitialListeners();
 });

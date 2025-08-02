@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disaster Warning System – Classificador e Mapa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+    <style>
+        #map { height: 400px; }
+        table { width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background-color: #f2f2f2; }
+        textarea { width: 100%; padding: 1rem; border: 1px solid #ddd; border-radius: 4px; }
+        .resultado { background-color: #fff; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; }
+        .publicacoes-section { background-color: #fff; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-4">
+        <h1 class="text-2xl font-bold mb-4">Disaster Warning System</h1>
+
+        <!-- Área para classificação manual -->
+        <div class="mb-4">
+            <textarea id="mensagem" placeholder="Digite uma mensagem para classificar..." class="mb-2"></textarea>
+            <div>
+                <button onclick="classificar()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
+                    Classificar
+                </button>
+                <button onclick="carregarPublicacoesEmapas()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
+                    Carregar Publicações
+                </button>
+                <button onclick="loadValidatedPosts()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Carregar Publicações Validadas
+                </button>
+            </div>
+        </div>
+
+        <!-- Resultado da classificação manual -->
+        <div class="resultado" id="resultado" style="display:none;">
+            <h3 class="text-lg font-semibold mb-2">Resultado da Classificação:</h3>
+            <p><strong>Categoria:</strong> <span id="cat"></span></p>
+            <p><strong>Cidade:</strong> <span id="loc"></span></p>
+            <p><strong>Impacto:</strong> <span id="imp"></span></p>
+        </div>
+
+        <!-- Tabela para exibir publicações -->
+        <div class="publicacoes-section" id="publicacoesSection" style="display:none;">
+            <h3 class="text-lg font-semibold mb-2">Publicações Carregadas:</h3>
+            <div class="overflow-x-auto">
+                <table id="postsTable" class="min-w-full bg-white">
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Conteúdo</th>
+                            <th>Categoria</th>
+                            <th>Cidade</th>
+                            <th>Impacto</th>
+                            <th>Área (km²)</th>
+                            <th>Latitude</th>
+                            <th>Longitude</th>
+                        </tr>
+                    </thead>
+                    <tbody id="postsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Mapa para exibir localizações -->
+        <div id="map" class="mt-4"></div>
+    </div>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBwTvr1wk7WDz7aZPUA0tcM381YQ2ugfig",
+            authDomain: "projeto-pi2.firebaseapp.com",
+            projectId: "projeto-pi2",
+            storageBucket: "projeto-pi2.appspot.com",
+            messagingSenderId: "112085181246",
+            appId: "1:112085181246:web:c9e471bde7fb2f96f0826f"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Inicializa o mapa
+        let map;
+        let markers = [];
+        function initMap() {
+            map = L.map('map').setView([-14.2350, -51.9253], 4); // Centro do Brasil
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+        }
+
+        // Mapeamento de ícones com base na categoria e impacto
+        const iconMap = {
+            'queimada': {
+                'alto impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/FL.png',
+                'alto impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/FL.png',
+                'alto impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/FL.png',
+                'moderado impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/FL.png',
+                'moderado impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/FL.png',
+                'moderado impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/FL.png',
+                'baixo impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/FL.png',
+                'baixo impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/FL.png',
+                'baixo impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/FL.png',
+                'indefinido': 'https://www.gdacs.org/images/gdacs_icons/maps/Gray/FL.png'
+            },
+            'desastre_hidrico': {
+                'alto impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/FL.png',
+                'alto impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/FL.png',
+                'alto impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/FL.png',
+                'moderado impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/FL.png',
+                'moderado impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/FL.png',
+                'moderado impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/FL.png',
+                'baixo impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/FL.png',
+                'baixo impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/FL.png',
+                'baixo impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/FL.png',
+                'indefinido': 'https://www.gdacs.org/images/gdacs_icons/maps/Gray/FL.png'
+            },
+            'ciclone': {
+                'alto impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/TC.png',
+                'alto impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/TC.png',
+                'alto impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/TC.png',
+                'moderado impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/TC.png',
+                'moderado impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/TC.png',
+                'moderado impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/TC.png',
+                'baixo impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/TC.png',
+                'baixo impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/TC.png',
+                'baixo impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/TC.png',
+                'indefinido': 'https://www.gdacs.org/images/gdacs_icons/maps/Gray/TC.png'
+            },
+            'terremoto': {
+                'alto impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/EQ.png',
+                'alto impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/EQ.png',
+                'alto impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/EQ.png',
+                'moderado impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/EQ.png',
+                'moderado impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/EQ.png',
+                'moderado impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/EQ.png',
+                'baixo impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/EQ.png',
+                'baixo impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/EQ.png',
+                'baixo impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/EQ.png',
+                'indefinido': 'https://www.gdacs.org/images/gdacs_icons/maps/Gray/EQ.png'
+            },
+            'deslizamento': {
+                'alto impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/LS.png',
+                'alto impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/LS.png',
+                'alto impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/LS.png',
+                'moderado impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/LS.png',
+                'moderado impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/LS.png',
+                'moderado impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/LS.png',
+                'baixo impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/LS.png',
+                'baixo impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/LS.png',
+                'baixo impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/LS.png',
+                'indefinido': 'https://www.gdacs.org/images/gdacs_icons/maps/Gray/LS.png'
+            },
+            'tempestade': {
+                'alto impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/ST.png',
+                'alto impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/ST.png',
+                'alto impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/ST.png',
+                'moderado impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/ST.png',
+                'moderado impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/ST.png',
+                'moderado impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/ST.png',
+                'baixo impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/ST.png',
+                'baixo impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/ST.png',
+                'baixo impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/ST.png',
+                'indefinido': 'https://www.gdacs.org/images/gdacs_icons/maps/Gray/ST.png'
+            },
+            'seca': {
+                'alto impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/DR.png',
+                'alto impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/DR.png',
+                'alto impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/DR.png',
+                'moderado impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/DR.png',
+                'moderado impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/DR.png',
+                'moderado impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/DR.png',
+                'baixo impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/DR.png',
+                'baixo impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/DR.png',
+                'baixo impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/DR.png',
+                'indefinido': 'https://www.gdacs.org/images/gdacs_icons/maps/Gray/DR.png'
+            },
+            'vulcao': {
+                'alto impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/VO.png',
+                'alto impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/VO.png',
+                'alto impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Red/VO.png',
+                'moderado impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/VO.png',
+                'moderado impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/VO.png',
+                'moderado impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Orange/VO.png',
+                'baixo impacto a pequena área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/VO.png',
+                'baixo impacto a média área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/VO.png',
+                'baixo impacto a grande área': 'https://www.gdacs.org/images/gdacs_icons/maps/Green/VO.png',
+                'indefinido': 'https://www.gdacs.org/images/gdacs_icons/maps/Gray/VO.png'
+            },
+            'nao_classificado': {
+                'indefinido': 'https://via.placeholder.com/32'
+            }
+        };
+        const defaultIconUrl = 'https://via.placeholder.com/32';
+
+        // Função para obter o ícone dinâmico
+        function getDynamicIcon(categoria, impacto) {
+            const iconUrl = iconMap[categoria]?.[impacto] || defaultIconUrl;
+            return L.icon({
+                iconUrl: iconUrl,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16],
+                popupAnchor: [0, -16]
+            });
+        }
+
+        // Função para classificar mensagem
+        async function classificarMensagem({ titulo, conteudo, lat, lon, marcacao }) {
+            try {
+                let areaDemarcada = 'N/A';
+                if (marcacao) {
+                    try {
+                        const marcacaoGeoJSON = JSON.parse(marcacao);
+                        if (marcacaoGeoJSON?.type === 'Feature' && marcacaoGeoJSON.geometry?.type === 'Polygon') {
+                            const areaSqMeters = turf.area(marcacaoGeoJSON);
+                            areaDemarcada = (areaSqMeters / 1_000_000).toFixed(2);
+                        }
+                    } catch (error) {
+                        console.error('Erro ao calcular área demarcada:', error);
+                    }
+                }
+
+                const response = await fetch("http://localhost:5000/predict", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        titulo: titulo || '',
+                        conteudo: conteudo || '',
+                        lat: (lat && !isNaN(parseFloat(lat)) && parseFloat(lat) >= -90 && parseFloat(lat) <= 90) ? parseFloat(lat) : null,
+                        lon: (lon && !isNaN(parseFloat(lon)) && parseFloat(lon) >= -180 && parseFloat(lon) <= 180) ? parseFloat(lon) : null,
+                        areaDemarcada: areaDemarcada
+                    }),
+                    mode: 'cors'
+                });
+
+                if (!response.ok) {
+                    const erro = await response.json();
+                    throw new Error(erro.erro || "Erro na requisição");
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('classificarMensagem:', error);
+                return { categoria: '—', cidade: '—', impacto: '—' };
+            }
+        }
+
+        // Função para classificar mensagem manual
+        async function classificar() {
+            const mensagem = document.getElementById("mensagem").value.trim();
+            const resultadoDiv = document.getElementById("resultado");
+            if (!mensagem) {
+                alert("Digite uma mensagem!");
+                return;
+            }
+
+            try {
+                const resultado = await classificarMensagem({
+                    titulo: '',
+                    conteudo: mensagem,
+                    lat: null,
+                    lon: null,
+                    marcacao: null
+                });
+                document.getElementById("cat").innerText = resultado.categoria;
+                document.getElementById("loc").innerText = resultado.cidade;
+                document.getElementById("imp").innerText = resultado.impacto;
+                resultadoDiv.style.display = "block";
+            } catch (error) {
+                alert("Erro: " + error.message);
+                resultadoDiv.style.display = "none";
+            }
+        }
+
+        // Função para buscar publicações
+        async function buscarPublicacoes() {
+            try {
+                const response = await fetch('http://localhost:3000/api/publicacoes', {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar publicações');
+                }
+                const publicacoes = await response.json();
+                console.log(`[DEBUG] Veio(n) ${publicacoes.length} publicação(ões) do /api/publicacoes`);
+                return publicacoes.map(p => ({
+                    id: p.id,
+                    titulo: p.titulo,
+                    conteudo: p.conteudo,
+                    lat: p.lat,
+                    lon: p.lon,
+                    endereco: p.endereco,
+                    marcacao: p.marcacao
+                }));
+            } catch (error) {
+                console.error('buscarPublicacoes:', error);
+                return [];
+            }
+        }
+
+        // Função para carregar e exibir publicações
+        async function carregarPublicacoesEmapas() {
+            const postsBody = document.getElementById('postsBody');
+            postsBody.innerHTML = ''; // Limpar tabela
+            markers.forEach(marker => map.removeLayer(marker)); // Limpar marcadores
+            markers = [];
+
+            const publicacoes = await buscarPublicacoes();
+            if (publicacoes.length === 0) {
+                postsBody.innerHTML = '<tr><td colspan="8">Nenhuma publicação encontrada ou ocorreu um erro. Certifique-se de que o endpoint /api/publicacoes esteja funcionando.</td></tr>';
+                document.getElementById('publicacoesSection').style.display = 'block';
+                return;
+            }
+
+            const latLngArray = [];
+            for (const post of publicacoes) {
+                const resultado = await classificarMensagem({
+                    titulo: post.titulo,
+                    conteudo: post.conteudo,
+                    lat: post.lat,
+                    lon: post.lon,
+                    marcacao: post.marcacao
+                });
+
+                let areaDemarcada = 'N/A';
+                if (post.marcacao) {
+                    try {
+                        const marcacaoGeoJSON = JSON.parse(post.marcacao);
+                        if (marcacaoGeoJSON?.type === 'Feature' && marcacaoGeoJSON.geometry?.type === 'Polygon') {
+                            const areaSqMeters = turf.area(marcacaoGeoJSON);
+                            areaDemarcada = (areaSqMeters / 1_000_000).toFixed(2);
+                            const latLngs = marcacaoGeoJSON.geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
+                            const polygonLayer = L.polygon(latLngs, {
+                                color: 'green',
+                                weight: 3,
+                                opacity: 0.7,
+                                fillColor: 'yellow',
+                                fillOpacity: 0.3
+                            }).addTo(map);
+                            polygonLayer.bindPopup(`<b>${post.titulo}</b><br>Categoria: ${resultado.categoria}<br>Cidade: ${resultado.cidade}<br>Impacto: ${resultado.impacto}`);
+                            if (polygonLayer.getBounds().isValid()) {
+                                latLngArray.push(polygonLayer.getBounds().getNorthEast());
+                                latLngArray.push(polygonLayer.getBounds().getSouthWest());
+                            }
+                        } else if (marcacaoGeoJSON?.type === 'Feature' && marcacaoGeoJSON.geometry?.type === 'Point') {
+                            const [lon, lat] = marcacaoGeoJSON.geometry.coordinates;
+                            latLngArray.push([lat, lon]);
+                            const pointIcon = getDynamicIcon(resultado.categoria, resultado.impacto);
+                            const pointMarker = L.marker([lat, lon], { icon: pointIcon }).addTo(map);
+                            pointMarker.bindPopup(`<b>${post.titulo}</b><br>Categoria: ${resultado.categoria}<br>Cidade: ${resultado.cidade}<br>Impacto: ${resultado.impacto}`);
+                            markers.push(pointMarker);
+                            areaDemarcada = 'Não aplicável';
+                        }
+                    } catch (error) {
+                        console.error(`Erro ao processar marcação para post ${post.id}:`, error);
+                    }
+                }
+
+                const rowElement = document.createElement('tr');
+                rowElement.innerHTML = `
+                    <td>${post.titulo}</td>
+                    <td>${post.conteudo}</td>
+                    <td>${resultado.categoria}</td>
+                    <td>${resultado.cidade}</td>
+                    <td>${resultado.impacto}</td>
+                    <td>${areaDemarcada}</td>
+                    <td>${post.lat || 'N/A'}</td>
+                    <td>${post.lon || 'N/A'}</td>
+                `;
+                postsBody.appendChild(rowElement);
+
+                const latNum = parseFloat(post.lat);
+                const lonNum = parseFloat(post.lon);
+                if (!isNaN(latNum) && !isNaN(lonNum)) {
+                    latLngArray.push([latNum, lonNum]);
+                    const markerIcon = getDynamicIcon(resultado.categoria, resultado.impacto);
+                    const marker = L.marker([latNum, lonNum], { icon: markerIcon }).addTo(map);
+                    marker.bindPopup(`<b>${post.titulo}</b><br>Categoria: ${resultado.categoria}<br>Cidade: ${resultado.cidade}<br>Impacto: ${resultado.impacto}`);
+                    markers.push(marker);
+                }
+            }
+
+            if (latLngArray.length > 0) {
+                try {
+                    const bounds = L.latLngBounds(latLngArray);
+                    if (bounds.isValid()) {
+                        map.fitBounds(bounds.pad(0.2));
+                    }
+                } catch (e) {
+                    console.error('Erro ao ajustar o mapa:', e);
+                }
+            }
+
+            document.getElementById('publicacoesSection').style.display = 'block';
+        }
+
+        // Função para carregar publicações validadas
+        async function loadValidatedPosts() {
+            try {
+                const response = await fetch('http://localhost:5000/gerar_dataset_real', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    mode: 'cors'
+                });
+                const result = await response.json();
+                if (result.status === 'success') {
+                    alert(result.message);
+                    await fetchValidatedPosts();
+                } else {
+                    alert('Erro ao validar publicações: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Erro ao chamar /gerar_dataset_real:', error);
+                alert('Erro ao conectar com o servidor. Verifique se o CORS está configurado corretamente no servidor Python.');
+            }
+        }
+
+        // Função para carregar e exibir as publicações do dataset validado
+        async function fetchValidatedPosts() {
+            try {
+                const response = await fetch('http://localhost:5000/api/dataset_real', {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar dataset validado');
+                }
+                const csvText = await response.text();
+                const rows = csvText.split('\n').slice(1); // Ignorar cabeçalho
+                const postsBody = document.getElementById('postsBody');
+                postsBody.innerHTML = ''; // Limpar tabela
+                markers.forEach(marker => map.removeLayer(marker)); // Limpar marcadores
+                markers = [];
+
+                rows.forEach(row => {
+                    if (!row.trim()) return;
+                    const cols = row.split(',').map(col => col.replace(/^"|"$/g, '')); // Remover aspas
+                    if (cols.length < 15) return; // Verificar se a linha tem todas as colunas
+                    const [titulo, conteudo, categoria, , , , , estado, cidade, latitude, longitude, impacto_nivel, , impacto_area_km2, , real_cidade] = cols;
+                    const rowElement = document.createElement('tr');
+                    rowElement.innerHTML = `
+                        <td>${titulo}</td>
+                        <td>${conteudo}</td>
+                        <td>${categoria}</td>
+                        <td>${cidade}</td>
+                        <td>${impacto_nivel}</td>
+                        <td>${impacto_area_km2}</td>
+                        <td>${latitude}</td>
+                        <td>${longitude}</td>
+                    `;
+                    postsBody.appendChild(rowElement);
+
+                    if (latitude && longitude && !isNaN(parseFloat(latitude)) && !isNaN(parseFloat(longitude))) {
+                        const marker = L.marker([parseFloat(latitude), parseFloat(longitude)]).addTo(map);
+                        marker.bindPopup(`<b>${titulo}</b><br>Categoria: ${categoria}<br>Cidade: ${cidade}<br>Impacto: ${impacto_nivel}`);
+                        markers.push(marker);
+                    }
+                });
+
+                if (markers.length > 0) {
+                    const group = L.featureGroup(markers);
+                    map.fitBounds(group.getBounds());
+                }
+
+                document.getElementById('publicacoesSection').style.display = 'block';
+            } catch (error) {
+                console.error('Erro ao carregar dataset validado:', error);
+                alert('Erro ao carregar o dataset validado. Verifique se o endpoint /api/dataset_real está acessível e se o CORS está configurado.');
+            }
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            initMap();
+        });
+    </script>
+</body>
+</html>

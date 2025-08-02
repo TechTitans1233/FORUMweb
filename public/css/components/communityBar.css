@@ -1,0 +1,48 @@
+#community {
+    background-color: #1e1e1e;
+    padding: 1rem;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.search-container input {
+    background-color: #2a2a2a;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.btn-ocultar {
+    background-color: #333;
+    color: #eee;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.perfil {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+}
+
+.foto-perfil {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.info-perfil a{
+  text-decoration: none;
+}
+
+.info-perfil h1 {
+    font-size: 1rem;
+    color: #eee;
+}

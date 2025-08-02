@@ -2,8 +2,8 @@
 module.exports = {
     'Fluxo: criar usuário, login, publicar no fórum, curtir, comentar, buscar usuário e logout': function (browser) {
       // URLs das páginas
-      const loginUrl    = 'http://127.0.0.1:3000/login/login.html';
-      const forumUrl    = 'http://127.0.0.1:3000/forum/forum.html';
+      const loginUrl    = 'https://127.0.0.1:3000/login/';
+      const forumUrl    = 'https://127.0.0.1:3000/forum/';
   
       // Gera dados de usuário únicos
       const ts             = Date.now();
@@ -21,7 +21,7 @@ module.exports = {
       browser
         // 1) Abre a página de login
         .url(loginUrl)
-        .waitForElementVisible('body', 1000)
+        .waitForElementVisible('body', 5000)
         .assert.titleEquals('Login')
   
         // 2) Abre formulário de cadastro
@@ -52,7 +52,7 @@ module.exports = {
         // 6) Navega para a página do fórum
         .url(forumUrl)
         .waitForElementVisible('body', 1000)
-        .assert.urlContains('/forum/forum.html')
+        .assert.urlContains('/forum')
   
         // 7) Exibe o formulário de nova publicação
         .assert.visible('#toggle-visibility')
@@ -124,7 +124,7 @@ module.exports = {
         .pause(1000)
   
         // 17) Verifica que foi redirecionado de volta ao login
-        .assert.urlContains('/login/login.html')
+        .assert.urlContains('/login')
   
         // 18) Encerra o navegador
         .end();

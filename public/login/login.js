@@ -1,3 +1,20 @@
+
+function mostrarErro(mensagem) {
+    const errorDiv = document.getElementById("error-message");
+    const p = errorDiv.querySelector("p");
+    p.textContent = mensagem;
+    errorDiv.classList.add("show");
+    setTimeout(() => {
+        errorDiv.classList.remove("show");
+        p.textContent = "";
+    }, 4000); // some após 4 segundos
+
+}
+
+document.getElementById("userEmail").classList.add("error");
+document.getElementById("userPassword").classList.add("error");
+
+
 // Alternar para o login administrativo
 document.getElementById('admin-toggle').addEventListener('click', function (e) {
     e.preventDefault();
@@ -55,13 +72,13 @@ document.getElementById("userLoginForm").addEventListener("submit", function (ev
     const submitButton = event.target.querySelector("button");
 
     if (!email || !password) {
-        alert("Por favor, preencha todos os campos.");
+        mostrarErro("Por favor, preencha todos os campos.");
         return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-        alert("Por favor, insira um email válido.");
+        mostrarErro("Por favor, insira um email válido.");
         return;
     }
 
@@ -72,7 +89,8 @@ document.getElementById("userLoginForm").addEventListener("submit", function (ev
     fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
+        credentials: 'include'
     })
         .then(response => {
             if (!response.ok) {
@@ -82,33 +100,19 @@ document.getElementById("userLoginForm").addEventListener("submit", function (ev
         })
         .then(data => {
             if (data.message === "Usuário autenticado com sucesso!") {
-                // Login bem-sucedido, buscar dados do usuário
-                return fetch(`/api/users/email/${email}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error("Erro ao obter dados do usuário.");
-                        }
-                        return response.json();
-                    })
-                    .then(userData => {
-                        // Armazenar dados do usuário no localStorage
-                        localStorage.setItem("userEmail", userData.email);
-                        localStorage.setItem("userName", userData.name);
-                        localStorage.setItem("userId", userData.id);
+                //console.log(data)
+                localStorage.setItem("userEmail", data.user.email);
+                localStorage.setItem("userName", data.user.displayName);
+                localStorage.setItem("userId", data.user.uid);
 
-                        if (data.token) {
-                            localStorage.setItem("userToken", data.token);  // Salva o token
-                        }
-
-                        window.location.href = "../forum/forum.html";
-                    });
+                window.location.href = "../forum";
             } else {
                 throw new Error(data.message);
             }
         })
         .catch(error => {
             console.error(error);
-            alert("Erro: " + error.message);
+            mostrarErro("Erro: " + error.message);
         })
         .finally(() => {
             submitButton.disabled = false;
@@ -123,7 +127,7 @@ document.getElementById("adminLoginForm").addEventListener("submit", async funct
     const password = document.getElementById("adminPassword").value;
 
     if (!password) {
-        alert("Por favor, preencha todos os campos.");
+        mostrarErro("Por favor, preencha todos os campos.");
         return;
     }
 
@@ -142,14 +146,14 @@ document.getElementById("adminLoginForm").addEventListener("submit", async funct
         const data = await response.json();
         if (data.token) {
             // Armazena o token no localStorage
-            localStorage.setItem("adminToken", data.token);
-            alert("Login administrativo realizado com sucesso!");
-            window.location.href = "../admin/admin.html"; // Redirecionar para o painel administrativo
+            //localStorage.setItem("adminToken", data.token);
+            mostrarErro("Login administrativo realizado com sucesso!");
+            window.location.href = "../admin"; // Redirecionar para o painel administrativo
         } else {
             throw new Error(data.message);
         }
     } catch (error) {
-        alert("Erro: " + error.message);
+        mostrarErro("Erro: " + error.message);
     }
 });
 
@@ -171,17 +175,17 @@ document.getElementById("registerFormSubmit").addEventListener("submit", async f
     const confirmPassword = document.getElementById("registerConfirmPassword").value;
 
     if (!name || !email || !password || !confirmPassword) {
-        alert("Por favor, preencha todos os campos.");
+        mostrarErro("Por favor, preencha todos os campos.");
         return;
     }
 
     if (!isValidEmail(email)) {
-        alert("Formato de e-mail inválido.");
+        mostrarErro("Formato de e-mail inválido.");
         return;
     }
     
     if (password !== confirmPassword) {
-        alert("As senhas não coincidem. Tente novamente.");
+        mostrarErro("As senhas não coincidem. Tente novamente.");
         return;
     }
 
@@ -195,7 +199,7 @@ document.getElementById("registerFormSubmit").addEventListener("submit", async f
         const data = await response.json();
         
         if (data.message === "Usuário criado com sucesso!") {
-            alert("Usuário cadastrado com sucesso!");
+            mostrarErro("Usuário cadastrado com sucesso!");
             
             // Limpa os campos do formulário
             document.getElementById("registerName").value = "";
@@ -207,10 +211,17 @@ document.getElementById("registerFormSubmit").addEventListener("submit", async f
             document.getElementById("registerForm").style.display = "none";
             document.getElementById("userLogin").style.display = "block";
         } else {
-            alert("Erro ao cadastrar o usuário: " + data.message);
+            mostrarErro("Erro ao cadastrar o usuário: " + data.message);
         }
     } catch (error) {
-        alert("Erro ao tentar cadastrar o usuário: " + error.message);
+        mostrarErro("Erro ao tentar cadastrar o usuário: " + error.message);
     }
 });
 
+  window.addEventListener('load', () => {
+    const loader = document.getElementById('bg-loader');
+
+  setTimeout(() => {
+    loader.style.display = 'none';
+  }, 3500); // igual à duração do fadeInOut
+  });

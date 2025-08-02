@@ -1,0 +1,160 @@
+.hidden {
+  display: none;
+}
+
+#main-content {
+    padding: 1rem;
+    overflow-y: auto;
+    /*border-left: 1px solid #2c2c2c;
+    border-right: 1px solid #2c2c2c;*/
+}
+
+/* Aba de seleção de feed */
+#divisions {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #333;
+}
+
+#divisions div {
+    cursor: pointer;
+    padding: 0.75rem;
+    flex: 1;
+    text-align: center;
+    color: #bbb;
+    transition: background-color 0.2s;
+}
+
+#divisions div:hover,
+#divisions div.active {
+    background-color: #333;
+    color: #fff;
+    font-weight: bold;
+}
+
+#feed {
+    background-color: #1e1e1e;
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.feed-header {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+#new-post {
+    background-color: #1e1e1e;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+}
+
+.new-post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.app-name {
+    font-size: 1.5rem;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.app-description {
+    font-size: 0.75rem;
+    color: #bbb;
+    margin: 0;
+    margin-top: 2px;
+}
+
+.publicacao {
+    border-bottom: 1px solid #333;
+    padding: 15px;
+}
+
+.cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.foto-usuario, .foto-perfil-comentario {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #333;
+}
+
+.titulo-publicacao {
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin: 8px 0;
+}
+
+.conteudo-publicacao {
+  white-space: pre-wrap;   /* preserva quebras de linha do texto */
+  margin-bottom: 12px;
+}
+
+.map-box {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #333;
+}
+
+.acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.curtir {
+  background: #0f4c81;
+  color: #fff;
+  border: 0;
+  border-radius: 9999px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.curtido-por-mim {
+  background: #1d9bf0;
+}
+
+.comentarios {
+  display: flex;
+  gap: 8px;
+}
+
+.comentario-input {
+  flex: 1;
+  background: #0f0f0f;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 8px;
+  color: #eee;
+}
+
+.imagem-publicacao {
+    margin: 10px 0;
+    text-align: center;
+}
+
+.imagem-postagem {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+
+.lista-comentarios {
+  margin-top: 10px;
+  border-top: 1px solid #222;
+  padding-top: 10px;
+}

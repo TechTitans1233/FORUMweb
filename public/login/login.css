@@ -251,3 +251,25 @@ main {
         font-size: 1em;
     }
 }
+
+
+
+#error-message {
+  margin-top: 10px;
+  color: #f44336; /* vermelho padrão para erros */
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: none; /* inicia invisível */
+  transition: opacity 0.3s ease;
+}
+
+#error-message.show {
+  display: block;
+  opacity: 1;
+}
+
+
+input.error {
+  border: 2px solid #f44336;
+  background-color: #fff5f5;
+}

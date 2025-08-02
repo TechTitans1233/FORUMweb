@@ -1,6 +1,0 @@
-1 - unit tesitng
-    jest
-2 - intregation tesitng
-    supertest
-3 - End_To_End testing
-    nightwatch chromedriver (CHROME)

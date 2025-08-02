@@ -2,9 +2,9 @@
 module.exports = {
     'Fluxo: criar usuário, login, acessar fórum e clicar em Perfil': function (browser) {
       // URLs
-      const loginUrl       = 'http://127.0.0.1:3000/login/login.html';
-      const forumUrl       = 'http://127.0.0.1:3000/forum/forum.html';
-      const perfilUrlPart  = 'http://127.0.0.1:3000/perfil/perfil.html';
+      const loginUrl       = 'https://127.0.0.1:3000/login/';
+      const forumUrl       = 'https://127.0.0.1:3000/forum/';
+      const perfilUrlPart  = 'https://127.0.0.1:3000/perfil/';
   
       // Gera dados únicos para cadastro
       const ts             = Date.now();
@@ -15,7 +15,7 @@ module.exports = {
       browser
         // 1) Abre a página de login
         .url(loginUrl)
-        .waitForElementVisible('body', 1500)
+        .waitForElementVisible('body', 5000)
         .assert.titleEquals('Login')
   
         // 2) Exibe o formulário de cadastro

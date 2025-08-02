@@ -252,7 +252,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const novoComentarioHTML = `
                         <div class="comentario">
-                            <img src="foto_usuario.jpg" alt="Foto do Usuário" class="foto-perfil-comentario">
+                            <img src="https://www.gravatar.com/avatar/?d=mp&s=128" alt="Usuário Desconhecido" class="foto-perfil-comentario">
+                            <!--<img src="foto_usuario.jpg" class="foto-perfil-comentario">-->
                             <div class="info-comentario">
                                 <span class="nome-usuario">${data.usuario || userName}</span>
                                 <span class="tempo-comentario">${dataComentario}</span>
@@ -376,12 +377,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 publicationHTML.innerHTML = `
                     <div class="cabecalho">
-                        <img src="foto_usuario.jpg" alt="Foto do Usuário" class="foto-usuario">
+                        <img src="https://www.gravatar.com/avatar/?d=mp&s=128" alt="Usuário Desconhecido" class="foto-usuario">
+                        <!--<img src="foto_usuario.jpg" class="foto-usuario">-->
                         <div class="info-usuario">
                             <span class="nome-usuario">${post.usuario}</span> <span class="tempo-postagem">${new Date(post.dataCriacao).toLocaleString()}</span>
                         </div>
                     </div>
-                    <div class="titulo-publicacao"><h3>${post.titulo}</h3></div>
+                    <div class="titulo-publicacao">${post.titulo}</div>
                     <div class="conteudo-publicacao">${post.conteudo}</div>
                     <div class="location-section">
                         <div id="map-${post.id}" class="map-box" style="height: 200px;"></div>
@@ -398,6 +400,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>`;
 
                 publicationsContainer.appendChild(publicationHTML);
+                const divider = document.createElement('hr');
+                divider.className = 'post-divider';
+                publicationsContainer.appendChild(divider);
+
 
                 const newMapId = `map-${post.id}`;
                 const postMapElement = document.getElementById(newMapId);
@@ -461,7 +467,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             const comentarioHTML = `
                                 <div class="comentario">
-                                    <img src="foto_usuario.jpg" alt="Foto do Usuário" class="foto-perfil-comentario">
+                                    <img src="https://www.gravatar.com/avatar/?d=mp&s=128" alt="Usuário Desconhecido" class="foto-perfil-comentario">
+                                    <!--<img src="foto_usuario.jpg" class="foto-perfil-comentario">-->
                                     <div class="info-comentario">
                                         <span class="nome-usuario">${comentario.usuario}</span>
                                         <span class="tempo-comentario">${dataComentario}</span>
@@ -494,7 +501,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem("amigoId");
         localStorage.removeItem("amigoName");
         localStorage.removeItem("amigoEmail");
-        window.location.href = "../login/login.html";
+        window.location.href = "../api/logout";
     };
 
     if (logoutButton) {
@@ -503,39 +510,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (logoutLink) {
         logoutLink.addEventListener("click", handleLogout);
     }
-
-    // --- 8. Lógica de Validação de Token (Assíncrona) ---
-    async function validateToken() {
-        const token = localStorage.getItem("userToken");
-        if (!token) {
-            window.location.href = "../login/login.html";
-            return;
-        }
-
-        try {
-            const response = await fetch('/api/validate-token', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || "Token inválido ou expirado.");
-            }
-        } catch (error) {
-            console.error("Erro ao validar token:", error);
-            alert("Sessão expirada. Faça login novamente.");
-            localStorage.removeItem("userToken");
-            localStorage.removeItem("userEmail");
-            localStorage.removeItem("userName");
-            localStorage.removeItem("userId");
-            window.location.href = "../login/login.html";
-        }
-    }
-    validateToken();
 
     // --- 9. Funcionalidade de pesquisa de usuários (Consolidada e Corrigida) ---
     const searchInput = document.getElementById('searchInput');
@@ -567,10 +541,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const userBlock = document.createElement('div');
             userBlock.className = 'perfil';
             userBlock.innerHTML = `
-                <img src="foto-usuario.jpg" alt="Foto de ${user.name}" class="foto-perfil">
+                <img src="https://www.gravatar.com/avatar/?d=mp&s=128" alt="Usuário Desconhecido" class="foto-perfil">
+                <!--<img src="foto-usuario.jpg" alt="Foto de ${user.name}" class="foto-perfil">-->
                 <div class="info-perfil">
-                    <h1 class="nome">${user.name}</h1>
-                    <a href="#" class="ver-perfil" data-id="${user.id}" data-name="${user.name}" data-email="${user.email}">Ver perfil</a>
+                    <a href="#" class="ver-perfil" data-id="${user.id}" data-name="${user.name}" data-email="${user.email}">
+                        <h1 class="nome">${user.name}</h1>
+                    </a>
                 </div>
             `;
             container.appendChild(userBlock);
@@ -713,4 +689,13 @@ document.addEventListener('click', (e) => {
             }
         }
     }
+});
+
+// forum.js (adicionar isso para efeito visual)
+document.querySelectorAll("#divisions div").forEach(tab => {
+    tab.addEventListener("click", () => {
+        document.querySelectorAll("#divisions div").forEach(el => el.classList.remove("active"));
+        tab.classList.add("active");
+        // lógica de carregar o conteúdo correspondente aqui
+    });
 });

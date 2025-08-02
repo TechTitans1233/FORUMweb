@@ -1,0 +1,78 @@
+#user-menu {
+    background-color: #1e1e1e;
+    padding: 1rem;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 1px solid #2c2c2c;
+}
+
+#user-menu h1 {
+    color: #ffffff;
+    margin-top: 0.5rem;
+    font-size: 1.5rem;
+}
+
+/* Botões do menu */
+#user-menu .button {
+    display: flex;
+    align-items: center;
+    color: #ccc;
+    text-decoration: none;
+    padding: 0.75rem;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+#user-menu .button:hover {
+    background-color: #333;
+}
+
+.icon-text {
+    margin-left: 10px;
+}
+
+.app-header {
+    padding: 1rem;
+    background-color: #1e1e1e;
+    color: white;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo-horus {
+    width: 48px;
+    height: 48px;
+    margin-right: 10px;
+    fill: white;
+}
+
+.logo-texts {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Modal de notificações */
+.modal {
+    background-color: #1e1e1e;
+    color: #fff;
+    border: 1px solid #444;
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.app-name {
+    font-size: 1.5rem;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.app-description {
+    font-size: 0.75rem;
+    color: #bbb;
+    margin: 0;
+    margin-top: 2px;
+}

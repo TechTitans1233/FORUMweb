@@ -547,10 +547,21 @@ body {
 }
 
 .foto-perfil {
-    width: 100px; /* Tamanho da foto de perfil do usuário atual */
-    height: 100px; /* Tamanho da foto de perfil do usuário atual */
-    border-radius: 50%;
-    margin-right: 20px;
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.foto-perfil:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  transform: scale(1.05);
+}
+
+#upload-foto {
+  display: none; /* Esconde o input */
 }
 
 .info-perfil {

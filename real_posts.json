@@ -1,0 +1,482 @@
+[
+    {
+        "id_hash": "caf174efe39753c108ccac8aab6f125a15bfb3ad585940c60e5b741e3da953a9",
+        "titulo": "TESTE 4K+",
+        "conteudo": "aa",
+        "lat": -8.8802698,
+        "lon": -36.4794722,
+        "marcacao": null,
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:46:51.822699"
+    },
+    {
+        "id_hash": "2d96406e92ae88215afcc7bc6b1497e00796a47c58c9e070a0ad26b44352a252",
+        "titulo": "Grande enchente em Recife",
+        "conteudo": "Chuvas intensas desde ontem causaram alagamento grave no centro de Recife, Pernanbuco, Brasil. Ruas estão inundadas, e o nível da água subiu rapidamente, afetando casas e comércios. A situação é crítica.",
+        "lat": -8.1240575,
+        "lon": -34.9025575,
+        "marcacao": "{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-34.906912,-8.131459],[-34.89747,-8.123812],[-34.884253,-8.09934],[-34.893179,-8.106477],[-34.905195,-8.115994],[-34.906912,-8.131459]]]}}",
+        "REALcidade": "Recife",
+        "timestamp": "2025-07-21T04:46:52.802095"
+    },
+    {
+        "id_hash": "7a982b2e6e387ef3cd52bc70b6bfdb68c4d77376c3c96122aa407c1d7a074cb5",
+        "titulo": "ney",
+        "conteudo": "",
+        "lat": null,
+        "lon": null,
+        "marcacao": null,
+        "REALcidade": null,
+        "timestamp": "2025-07-21T04:46:53.115380"
+    },
+    {
+        "id_hash": "2be7719390b647da23a6a53cdb5f0bec599bcb6261b4c691d7feb51c5e31ade0",
+        "titulo": "chuva intensa",
+        "conteudo": "as",
+        "lat": -8.888971603172292,
+        "lon": -36.47514070310859,
+        "marcacao": null,
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:46:53.793501"
+    },
+    {
+        "id_hash": "49b6897b03d9a195cebdeb0eac65090d75c9fc10b1e78b0a039fad42f82fec5b",
+        "titulo": "muita chuva",
+        "conteudo": "chuvas causaram alagamento alarmante na cidade de garanhuns, pernanbuco",
+        "lat": -8.888971603172292,
+        "lon": -36.47514070310859,
+        "marcacao": "{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-36.47918,-8.88363],[-36.47742,-8.888633],[-36.474888,-8.886895],[-36.475875,-8.884817],[-36.474717,-8.884224],[-36.476047,-8.88346],[-36.47712,-8.882146],[-36.479952,-8.881849],[-36.483901,-8.883418],[-36.484973,-8.885792],[-36.482141,-8.884648],[-36.47918,-8.88363]]]}}",
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:46:54.800418"
+    },
+    {
+        "id_hash": "dd8b9b8b30803c0c5bc9c518084f4bb6c720042c443ed2747b122b5641174ee3",
+        "titulo": "ney2",
+        "conteudo": "ney2",
+        "lat": null,
+        "lon": null,
+        "marcacao": null,
+        "REALcidade": null,
+        "timestamp": "2025-07-21T04:46:55.111206"
+    },
+    {
+        "id_hash": "6d5ced01f17c9c634787a29070ae2401fc917c84e2c183c3faef3771c1aee31e",
+        "titulo": "TADA",
+        "conteudo": "aa",
+        "lat": -8.8802698,
+        "lon": -36.4794722,
+        "marcacao": null,
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:46:55.811843"
+    },
+    {
+        "id_hash": "845d7264780f5fdf92c08cd74fbc4477092523f39574c808632055a447f5b003",
+        "titulo": "novo",
+        "conteudo": "teste",
+        "lat": null,
+        "lon": null,
+        "marcacao": null,
+        "REALcidade": null,
+        "timestamp": "2025-07-21T04:46:56.128636"
+    },
+    {
+        "id_hash": "29ac10fca5831862ab8aead986e02e792b178c82f8d7cd2491f8074a5f50d794",
+        "titulo": "Enchente em Recife Atinge Centro da Cidade",
+        "conteudo": "Chuvas intensas desde ontem causaram alagamento grave no centro de Recife. Ruas estão inundadas, e o nível da água subiu rapidamente, afetando casas e comércios. A situação é crítica.",
+        "lat": -8.1240575,
+        "lon": -34.9025575,
+        "marcacao": "{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-34.913349,-8.135367],[-34.902706,-8.141145],[-34.88245,-8.088803],[-34.906139,-8.088803],[-34.913349,-8.135367]]]}}",
+        "REALcidade": "Recife",
+        "timestamp": "2025-07-21T04:46:56.845288"
+    },
+    {
+        "id_hash": "a556639f9003bf0625ef9b9e2d0e74821ad0158b0b0a595453c204d69b31fd89",
+        "titulo": "Título 1752053908257",
+        "conteudo": "Conteúdo de teste 1752053908257",
+        "lat": -23.55686024867872,
+        "lon": -46.66141214028928,
+        "marcacao": null,
+        "REALcidade": "São Paulo",
+        "timestamp": "2025-07-21T04:46:58.846119"
+    },
+    {
+        "id_hash": "e1e4ccf29cacc3917acc9bcaba815858fb2f51ea7dbab324bba5cad6e1b99539",
+        "titulo": "+8000",
+        "conteudo": "aa",
+        "lat": -8.8802698,
+        "lon": -36.4794722,
+        "marcacao": null,
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:46:59.814506"
+    },
+    {
+        "id_hash": "d3b322c5cc746f840394737dff4d2b1a0f304933dea849facaa84111256883d1",
+        "titulo": "M",
+        "conteudo": "N",
+        "lat": null,
+        "lon": null,
+        "marcacao": null,
+        "REALcidade": null,
+        "timestamp": "2025-07-21T04:46:59.820512"
+    },
+    {
+        "id_hash": "e64e1415dd15cd2066f8f77e80d85f402c1c885c8d954d9e24937bc89cd8beb4",
+        "titulo": "Título 1752049162423",
+        "conteudo": "Conteúdo de teste 1752049162423",
+        "lat": -23.55686024867872,
+        "lon": -46.66141214028928,
+        "marcacao": null,
+        "REALcidade": "São Paulo",
+        "timestamp": "2025-07-21T04:47:00.830937"
+    },
+    {
+        "id_hash": "c3ea04dfb8fa5d34961c69ad3b4f88a4d1eb88c6732d4d5f31008a2478ab2db4",
+        "titulo": "kl",
+        "conteudo": "io",
+        "lat": null,
+        "lon": null,
+        "marcacao": null,
+        "REALcidade": null,
+        "timestamp": "2025-07-21T04:47:01.149228"
+    },
+    {
+        "id_hash": "bbd288c37a1f06cc10ed92a7f056f9a83940466460e80f06a98afb8f7bc99ce9",
+        "titulo": "NEW",
+        "conteudo": "chuva intensa na cidade de garanhuns, pernanbuco",
+        "lat": -8.888971603172292,
+        "lon": -36.47514070310859,
+        "marcacao": "{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-36.478568,-8.886089],[-36.47595,-8.884838],[-36.477753,-8.881658],[-36.479555,-8.882994],[-36.478568,-8.886089]]]}}",
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:47:01.966474"
+    },
+    {
+        "id_hash": "86516158fa0d69a7c9efa6db5deaba5a0bfb888030b469b40f96ef1f7caf0ce1",
+        "titulo": "AXAXAXA",
+        "conteudo": "aa",
+        "lat": -8.8802698,
+        "lon": -36.4794722,
+        "marcacao": null,
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:47:02.962886"
+    },
+    {
+        "id_hash": "e43bb1b9d5b99d593bd41ea5a3d44cc88f44def9ddf13d5bccc110f8ba583584",
+        "titulo": "TEST09",
+        "conteudo": "aa",
+        "lat": -8.8802698,
+        "lon": -36.4794722,
+        "marcacao": null,
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:47:03.952290"
+    },
+    {
+        "id_hash": "99140359483fb7f0f7ecb5ba41a8420cdc244dd023fe6dd592495cd797204038",
+        "titulo": "TENTATIVA FINAL",
+        "conteudo": "aa",
+        "lat": -8.8802698,
+        "lon": -36.4794722,
+        "marcacao": null,
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:47:04.966720"
+    },
+    {
+        "id_hash": "62206c969efaa6ee99f7c0c443eacae99b299705ea82efdc7636304b03f9f5b1",
+        "titulo": "cqc",
+        "conteudo": "rftg",
+        "lat": -23.55686024867872,
+        "lon": -46.66141214028928,
+        "marcacao": null,
+        "REALcidade": "São Paulo",
+        "timestamp": "2025-07-21T04:47:06.022680"
+    },
+    {
+        "id_hash": "e9ed69a6ea08507ea7f2d93985c23588cc4c5bd46b0f9997f1193238542ca395",
+        "titulo": "tg",
+        "conteudo": "",
+        "lat": null,
+        "lon": null,
+        "marcacao": null,
+        "REALcidade": null,
+        "timestamp": "2025-07-21T04:47:06.338473"
+    },
+    {
+        "id_hash": "a782d6c878c2d710b0658c15c4e432c2909fae1f0a8381363552b7ab66361e6a",
+        "titulo": "Título 1752054378670",
+        "conteudo": "Conteúdo de teste 1752054378670",
+        "lat": -23.55686024867872,
+        "lon": -46.66141214028928,
+        "marcacao": null,
+        "REALcidade": "São Paulo",
+        "timestamp": "2025-07-21T04:47:07.158724"
+    },
+    {
+        "id_hash": "1d43742b6cb0d4e5580c89322ca0e300e2fddb24ff1e24a300769059cfa2bb4a",
+        "titulo": "tst",
+        "conteudo": "ts",
+        "lat": null,
+        "lon": null,
+        "marcacao": null,
+        "REALcidade": null,
+        "timestamp": "2025-07-21T04:47:07.164729"
+    },
+    {
+        "id_hash": "bf68a4d153407dcb3010817bb2e7b9bec004ef571e61181bc066441191bbaf2c",
+        "titulo": "aa***************",
+        "conteudo": "aa",
+        "lat": -8.888971603172292,
+        "lon": -36.47514070310859,
+        "marcacao": null,
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:47:08.138615"
+    },
+    {
+        "id_hash": "4e1716c7fffd944d6a06beb75cc535fc2b53f435a22aac089434b08e751aeaa2",
+        "titulo": "XABALU",
+        "conteudo": "aa",
+        "lat": -8.8802698,
+        "lon": -36.4794722,
+        "marcacao": null,
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:47:09.139029"
+    },
+    {
+        "id_hash": "8f434346648f6b96df89dda901c5176b10a6d83961dd3c1ac88b59b2dc327aa4",
+        "titulo": "h",
+        "conteudo": "i",
+        "lat": null,
+        "lon": null,
+        "marcacao": null,
+        "REALcidade": null,
+        "timestamp": "2025-07-21T04:47:09.456822"
+    },
+    {
+        "id_hash": "d2c2b45213379281c717f0bcf386894966b6163ed76d977cf76ea5097d75a7cb",
+        "titulo": "BABALAO",
+        "conteudo": "aa",
+        "lat": -8.8802698,
+        "lon": -36.4794722,
+        "marcacao": null,
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:47:10.221518"
+    },
+    {
+        "id_hash": "39775c7cc640c97f8e805f6dda8efaffb8d2ee18afe94f0ecdcbdf8eb5ea9361",
+        "titulo": "baba",
+        "conteudo": "aa",
+        "lat": -8.8802698,
+        "lon": -36.4794722,
+        "marcacao": null,
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:47:11.158874"
+    },
+    {
+        "id_hash": "02b4ab46d2c8361a026a99b059c4a4df6e796628d62762ba2d7cc9945a217715",
+        "titulo": "chuva demais",
+        "conteudo": "aaa",
+        "lat": -8.273909774197698,
+        "lon": -35.996707351109585,
+        "marcacao": "{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-36.001039,-8.261438],[-36.001554,-8.27265],[-36.007819,-8.276472],[-35.99443,-8.281738],[-35.992026,-8.274689],[-35.989881,-8.268743],[-35.999236,-8.263901],[-36.001039,-8.261438]]]}}",
+        "REALcidade": "Caruaru",
+        "timestamp": "2025-07-21T04:47:12.199325"
+    },
+    {
+        "id_hash": "f951278171d6d41fbb1ff39428cb2289cea596d08fde78e569f4d8932bf5b1d5",
+        "titulo": "Título 1752054576565",
+        "conteudo": "Conteúdo de teste 1752054576565",
+        "lat": -23.55686024867872,
+        "lon": -46.66141214028928,
+        "marcacao": null,
+        "REALcidade": "São Paulo",
+        "timestamp": "2025-07-21T04:47:13.216755"
+    },
+    {
+        "id_hash": "4da718d1adc2c14e2ee978fb8d21345db2f4f282bbe1a100aca39fdd44ea88d0",
+        "titulo": "New",
+        "conteudo": "newnewnew",
+        "lat": -23.55686024867872,
+        "lon": -46.66141214028928,
+        "marcacao": "{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-46.63052,-23.53501],[-46.63052,-23.534705],[-46.630284,-23.534705],[-46.630284,-23.53501],[-46.63052,-23.53501]]]}}",
+        "REALcidade": "São Paulo",
+        "timestamp": "2025-07-21T04:47:14.184140"
+    },
+    {
+        "id_hash": "a81b68c364adedbfcc97ddb01e662ee8aa71939b5ee6de06e880747c62e129f6",
+        "titulo": "Tempestade em Recife",
+        "conteudo": "muita chuva, chuvas causaram muito alagamento no centro de Recife.",
+        "lat": -8.1240575,
+        "lon": -34.9025575,
+        "marcacao": "{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-34.906847,-8.124364],[-34.9035,-8.123939],[-34.903328,-8.124959],[-34.902427,-8.125086],[-34.902298,-8.127635],[-34.899466,-8.124789],[-34.898565,-8.119436],[-34.901826,-8.117524],[-34.901698,-8.122834],[-34.906032,-8.12241],[-34.906847,-8.124364]]]}}",
+        "REALcidade": "Recife",
+        "timestamp": "2025-07-21T04:47:15.152525"
+    },
+    {
+        "id_hash": "3e4a74a85e1b9645ca2c579cd3fe35ebf052c752b8d29be743fde0530ad8b52e",
+        "titulo": "TESTE 4001",
+        "conteudo": "AGAG",
+        "lat": -8.8802698,
+        "lon": -36.4794722,
+        "marcacao": null,
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:47:16.126917"
+    },
+    {
+        "id_hash": "28a52d4414b98a8c9086a8e1dd72aa519d05dce474bf2e2fb5e89939166c9843",
+        "titulo": "as",
+        "conteudo": "ata",
+        "lat": -8.8802698,
+        "lon": -36.4794722,
+        "marcacao": null,
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:47:17.130831"
+    },
+    {
+        "id_hash": "dfe44021239b3908192a40d57d0d55754893ebac90478ce6ee47b730a2a1bc9d",
+        "titulo": "test",
+        "conteudo": "aa",
+        "lat": -8.888971603172292,
+        "lon": -36.47514070310859,
+        "marcacao": null,
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:47:18.144258"
+    },
+    {
+        "id_hash": "e482ed91879d66c62aaffcf5c071841781c2cbaad39e9bfd3e8f091a7efcd1af",
+        "titulo": "Testee",
+        "conteudo": "testeseste",
+        "lat": null,
+        "lon": null,
+        "marcacao": null,
+        "REALcidade": null,
+        "timestamp": "2025-07-21T04:47:18.151264"
+    },
+    {
+        "id_hash": "9edc391f9b3e2cde722b0ee2fe0daab004191dac3fbf48c5cfb487b28d09c70e",
+        "titulo": "j",
+        "conteudo": "m",
+        "lat": null,
+        "lon": null,
+        "marcacao": null,
+        "REALcidade": null,
+        "timestamp": "2025-07-21T04:47:18.780342"
+    },
+    {
+        "id_hash": "cc8dbafa44ee8eddb84c3ba2a8013762eb681ddb0b14d9917327b6957c5d5187",
+        "titulo": "Título 1752054221762",
+        "conteudo": "Conteúdo de teste 1752054221762",
+        "lat": -23.55686024867872,
+        "lon": -46.66141214028928,
+        "marcacao": null,
+        "REALcidade": "São Paulo",
+        "timestamp": "2025-07-21T04:47:19.323836"
+    },
+    {
+        "id_hash": "cbc9b2afd308453672b80a32bd7f5532d8323ec04a7106428293c52d9aca3f92",
+        "titulo": "XAXA",
+        "conteudo": "aa",
+        "lat": -8.8802698,
+        "lon": -36.4794722,
+        "marcacao": null,
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:47:20.274207"
+    },
+    {
+        "id_hash": "8eb173b54a5d741018d2dfbd0809c0d3128b0769ac63d0bd5c5f8f39045287a6",
+        "titulo": "prof giraf",
+        "conteudo": "Tatata",
+        "lat": null,
+        "lon": null,
+        "marcacao": null,
+        "REALcidade": null,
+        "timestamp": "2025-07-21T04:47:20.586996"
+    },
+    {
+        "id_hash": "1a969dbcc5e80f52e3b7d3fccc33d0ee9fe82d0d4ce062f47c43b972332f8ebf",
+        "titulo": "htst",
+        "conteudo": "htst",
+        "lat": null,
+        "lon": null,
+        "marcacao": null,
+        "REALcidade": null,
+        "timestamp": "2025-07-21T04:47:20.841227"
+    },
+    {
+        "id_hash": "d9cc24a1907c5787024e7cb1af2cfebd6b5890e3d745b103e7d19d1de9121e06",
+        "titulo": "PIPOCO DO TROVAO",
+        "conteudo": "aa",
+        "lat": -8.8818204,
+        "lon": -36.4787393,
+        "marcacao": {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -36.475639,
+                    -8.888336
+                ]
+            }
+        },
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:47:21.289635"
+    },
+    {
+        "id_hash": "b96fe9db5516f25f17aa5612016265f89e4c267ad19f7eb6f1be25a9f15679e0",
+        "titulo": "nT",
+        "conteudo": "aa",
+        "lat": -8.888971603172292,
+        "lon": -36.47514070310859,
+        "marcacao": null,
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:47:22.275036"
+    },
+    {
+        "id_hash": "37268335dd6931045bdcdf92623ff819a64244b53d0e746d438797349d4da578",
+        "titulo": "test",
+        "conteudo": "test",
+        "lat": -8.8802698,
+        "lon": -36.4794722,
+        "marcacao": null,
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:47:23.280455"
+    },
+    {
+        "id_hash": "7bb41f5c492bb344ee9fe9172d8151c4b6739c55626dc100860b86ef6d7e0614",
+        "titulo": "tt",
+        "conteudo": "test",
+        "lat": -8.8802698,
+        "lon": -36.4794722,
+        "marcacao": null,
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:47:25.279284"
+    },
+    {
+        "id_hash": "a7ef14fda77ddd2241b26a619ad6c20d216d6b9f67f23b75ff1b8019757de94f",
+        "titulo": "CAG",
+        "conteudo": "aa",
+        "lat": -8.8802698,
+        "lon": -36.4794722,
+        "marcacao": null,
+        "REALcidade": "Garanhuns",
+        "timestamp": "2025-07-21T04:47:26.278699"
+    },
+    {
+        "id_hash": "03b9651e3865d80c4fa07c783ec57018aa494db19e032db9d62bfbfa3957eca0",
+        "titulo": "ljn",
+        "conteudo": "njl",
+        "lat": null,
+        "lon": null,
+        "marcacao": null,
+        "REALcidade": null,
+        "timestamp": "2025-07-21T04:47:26.285706"
+    },
+    {
+        "id_hash": "53b0eb9fb68fbafacf7469668a941385debfefdfda2b042b5fe8c935903a15f2",
+        "titulo": "chaves",
+        "conteudo": "chavito",
+        "lat": null,
+        "lon": null,
+        "marcacao": null,
+        "REALcidade": null,
+        "timestamp": "2025-07-21T04:47:26.602995"
+    }
+]
